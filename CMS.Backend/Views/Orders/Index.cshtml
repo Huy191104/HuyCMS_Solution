@@ -1,0 +1,58 @@
+﻿@model IEnumerable<CMS.Data.Entities.Order>
+
+<div class="container mt-4">
+
+    <h2 class="mb-4 text-warning">
+        DANH SÁCH ĐƠN HÀNG
+    </h2>
+
+    <table class="table table-bordered">
+
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Ngày đặt</th>
+                <th>CustomerId</th>
+                <th>Trạng thái</th>
+                <th>Ghi chú</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.OrderDate.ToString("dd/MM/yyyy")</td>
+                    <td>@item.CustomerId</td>
+                    <td>
+                        @if (item.Status == 0)
+                        {
+                            <span class="badge bg-warning text-dark">
+                                Chờ duyệt
+                            </span>
+                        }
+                        else if (item.Status == 1)
+                        {
+                            <span class="badge bg-primary">
+                                Đang giao
+                            </span>
+                        }
+                        else if (item.Status == 2)
+                        {
+                            <span class="badge bg-success">
+                                Đã xong
+                            </span>
+                        }
+                    </td>
+                    <td>@item.Notes</td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>

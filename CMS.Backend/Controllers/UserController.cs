@@ -1,40 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CMS.Data.Entities; // Phải có dòng này để dùng lớp User
+﻿/*
+* Sinh viên : Phạm Thanh Huy
+* Mã sinh viên: 2122110384
+* Lớp: CCQ2211J
+* Ngày tạo: 16/05/2026
+* Version: 1.0
+*/
+
+using Microsoft.AspNetCore.Mvc;
+using CMS.Data;
+using CMS.Data.Entities;
+using System.Linq;
 
 namespace CMS.Backend.Controllers
 {
     public class UserController : Controller
     {
-        // Hàm Index: Hiển thị danh sách thành viên quản trị
+        private readonly ApplicationDbContext _context;
+
+        // Inject DbContext
+        public UserController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // Hiển thị danh sách User từ database
         public IActionResult Index()
         {
-            // 1. Tạo danh sách Người dùng giả (Mock Data)
-            var users = new List<User>
-            {
-                new User
-                {
-                    Id = 1,
-                    Username = "admin_thai",
-                    FullName = "Nguyễn Cao Thái",
-                    Role = "Administrator"
-                },
-                new User
-                {
-                    Id = 2,
-                    Username = "editor_01",
-                    FullName = "Trần Văn Biên Tập",
-                    Role = "Editor"
-                },
-                new User
-                {
-                    Id = 3,
-                    Username = "author_minh",
-                    FullName = "Lê Quang Minh",
-                    Role = "Author"
-                }
-            };
+            var users = _context.Users.ToList();
 
-            // 2. Trả về View kèm theo danh sách người dùng
             return View(users);
         }
     }

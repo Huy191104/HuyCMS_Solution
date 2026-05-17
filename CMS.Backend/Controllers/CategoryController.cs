@@ -1,16 +1,31 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CMS.Data.Entities; // Kết nối tới lớp dữ liệu bạn vừa tạo
+﻿/*
+* Sinh viên : Phạm Thanh Huy
+* Mã sinh viên: 2122110384
+* Lớp: CCQ2211J
+* Ngày tạo: 16/05/2026
+* Version: 1.0
+*/
+
+using Microsoft.AspNetCore.Mvc;
+using CMS.Data;
+using CMS.Data.Entities;
+using System.Linq;
+
 
 public class CategoryController : Controller
 {
-    // Hành động Index sẽ hiển thị danh sách các danh mục
+    private readonly ApplicationDbContext _context;
+
+    // "Tiêm" kết nối vào Controller
+    public CategoryController(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
     public IActionResult Index()
     {
-        // Tạo danh sách dữ liệu mẫu trực tiếp trong code
-        var list = new List<Category> {
-            new Category { Id = 1, Name = "Tin Công Nghệ", Description = "Review Laptop, AI" }, // Tạo một đối tượng Category với Id, Name và Description
-            new Category { Id = 2, Name = "Giáo Dục", Description = "Thông tin tuyển sinh" }    // Tạo một đối tượng Category khác với Id, Name và Description
-        };
-        return View(list); // Gửi danh sách này sang giao diện
+        // Lấy dữ liệu THẬT từ bảng Categories trong SQL
+        var data = _context.Categories.ToList();
+        return View(data);
     }
 }
