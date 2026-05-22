@@ -3,8 +3,11 @@
 <div class="container mt-4">
 
     <h2 class="mb-4 text-primary">
-        DANH SÁCH NGƯỜI DÙNG
+        QUẢN LÝ THÀNH VIÊN
     </h2>
+    <a asp-action="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Thêm thành viên mới
+    </a>
 
     <table class="table table-bordered table-striped">
 
@@ -14,6 +17,7 @@
                 <th>Username</th>
                 <th>Họ tên</th>
                 <th>Vai trò</th>
+                <th style="width:150px">Thao tác</th>
             </tr>
         </thead>
 
@@ -25,6 +29,16 @@
                     <td>@item.Username</td>
                     <td>@item.FullName</td>
                     <td>@item.Role</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">
+                            Sửa
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id"
+                           class="btn btn-sm btn-outline-danger"
+                           onclick="return confirm('Bạn có chắc chắn muốn xóa thành viên @item.Username không?')">
+                            Xóa
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>
