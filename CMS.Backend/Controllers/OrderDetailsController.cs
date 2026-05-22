@@ -2,13 +2,13 @@
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
-* Ngày tạo: 17/05/2026
-* Version: 1.0
+* Ngày tạo: 22/05/2026
 */
 
 using Microsoft.AspNetCore.Mvc;
 using CMS.Data;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers
 {
@@ -22,11 +22,23 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        public IActionResult Index() // Hiển thị danh sách OrderDetails từ database
+        // GET: Post/Details/5
+        public IActionResult Details(int id)
         {
-            var data = _context.OrderDetails.ToList(); // Lấy tất cả các OrderDetails từ database và chuyển sang dạng List để hiển thị trên View
+            // 1. Truy vấn bài viết theo ID
+            // Sử dụng .Include(p => p.Category) để lấy kèm thông tin Danh mục (Join bảng)
+            var post = _context.Posts
+                .Include(p => p.Category)
+                .FirstOrDefault(p => p.Id == id);
 
-            return View(data);
+            // 2. Kiểm tra nếu không tìm thấy bài viết (tránh lỗi màn hình trắng)
+            if (post == null)
+            {
+                return NotFound(); // Trả về trang lỗi 404
+            }
+
+            // 3. Truyền dữ liệu sang View
+            return View(post);
         }
     }
 }
