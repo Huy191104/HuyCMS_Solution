@@ -2,16 +2,20 @@
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
-* Ngày tạo: 22/05/2026
+* Ngày tạo: 26/05/2026
 */
 
 using Microsoft.AspNetCore.Mvc;
 using CMS.Data;
 using CMS.Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 
+namespace CMS.Backend.Controllers
+{
 
-public class CategoryController : Controller
+    [Authorize] // Yêu cầu người dùng phải đăng nhập mới được truy cập vào tất cả các action trong controller này
+    public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
 
@@ -50,49 +54,50 @@ public class CategoryController : Controller
         }
 
         // Action nhận vào Id của danh mục cần xóa
-    public IActionResult Delete(int id)
-    {
-        // Bước 1: Tìm đối tượng danh mục trong Database bằng Id
-        var category = _context.Categories.Find(id);
-
-        // Kiểm tra nếu tìm thấy thì mới xóa
-        if (category != null)
+        public IActionResult Delete(int id)
         {
-            // Bước 2: Lệnh xóa khỏi bộ nhớ tạm (Tracking)
-            _context.Categories.Remove(category);
+            // Bước 1: Tìm đối tượng danh mục trong Database bằng Id
+            var category = _context.Categories.Find(id);
 
-            // Bước 3: Chốt phiên làm việc, xóa thực sự trong SQL Server
-            _context.SaveChanges();
+            // Kiểm tra nếu tìm thấy thì mới xóa
+            if (category != null)
+            {
+                // Bước 2: Lệnh xóa khỏi bộ nhớ tạm (Tracking)
+                _context.Categories.Remove(category);
+
+                // Bước 3: Chốt phiên làm việc, xóa thực sự trong SQL Server
+                _context.SaveChanges();
+            }
+
+            // Sau khi xóa xong, quay lại trang danh sách để cập nhật giao diện
+            return RedirectToAction("Index");
         }
 
-        // Sau khi xóa xong, quay lại trang danh sách để cập nhật giao diện
-        return RedirectToAction("Index");
+        // 1. Hàm GET: Tìm dữ liệu cũ và đổ lên Form
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            // Tìm danh mục trong Database theo Id [cite: 348, 350]
+            var category = _context.Categories.Find(id);
+
+            if (category == null) return NotFound();
+
+            return View(category); // Gửi đối tượng tìm được sang giao diện Edit
+        }
+
+        // 2. Hàm POST: Nhận dữ liệu mới từ người dùng và lưu lại
+        [HttpPost]
+        public IActionResult Edit(Category model)
+        {
+            // Lệnh cập nhật đối tượng vào bộ nhớ tạm
+            _context.Categories.Update(model);
+
+            // Lưu thay đổi thực sự xuống SQL Server [cite: 504, 509]
+            _context.SaveChanges();
+
+            // Quay lại trang danh sách để xem kết quả
+            return RedirectToAction("Index");
+        }
+
     }
-
-    // 1. Hàm GET: Tìm dữ liệu cũ và đổ lên Form
-    [HttpGet]
-    public IActionResult Edit(int id)
-    {
-        // Tìm danh mục trong Database theo Id [cite: 348, 350]
-        var category = _context.Categories.Find(id);
-
-        if (category == null) return NotFound();
-
-        return View(category); // Gửi đối tượng tìm được sang giao diện Edit
-    }
-
-    // 2. Hàm POST: Nhận dữ liệu mới từ người dùng và lưu lại
-    [HttpPost]
-    public IActionResult Edit(Category model)
-    {
-        // Lệnh cập nhật đối tượng vào bộ nhớ tạm
-        _context.Categories.Update(model);
-
-        // Lưu thay đổi thực sự xuống SQL Server [cite: 504, 509]
-        _context.SaveChanges();
-
-        // Quay lại trang danh sách để xem kết quả
-        return RedirectToAction("Index");
-    }
-
 }

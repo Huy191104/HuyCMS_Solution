@@ -2,7 +2,7 @@
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
-* Ngày tạo: 22/05/2026
+* Ngày tạo: 26/05/2026
 */
 
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +10,11 @@ using CMS.Data;
 using CMS.Data.Entities;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Backend.Controllers
 {
+    [Authorize(Roles = "Admin")] // Chỉ tài khoản có Role là Admin mới được phép vào
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _context;

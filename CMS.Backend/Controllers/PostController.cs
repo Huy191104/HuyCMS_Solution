@@ -2,7 +2,7 @@
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
-* Ngày tạo: 22/05/2026
+* Ngày tạo: 26/05/2026
 */
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +11,12 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Backend.Controllers
 {
-    /// Controller để quản lý các bài viết (Posts) trong hệ thống
+    [Authorize] // Chỉ cho phép người dùng đã đăng nhập mới có thể truy cập vào các hành động trong controller này
+    // Controller để quản lý các bài viết (Posts) trong hệ thống
     public class PostController : Controller
     {
         private readonly ApplicationDbContext _context;
