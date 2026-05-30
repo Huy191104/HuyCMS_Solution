@@ -1,27 +1,247 @@
-﻿@model IEnumerable<CMS.Data.Entities.Post>
-@{
+﻿@{
     Layout = "_LayoutAdmin";
 }
 
-<div class="container mt-5">
-    <h2 class="text-center mb-4 text-danger">TIN TỨC MỚI NHẤT</h2>
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="mb-4">
+
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-speedometer2"></i>
+            Bảng điều khiển
+        </h2>
+
+        <p class="text-muted">
+            Chào mừng quay trở lại hệ thống quản trị CMS
+        </p>
+
+        <div class="alert alert-info">
+
+            Xin chào
+            <strong>
+                @User.FindFirst("FullName")?.Value
+            </strong>
+
+            |
+
+            Vai trò:
+
+            @if (User.IsInRole("Admin"))
+            {
+                <span class="badge bg-danger">
+                    Admin
+                </span>
+            }
+            else
+            {
+                <span class="badge bg-primary">
+                    Editor
+                </span>
+            }
+
+        </div>
+
+    </div>
+
+    <!-- Hàng 1 -->
     <div class="row">
-        @foreach (var item in Model)
-        {
-            <div class="col-md-4">
-                <div class="card shadow-sm h-100">
-                    <img src="@item.ImageUrl" class="card-img-top" alt="Thumbnail">
-                    <div class="card-body">
-                        <span class="badge bg-primary mb-2">@item.Category.Name</span>
-                        <h5 class="card-title">@item.Title</h5>
-                        <p class="card-text text-truncate">@item.Content</p>
-                        <a href="/Post/Details/@item.Id" class="btn btn-outline-danger btn-sm">Đọc tiếp</a>
-                    </div>
-                    <div class="card-footer text-muted small">
-                        Ngày đăng: @item.CreatedDate.ToString("dd/MM/yyyy")
-                    </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow border-0 bg-primary text-white">
+                <div class="card-body text-center">
+                    <h6>Danh mục</h6>
+                    <h2>@ViewBag.TotalCategories</h2>
                 </div>
             </div>
-        }
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow border-0 bg-success text-white">
+                <div class="card-body text-center">
+                    <h6>Bài viết</h6>
+                    <h2>@ViewBag.TotalPosts</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow border-0 bg-warning text-white">
+                <div class="card-body text-center">
+                    <h6>Sản phẩm</h6>
+                    <h2>@ViewBag.TotalProducts</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow border-0 bg-danger text-white">
+                <div class="card-body text-center">
+                    <h6>Thành viên</h6>
+                    <h2>@ViewBag.TotalUsers</h2>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <!-- Hàng 2 -->
+    <div class="row">
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6>Khách hàng</h6>
+                    <h3>@ViewBag.TotalCustomers</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6>Đơn hàng</h6>
+                    <h3>@ViewBag.TotalOrders</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body text-center">
+                    <h6>Chờ duyệt</h6>
+                    <h3 class="text-warning">
+                        @ViewBag.PendingOrders
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card shadow-sm border-danger">
+                <div class="card-body text-center">
+                    <h6>Sắp hết hàng</h6>
+                    <h3 class="text-danger">
+                        @ViewBag.LowStockProducts
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Trạng thái đơn hàng -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-dark text-white">
+            Trạng thái đơn hàng
+        </div>
+
+        <div class="card-body">
+
+            <span class="badge bg-warning me-2">
+                Chờ duyệt:
+                @ViewBag.PendingOrders
+            </span>
+
+            <span class="badge bg-primary me-2">
+                Đang giao:
+                @ViewBag.ShippingOrders
+            </span>
+
+            <span class="badge bg-success">
+                Hoàn thành:
+                @ViewBag.CompletedOrders
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- Hai bảng -->
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header bg-primary text-white">
+                    Đơn hàng mới nhất
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-hover">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Ngày đặt</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in ViewBag.LatestOrders)
+                            {
+                                <tr>
+                                    <td>#@item.Id</td>
+                                    <td>
+                                        @item.OrderDate.ToString("dd/MM/yyyy")
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header bg-success text-white">
+                    Bài viết mới nhất
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-hover">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tiêu đề</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in ViewBag.LatestPosts)
+                            {
+                                <tr>
+                                    <td>#@item.Id</td>
+                                    <td>@item.Title</td>
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    ```
+
 </div>

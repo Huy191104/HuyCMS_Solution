@@ -1,0 +1,63 @@
+﻿@model CMS.Data.Entities.Customer
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container mt-4">
+
+    <div class="card border-danger">
+
+        <div class="card-header bg-danger text-white">
+            Xác nhận xóa khách hàng
+        </div>
+
+        <div class="card-body">
+
+            <h5>
+                Bạn có chắc muốn xóa khách hàng này?
+            </h5>
+
+            <hr />
+
+            <p>
+                <strong>Họ tên:</strong>
+                @Model.FullName
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                @Model.Email
+            </p>
+
+            <p>
+                <strong>Số điện thoại:</strong>
+                @Model.Phone
+            </p>
+
+            <p>
+                <strong>Địa chỉ:</strong>
+                @Model.Address
+            </p>
+
+            <form asp-action="Delete">
+
+                <input asp-for="Id" type="hidden" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Xóa
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Hủy
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

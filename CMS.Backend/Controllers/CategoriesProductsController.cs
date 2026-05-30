@@ -2,13 +2,14 @@
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
-* Ngày tạo: 26/05/2026
+* Ngày tạo: 30/05/2026
 */
 
 using Microsoft.AspNetCore.Mvc;
 using CMS.Data;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using CMS.Data.Entities;
 
 namespace CMS.Backend.Controllers
 {
@@ -29,6 +30,58 @@ namespace CMS.Backend.Controllers
             var data = _context.CategoriesProducts.ToList(); // Lấy tất cả các mối quan hệ giữa Categories và Products từ database
 
             return View(data);
+        }
+        // Hiển thị form để tạo mới mối quan hệ giữa Categories và Products
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        // Xử lý dữ liệu từ form tạo mới mối quan hệ giữa Categories và Products
+        [HttpPost]
+        public IActionResult Create(CategoryProduct model)
+        {
+            _context.CategoriesProducts.Add(model);
+
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+        // Hiển thị form để chỉnh sửa mối quan hệ giữa Categories và Products
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var category = _context.CategoriesProducts.Find(id);
+
+            if (category == null)
+                return NotFound();
+
+            return View(category);
+        }
+        // Xử lý dữ liệu từ form chỉnh sửa mối quan hệ giữa Categories và Products
+        [HttpPost]
+        public IActionResult Edit(CategoryProduct model)
+        {
+            _context.CategoriesProducts.Update(model);
+
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+        // Xử lý yêu cầu xóa mối quan hệ giữa Categories và Products
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var category = _context.CategoriesProducts.Find(id);
+
+            if (category == null)
+                return NotFound();
+
+            _context.CategoriesProducts.Remove(category);
+
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

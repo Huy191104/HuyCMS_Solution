@@ -11,7 +11,9 @@
             <h4 class="mb-0"><i class="bi bi-file-earmark-plus"></i> THÊM BÀI VIẾT MỚI</h4>
         </div>
         <div class="card-body">
-            <form asp-action="Create" method="post">
+            <form asp-action="Create"
+                  method="post"
+                  enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-md-8">
                         <div class="mb-3">
@@ -34,8 +36,10 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Link ảnh đại diện (URL):</label>
-                            <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
+                            <label class="form-label fw-bold">Hình ảnh:</label>
+                            <input type="file"
+                                   name="uploadImage"
+                                   class="form-control" />
                         </div>
 
                         <div class="mb-3">

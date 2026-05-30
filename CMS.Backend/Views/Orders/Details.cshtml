@@ -1,0 +1,41 @@
+﻿@model CMS.Data.Entities.Order
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container mt-4">
+
+    <div class="card">
+
+        <div class="card-header bg-primary text-white">
+            Chi tiết đơn hàng #@Model.Id
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                <strong>Khách hàng:</strong>
+                @Model.Customer?.FullName
+            </p>
+
+            <p>
+                <strong>Ngày đặt:</strong>
+                @Model.OrderDate.ToString("dd/MM/yyyy")
+            </p>
+
+            <p>
+                <strong>Ghi chú:</strong>
+                @Model.Notes
+            </p>
+
+            <p>
+                <strong>Số sản phẩm:</strong>
+                @(Model.OrderDetails?.Count ?? 0)
+            </p>
+
+        </div>
+
+    </div>
+
+</div>

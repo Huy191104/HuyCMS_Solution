@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<CMS.Data.Entities.Order>
+
 @{
     Layout = "_LayoutAdmin";
 }
@@ -6,18 +7,19 @@
 <div class="container mt-4">
 
     <h2 class="mb-4 text-warning">
-        DANH SÁCH ĐƠN HÀNG
+        Danh sách đơn hàng
     </h2>
 
-    <table class="table table-bordered">
+    <table class="table table-bordered table-hover align-middle">
 
         <thead class="table-dark">
             <tr>
                 <th>ID</th>
+                <th>Khách hàng</th>
                 <th>Ngày đặt</th>
-                <th>CustomerId</th>
                 <th>Trạng thái</th>
                 <th>Ghi chú</th>
+                <th width="250">Thao tác</th>
             </tr>
         </thead>
 
@@ -26,10 +28,23 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.Id</td>
-                    <td>@item.OrderDate.ToString("dd/MM/yyyy")</td>
-                    <td>@item.CustomerId</td>
+
                     <td>
+                        <span class="badge bg-dark">
+                            #@item.Id
+                        </span>
+                    </td>
+
+                    <td>
+                        @(item.Customer?.FullName ?? "Không xác định")
+                    </td>
+
+                    <td>
+                        @item.OrderDate.ToString("dd/MM/yyyy")
+                    </td>
+
+                    <td>
+
                         @if (item.Status == 0)
                         {
                             <span class="badge bg-warning text-dark">
@@ -45,11 +60,41 @@
                         else if (item.Status == 2)
                         {
                             <span class="badge bg-success">
-                                Đã xong
+                                Hoàn thành
                             </span>
                         }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                Đã hủy
+                            </span>
+                        }
+
                     </td>
+
                     <td>@item.Notes</td>
+
+                    <td>
+
+                        <a asp-action="Details"
+                           asp-route-id="@item.Id"
+                           class="btn btn-info btn-sm">
+                            Chi tiết
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@item.Id"
+                           class="btn btn-warning btn-sm">
+                            Sửa
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@item.Id"
+                           class="btn btn-danger btn-sm">
+                            Xóa
+                        </a>
+
+                    </td>
 
                 </tr>
             }

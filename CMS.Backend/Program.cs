@@ -2,7 +2,7 @@
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
-* Ngày tạo: 26/05/2026
+* Ngày tạo: 30/05/2026
 */
 
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+// Đăng ký dịch vụ hỗ trợ API (nếu cần)
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 // Đăng ký DbContext vào hệ thống
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -23,7 +26,16 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Account/Login"; // Đường dẫn nếu chưa đăng nhập
         options.AccessDeniedPath = "/Account/AccessDenied"; // Đường dẫn nếu vào trang không được phép
-    }); 
+    });
+// 1. Khai báo chính sách CORS
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAll", policy => {
+        // Cho phép mọi nguồn (Origin), mọi phương thức (GET, POST...), mọi tiêu đề (Header)
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -34,17 +46,26 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+else // Chỉ kích hoạt Swagger trong môi trường phát triển để tránh lộ thông tin API trong môi trường sản xuất
+{
+    app.UseSwagger(); // Kích hoạt Swagger chỉ trong môi trường phát triển để tránh lộ thông tin API trong môi trường sản xuất
+    app.UseSwaggerUI(); // Kích hoạt giao diện Swagger UI để dễ dàng kiểm tra và gọi API trong quá trình phát triển
+}
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseHttpsRedirection(); // Tự động chuyển hướng HTTP sang HTTPS để bảo mật hơn
+app.UseStaticFiles(); // Cho phép phục vụ các tệp tĩnh như CSS, JS, hình ảnh từ thư mục wwwroot
 
-app.UseRouting();
+app.UseRouting(); // Kích hoạt hệ thống định tuyến để xác định cách xử lý các yêu cầu đến
+// 2. Kích hoạt chính sách CORS đã khai báo ở trên
+app.UseCors("AllowAll");
 
-app.UseAuthentication();
+app.UseAuthentication(); // Kích hoạt hệ thống xác thực để kiểm tra xem người dùng đã đăng nhập hay chưa trước khi cho phép truy cập vào các tài nguyên cần bảo vệ
 
-app.UseAuthorization();
+app.UseAuthorization(); // Kích hoạt hệ thống phân quyền để kiểm tra xem người dùng đã có quyền truy cập vào tài nguyên hay chưa sau khi đã xác thực
 
-app.MapControllerRoute(
+app.MapControllers(); // Cho phép sử dụng các API Controller đã định nghĩa trong dự án
+
+app.MapControllerRoute( // Định nghĩa tuyến đường mặc định cho các MVC Controller
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 

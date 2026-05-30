@@ -2,7 +2,7 @@
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
-* Ngày tạo: 26/05/2026
+* Ngày tạo: 30/05/2026
 */
 
 using Microsoft.AspNetCore.Mvc;
@@ -25,24 +25,26 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: OrderDetails
-        public IActionResult Index()
+        public IActionResult Index() // Hiển thị danh sách OrderDetails từ database, bao gồm thông tin sản phẩm liên quan thông qua Include
         {
-            var data = _context.OrderDetails.ToList(); // Lấy tất cả OrderDetails từ database và chuyển sang view để hiển thị
+            var data = _context.OrderDetails
+                .Include(o => o.Product)
+                .ToList();
 
-            return View(data); // Trả về view với dữ liệu OrderDetails để hiển thị danh sách chi tiết đơn hàng
+            return View(data);
         }
-        // GET: OrderDetails/Details/5
+        // GET: OrderDetails/Details
         public IActionResult Details(int id)
         {
             var orderDetail = _context.OrderDetails // Truy vấn OrderDetails từ database dựa trên id được truyền vào
-                .FirstOrDefault(o => o.Id == id); // Lấy chi tiết đơn hàng có id trùng với id được truyền vào
+                .FirstOrDefault(o => o.Id == id); 
 
-            if (orderDetail == null) // Nếu không tìm thấy chi tiết đơn hàng nào có id trùng với id được truyền vào, trả về NotFound (404)
+            if (orderDetail == null) 
             {
-                return NotFound(); // Trả về lỗi 404 nếu không tìm thấy chi tiết đơn hàng
+                return NotFound();
             }
 
-            return View(orderDetail); // Trả về view với chi tiết đơn hàng để hiển thị thông tin chi tiết của đơn hàng đó
+            return View(orderDetail);
         }
     }
 }

@@ -2,7 +2,7 @@
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
-* Ngày tạo: 16/05/2026
+* Ngày tạo: 30/05/2026
 * Version: 1.0
 */
 
@@ -18,8 +18,8 @@ namespace CMS.Data.Entities
     public class Category
     {
         public int Id { get; set; } // Khóa chính, tự động tăng
-        public string Name { get; set; } // Tên danh mục (vd: Tin Giáo Dục)
-        public string Description { get; set; } // Mô tả ngắn về danh mục
+        public string Name { get; set; } = string.Empty; // Tên danh mục (vd: Tin Giáo Dục)
+        public string Description { get; set; } = string.Empty; // Mô tả ngắn về danh mục
 
         // Quan hệ: Một danh mục có nhiều bài viết
         public virtual ICollection<Post> Posts { get; set; }

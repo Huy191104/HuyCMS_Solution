@@ -1,37 +1,74 @@
 ﻿@model IEnumerable<CMS.Data.Entities.CategoryProduct>
+
 @{
     Layout = "_LayoutAdmin";
 }
 
-    <div class="container mt-4">
+<div class="container mt-4">
 
-        <h2 class="mb-4 text-primary">
-            DANH MỤC SẢN PHẨM
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">
+            Danh mục sản phẩm
         </h2>
 
-        <table class="table table-bordered">
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i>
+            Thêm danh mục
+        </a>
+    </div>
 
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Tên danh mục</th>
-                    <th>Mô tả</th>
-                </tr>
-            </thead>
+    <table class="table table-bordered table-hover align-middle">
 
-            <tbody>
+        <thead class="table-dark">
+            <tr>
+                <th width="80">ID</th>
+                <th>Tên danh mục</th>
+                <th>Mô tả</th>
+                <th width="150">Số sản phẩm</th>
+                <th width="200">Thao tác</th>
+            </tr>
+        </thead>
 
-                @foreach (var item in Model)
+        <tbody>
+
+            @foreach (var item in Model)
             {
                 <tr>
                     <td>@item.Id</td>
-                    <td>@item.Name</td>
+
+                    <td>
+                        <strong>@item.Name</strong>
+                    </td>
+
                     <td>@item.Description</td>
+
+                    <td>
+                        <span class="badge bg-info">
+                            @(item.Products?.Count ?? 0)
+                        </span>
+                    </td>
+
+                    <td>
+                        <a asp-action="Edit"
+                           asp-route-id="@item.Id"
+                           class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i>
+                            Sửa
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@item.Id"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Bạn có chắc muốn xóa?')">
+                            <i class="bi bi-trash"></i>
+                            Xóa
+                        </a>
+                    </td>
                 </tr>
             }
 
-            </tbody>
+        </tbody>
 
-        </table>
+    </table>
 
-    </div>
+</div>

@@ -1,0 +1,81 @@
+﻿@model CMS.Data.Entities.Product
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<h2 class="mb-4 text-success">
+    Thêm sản phẩm
+</h2>
+
+<form asp-action="Create"
+      method="post"
+      enctype="multipart/form-data">
+
+    <div class="mb-3">
+        <label>Tên sản phẩm</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>Mô tả</label>
+        <textarea asp-for="Description"
+                  class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Giá bán</label>
+        <input asp-for="Price"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Số lượng tồn kho</label>
+        <input asp-for="StockQuantity"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+
+        <label class="form-label">
+            Hình ảnh sản phẩm
+        </label>
+
+        <input type="file"
+               name="ImageFile"
+               accept="image/"
+               class="form-control" />
+
+    </div>
+
+    <div class="mb-3">
+
+        <label>Danh mục sản phẩm</label>
+
+        <select asp-for="CategoryProductId"
+                class="form-select">
+
+            @foreach (var item in ViewBag.Categories)
+            {
+                <option value="@item.Id">
+                    @item.Name
+                </option>
+            }
+
+        </select>
+
+    </div>
+
+    <button type="submit"
+            class="btn btn-success">
+        Lưu
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</form>

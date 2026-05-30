@@ -1,0 +1,83 @@
+﻿@model CMS.Data.Entities.User
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container mt-4">
+
+    <div class="card border-danger shadow">
+
+        <div class="card-header bg-danger text-white">
+            <h4>Xác nhận xóa thành viên</h4>
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                Bạn có chắc chắn muốn xóa thành viên này?
+            </p>
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th width="200">ID</th>
+                    <td>@Model.Id</td>
+                </tr>
+
+                <tr>
+                    <th>Tên đăng nhập</th>
+                    <td>@Model.Username</td>
+                </tr>
+
+                <tr>
+                    <th>Họ tên</th>
+                    <td>@Model.FullName</td>
+                </tr>
+
+                <tr>
+                    <th>Vai trò</th>
+                    <td>
+
+                        @if (Model.Role == "Admin")
+                        {
+                            <span class="badge bg-danger">
+                                Admin
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-primary">
+                                Editor
+                            </span>
+                        }
+
+                    </td>
+                </tr>
+
+            </table>
+
+            <form asp-action="Delete" method="post">
+
+                <input type="hidden"
+                       name="id"
+                       value="@Model.Id" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    <i class="bi bi-trash"></i>
+                    Xóa
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Hủy
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

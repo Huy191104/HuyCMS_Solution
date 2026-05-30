@@ -2,7 +2,7 @@
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
-* Ngày tạo: 26/05/2026
+* Ngày tạo: 30/05/2026
 */
 
 using Microsoft.AspNetCore.Mvc;
@@ -92,18 +92,40 @@ namespace CMS.Backend.Controllers
 
             return RedirectToAction("Index");
         }
-
-        // Action nhận vào Id của User cần xóa
+        // GET: Hiển thị form xác nhận xóa User
+        [HttpGet]
         public IActionResult Delete(int id)
         {
-            // Bước 1: Tìm đối tượng User trong Database bằng Id
             var user = _context.Users.Find(id);
-            if (user != null) // Kiểm tra nếu tìm thấy thì mới xóa
+
+            if (user == null)
+                return NotFound();
+
+            return View(user);
+        }
+        // POST: Thực hiện xóa User khỏi database
+        [HttpPost]
+        [ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var user = _context.Users.Find(id);
+
+            if (user == null)
+                return NotFound();
+
+            if (user.Username == User.Identity?.Name)
             {
-                _context.Users.Remove(user); // Bước 2: Lệnh xóa khỏi bộ nhớ tạm (Tracking)
-                _context.SaveChanges(); // Bước 3: Chốt phiên làm việc, xóa thực sự trong SQL Server
+                TempData["Error"] =
+                    "Không thể xóa tài khoản đang đăng nhập.";
+
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction("Index"); // Sau khi xóa xong, quay lại trang danh sách để cập nhật giao diện
+
+            _context.Users.Remove(user);
+
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
 
 

@@ -1,0 +1,102 @@
+﻿@model CMS.Data.Entities.Post
+
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow border-danger">
+
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0">
+                Xác nhận xóa bài viết
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-4 text-center">
+
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl"
+                             class="img-fluid rounded border"
+                             style="max-height:250px; object-fit:cover;" />
+                    }
+
+                </div>
+
+                <div class="col-md-8">
+
+                    <dl class="row">
+
+                        <dt class="col-sm-3">
+                            ID
+                        </dt>
+
+                        <dd class="col-sm-9">
+                            @Model.Id
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Tiêu đề
+                        </dt>
+
+                        <dd class="col-sm-9">
+                            @Model.Title
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Danh mục
+                        </dt>
+
+                        <dd class="col-sm-9">
+                            @(Model.Category?.Name ?? "Không có")
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            Ngày tạo
+                        </dt>
+
+                        <dd class="col-sm-9">
+                            @Model.CreatedDate.ToString("dd/MM/yyyy")
+                        </dd>
+
+                    </dl>
+
+                    <div class="alert alert-warning mt-3">
+                        Bạn có chắc chắn muốn xóa bài viết này không?
+                        <br />
+                        Hành động này không thể hoàn tác.
+                    </div>
+
+                </div>
+
+            </div>
+
+            <form asp-action="Delete" method="post">
+
+                <input type="hidden"
+                       asp-for="Id" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    <i class="bi bi-trash"></i>
+                    Xóa bài viết
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Quay lại
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
