@@ -27,15 +27,19 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Account/Login"; // Đường dẫn nếu chưa đăng nhập
         options.AccessDeniedPath = "/Account/AccessDenied"; // Đường dẫn nếu vào trang không được phép
     });
-// 1. Khai báo chính sách CORS
-builder.Services.AddCors(options => {
-    options.AddPolicy("AllowAll", policy => {
-        // Cho phép mọi nguồn (Origin), mọi phương thức (GET, POST...), mọi tiêu đề (Header)
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+
+// ---- CẤU HÌNH CORS (THÊM VÀO TRƯỚC builder.Build()) ----
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // Cho phép ReactJS ở port 3000 gọi tới
+              .AllowAnyHeader()                     // Cho phép mọi loại Header (Content-Type, Authorization...)
+              .AllowAnyMethod()                     // Cho phép mọi phương thức HTTP (GET, POST, PUT, DELETE)
+              .AllowCredentials();                  // Hỗ trợ truyền Cookie/Session nếu cần sau này
     });
 });
+
 
 var app = builder.Build();
 
@@ -56,8 +60,9 @@ app.UseHttpsRedirection(); // Tự động chuyển hướng HTTP sang HTTPS đ�
 app.UseStaticFiles(); // Cho phép phục vụ các tệp tĩnh như CSS, JS, hình ảnh từ thư mục wwwroot
 
 app.UseRouting(); // Kích hoạt hệ thống định tuyến để xác định cách xử lý các yêu cầu đến
-// 2. Kích hoạt chính sách CORS đã khai báo ở trên
-app.UseCors("AllowAll");
+
+// Kich hoạt chính sách CORS "AllowReactApp" để cho phép ReactJS ở port 3000 gọi tới API của ASP.NET Core
+app.UseCors("AllowReactApp");
 
 app.UseAuthentication(); // Kích hoạt hệ thống xác thực để kiểm tra xem người dùng đã đăng nhập hay chưa trước khi cho phép truy cập vào các tài nguyên cần bảo vệ
 

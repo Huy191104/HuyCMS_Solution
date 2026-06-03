@@ -49,6 +49,7 @@ namespace CMS.Backend.Controllers
                 {
                     p.Id,
                     p.Title,
+                    p.Content,
                     p.ImageUrl,
                     p.CreatedDate
                 })
@@ -111,6 +112,7 @@ namespace CMS.Backend.Controllers
                 {
                     p.Id,
                     p.Title,
+                    p.Content,
                     p.ImageUrl,
                     p.CreatedDate,
                     CategoryName = p.Category != null
