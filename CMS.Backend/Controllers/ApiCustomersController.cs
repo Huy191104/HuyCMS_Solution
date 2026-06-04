@@ -2,7 +2,7 @@
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
-* Ngày tạo: 30/05/2026
+* Ngày tạo: 4/06/2026
 */
 
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +25,31 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
+        // =========================================
+        // DTO Đăng ký khách hàng
+        // =========================================
+        public class RegisterRequest
+        {
+            public string FullName { get; set; }
+
+            public string Email { get; set; }
+
+            public string? Phone { get; set; }
+
+            public string? Address { get; set; }
+
+            public string Password { get; set; }
+        }
+
+        // =========================================
+        // DTO Đăng nhập khách hàng
+        // =========================================
+        public class LoginRequest
+        {
+            public string Email { get; set; }
+
+            public string Password { get; set; }
+        }
         // =========================================
         // GET: api/CustomersApi
         // Danh sách khách hàng
@@ -152,6 +177,75 @@ namespace CMS.Backend.Controllers
             return Ok(new
             {
                 message = "Xóa khách hàng thành công"
+            });
+        }
+
+        // =========================================
+        // POST: api/ApiCustomers/CustomerRegister
+        // Đăng ký tài khoản khách hàng
+        // =========================================
+        [HttpPost("CustomerRegister")]
+        public IActionResult CustomerRegister([FromBody] RegisterRequest request)
+        {
+            var existedCustomer = _context.Customers
+                .FirstOrDefault(x => x.Email == request.Email);
+
+            if (existedCustomer != null)
+            {
+                return BadRequest(new
+                {
+                    message = "Email đã tồn tại"
+                });
+            }
+
+            var customer = new Customer
+            {
+                FullName = request.FullName,
+                Email = request.Email,
+                Phone = request.Phone,
+                Address = request.Address,
+                Password = request.Password
+            };
+
+            _context.Customers.Add(customer);
+
+            _context.SaveChanges();
+
+            return Ok(new
+            {
+                message = "Đăng ký thành công",
+                customerId = customer.Id
+            });
+        }
+
+        // =========================================
+        // POST: api/ApiCustomers/CustomerLogin
+        // Đăng nhập khách hàng
+        // =========================================
+        [HttpPost("CustomerLogin")]
+        public IActionResult CustomerLogin([FromBody] LoginRequest request)
+        {
+            var customer = _context.Customers
+                .FirstOrDefault(x =>
+                    x.Email == request.Email &&
+                    x.Password == request.Password);
+
+            if (customer == null)
+            {
+                return Unauthorized(new
+                {
+                    message = "Email hoặc mật khẩu không đúng"
+                });
+            }
+
+            return Ok(new
+            {
+                message = "Đăng nhập thành công",
+                customerId = customer.Id,
+                customer.FullName,
+                customer.Email,
+                customer.Phone,
+                customer.Address
             });
         }
     }
