@@ -2,52 +2,274 @@
 
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm khách hàng";
 }
 
-<div class="container mt-4">
+<style>
 
-    <h2 class="text-success mb-4">
-        Thêm khách hàng
-    </h2>
+    .cf-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
 
-    <form asp-action="Create">
+    .cf-header-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: #EFF6FF;
+        border: 1px solid #BFDBFE;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #2563EB;
+        flex-shrink: 0;
+    }
 
-        <div class="mb-3">
-            <label asp-for="FullName" class="form-label">
-                Họ tên
-            </label>
-            <input asp-for="FullName" class="form-control" />
+    .cf-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 2px;
+    }
+
+    .cf-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+    .cf-layout {
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 16px;
+        align-items: start;
+    }
+
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .cf-card-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #6C757D;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #E9ECEF;
+    }
+
+    .cf-group {
+        margin-bottom: 16px;
+    }
+
+    .cf-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #212529;
+        margin-bottom: 6px;
+    }
+
+    .cf-input {
+        width: 100%;
+        background: #F8F9FA;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 13px;
+        outline: none;
+        transition: .15s;
+    }
+
+        .cf-input:focus {
+            border-color: #2563EB;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+        }
+
+    textarea.cf-input {
+        resize: vertical;
+        min-height: 120px;
+    }
+
+    .cf-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn-save {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        background: #2563EB;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+        .btn-save:hover {
+            background: #1D4ED8;
+        }
+
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        background: #F8F9FA;
+        color: #495057;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 9px 16px;
+        text-decoration: none;
+    }
+
+        .btn-cancel:hover {
+            background: #E9ECEF;
+            color: #212529;
+        }
+
+</style>
+
+<div class="cf-header">
+
+    <div class="cf-header-icon">
+        <i class="bi bi-person-plus"></i>
+    </div>
+
+    <div>
+        <h2 class="cf-title">Thêm khách hàng</h2>
+        <div class="cf-subtitle">
+            Tạo mới khách hàng trong hệ thống
         </div>
-
-        <div class="mb-3">
-            <label asp-for="Email" class="form-label">
-                Email
-            </label>
-            <input asp-for="Email" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Phone" class="form-label">
-                Số điện thoại
-            </label>
-            <input asp-for="Phone" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Address" class="form-label">
-                Địa chỉ
-            </label>
-            <textarea asp-for="Address" class="form-control"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-success">
-            Lưu
-        </button>
-
-        <a asp-action="Index" class="btn btn-secondary">
-            Quay lại
-        </a>
-
-    </form>
+    </div>
 
 </div>
+
+<form asp-action="Create" method="post">
+
+    <div class="cf-layout">
+
+        <!-- LEFT -->
+
+        <div>
+
+            <div class="cf-card">
+
+                <div class="cf-card-title">
+                    Thông tin khách hàng
+                </div>
+
+                <div class="cf-group">
+                    <label asp-for="FullName" class="cf-label">
+                        <i class="bi bi-person"></i>
+                        Họ và tên
+                    </label>
+
+                    <input asp-for="FullName"
+                           class="cf-input"
+                           placeholder="Nhập họ tên khách hàng..." />
+                </div>
+
+                <div class="cf-group">
+                    <label asp-for="Email" class="cf-label">
+                        <i class="bi bi-envelope"></i>
+                        Email
+                    </label>
+
+                    <input asp-for="Email"
+                           class="cf-input"
+                           placeholder="example@gmail.com" />
+                </div>
+
+                <div class="cf-group">
+                    <label class="cf-label">
+                        <i class="bi bi-lock"></i>
+                        Mật khẩu
+                        <span class="cf-required">*</span>
+                    </label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="cf-input"
+                           placeholder="Nhập mật khẩu..." />
+
+                    <span asp-validation-for="Password"
+                          class="field-validation-error"></span>
+                </div>
+
+                <div class="cf-group">
+                    <label asp-for="Phone" class="cf-label">
+                        <i class="bi bi-telephone"></i>
+                        Số điện thoại
+                    </label>
+
+                    <input asp-for="Phone"
+                           class="cf-input"
+                           placeholder="090xxxxxxx" />
+                </div>
+
+                <div class="cf-group">
+                    <label asp-for="Address" class="cf-label">
+                        <i class="bi bi-geo-alt"></i>
+                        Địa chỉ
+                    </label>
+
+                    <textarea asp-for="Address"
+                              class="cf-input"
+                              placeholder="Nhập địa chỉ khách hàng..."></textarea>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div>
+
+            <div class="cf-card">
+
+                <div class="cf-card-title">
+                    Hành động
+                </div>
+
+                <div class="cf-actions">
+
+                    <button type="submit"
+                            class="btn-save">
+                        <i class="bi bi-check-circle"></i>
+                        Lưu khách hàng
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn-cancel">
+                        <i class="bi bi-arrow-left"></i>
+                        Quay lại danh sách
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>

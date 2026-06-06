@@ -2,38 +2,222 @@
 
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết đơn hàng";
 }
 
-<div class="container mt-4">
+<style>
+    .pg-header {
+        margin-bottom: 20px;
+    }
 
-    <div class="card">
+    .pg-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 2px;
+    }
 
-        <div class="card-header bg-primary text-white">
-            Chi tiết đơn hàng #@Model.Id
+    .pg-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .cf-card-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #E9ECEF;
+        background: #F8F9FA;
+    }
+
+    .cf-card-title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .cf-card-body {
+        padding: 20px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 180px 1fr;
+        row-gap: 14px;
+        column-gap: 20px;
+    }
+
+    .info-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .info-value {
+        font-size: 13px;
+        color: #212529;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 5px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .status-pending {
+        background: #FEF3C7;
+        color: #92400E;
+        border: 1px solid #FCD34D;
+    }
+
+    .status-shipping {
+        background: #DBEAFE;
+        color: #1D4ED8;
+        border: 1px solid #93C5FD;
+    }
+
+    .status-completed {
+        background: #DCFCE7;
+        color: #15803D;
+        border: 1px solid #86EFAC;
+    }
+
+    .status-cancelled {
+        background: #FEE2E2;
+        color: #B91C1C;
+        border: 1px solid #FCA5A5;
+    }
+
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #F8F9FA;
+        color: #495057 !important;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 8px 14px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        transition: .15s;
+    }
+
+        .btn-back:hover {
+            background: #E9ECEF;
+        }
+
+    .footer-actions {
+        margin-top: 20px;
+    }
+</style>
+
+<div class="pg-header">
+    <h2 class="pg-title">
+        Chi tiết đơn hàng #@Model.Id
+    </h2>
+
+    <div class="pg-subtitle">
+        Xem thông tin chi tiết đơn hàng trong hệ thống
+    </div>
+</div>
+
+<div class="cf-card">
+
+    <div class="cf-card-header">
+        <h5 class="cf-card-title">
+            Thông tin đơn hàng
+        </h5>
+    </div>
+
+    <div class="cf-card-body">
+
+        <div class="info-grid">
+
+            <div class="info-label">
+                Mã đơn hàng
+            </div>
+            <div class="info-value">
+                #@Model.Id
+            </div>
+
+            <div class="info-label">
+                Khách hàng
+            </div>
+            <div class="info-value">
+                @(Model.Customer?.FullName ?? "Không xác định")
+            </div>
+
+            <div class="info-label">
+                Ngày đặt hàng
+            </div>
+            <div class="info-value">
+                @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")
+            </div>
+
+            <div class="info-label">
+                Trạng thái
+            </div>
+            <div class="info-value">
+
+                @if (Model.Status == 0)
+                {
+                    <span class="status-badge status-pending">
+                        Chờ duyệt
+                    </span>
+                }
+                else if (Model.Status == 1)
+                {
+                    <span class="status-badge status-shipping">
+                        Đang giao
+                    </span>
+                }
+                else if (Model.Status == 2)
+                {
+                    <span class="status-badge status-completed">
+                        Hoàn thành
+                    </span>
+                }
+                else
+                {
+                    <span class="status-badge status-cancelled">
+                        Đã hủy
+                    </span>
+                }
+
+            </div>
+
+            <div class="info-label">
+                Số sản phẩm
+            </div>
+            <div class="info-value">
+                @(Model.OrderDetails?.Count ?? 0)
+            </div>
+
+            <div class="info-label">
+                Ghi chú
+            </div>
+            <div class="info-value">
+                @(string.IsNullOrWhiteSpace(Model.Notes)
+                    ? "Không có ghi chú"
+                    : Model.Notes)
+            </div>
+
         </div>
 
-        <div class="card-body">
-
-            <p>
-                <strong>Khách hàng:</strong>
-                @Model.Customer?.FullName
-            </p>
-
-            <p>
-                <strong>Ngày đặt:</strong>
-                @Model.OrderDate.ToString("dd/MM/yyyy")
-            </p>
-
-            <p>
-                <strong>Ghi chú:</strong>
-                @Model.Notes
-            </p>
-
-            <p>
-                <strong>Số sản phẩm:</strong>
-                @(Model.OrderDetails?.Count ?? 0)
-            </p>
-
+        <div class="footer-actions">
+            <a asp-action="Index" class="btn-back">
+                <i class="bi bi-arrow-left"></i>
+                Quay lại danh sách
+            </a>
         </div>
 
     </div>

@@ -2,28 +2,270 @@
 
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chỉnh sửa danh mục sản phẩm";
 }
 
-<h2 class="mb-4">Sửa danh mục sản phẩm</h2>
+<style>
 
-<form asp-action="Edit">
+    .cf-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
 
-    <div class="mb-3">
-        <label>Tên danh mục</label>
-        <input asp-for="Name" class="form-control" />
+    .cf-header-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: #EFF6FF;
+        border: 1px solid #BFDBFE;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #2563EB;
+        flex-shrink: 0;
+    }
+
+    .cf-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 2px;
+    }
+
+    .cf-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+    .cf-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 16px;
+        align-items: start;
+    }
+
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .cf-card-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #6C757D;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #E9ECEF;
+    }
+
+    .cf-group {
+        margin-bottom: 16px;
+    }
+
+    .cf-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #212529;
+        margin-bottom: 6px;
+    }
+
+    .cf-input {
+        width: 100%;
+        background: #F8F9FA;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 13px;
+        outline: none;
+        transition: all .15s;
+    }
+
+        .cf-input:focus {
+            border-color: #2563EB;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+        }
+
+    textarea.cf-input {
+        resize: vertical;
+        min-height: 140px;
+    }
+
+    .cf-hint {
+        font-size: 11px;
+        color: #ADB5BD;
+        margin-top: 4px;
+    }
+
+    .cf-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn-save {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: #2563EB;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        width: 100%;
+    }
+
+        .btn-save:hover {
+            background: #1D4ED8;
+        }
+
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        background: #F8F9FA;
+        color: #495057;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        text-decoration: none;
+    }
+
+        .btn-cancel:hover {
+            background: #E9ECEF;
+            color: #212529;
+        }
+
+    .info-box {
+        background: #FFFBEB;
+        border: 1px solid #FDE68A;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 12px;
+        color: #92400E;
+    }
+
+</style>
+
+<div class="cf-header">
+
+    <div class="cf-header-icon">
+        <i class="bi bi-pencil-square"></i>
     </div>
 
-    <div class="mb-3">
-        <label>Mô tả</label>
-        <textarea asp-for="Description" class="form-control"></textarea>
+    <div>
+        <h2 class="cf-title">Chỉnh sửa danh mục sản phẩm</h2>
+        <div class="cf-subtitle">
+            Cập nhật thông tin danh mục trong hệ thống
+        </div>
     </div>
 
-    <button type="submit" class="btn btn-success">
-        Lưu
-    </button>
+</div>
 
-    <a asp-action="Index" class="btn btn-secondary">
-        Quay lại
-    </a>
+<form asp-action="Edit" method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="cf-layout">
+
+        <!-- LEFT -->
+
+        <div>
+
+            <div class="cf-card">
+
+                <div class="cf-card-title">
+                    Thông tin danh mục
+                </div>
+
+                <div class="cf-group">
+
+                    <label asp-for="Name" class="cf-label">
+                        <i class="bi bi-folder"></i>
+                        Tên danh mục
+                    </label>
+
+                    <input asp-for="Name"
+                           class="cf-input"
+                           placeholder="Nhập tên danh mục..." />
+
+                </div>
+
+                <div class="cf-group">
+
+                    <label asp-for="Description" class="cf-label">
+                        <i class="bi bi-card-text"></i>
+                        Mô tả
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="cf-input"
+                              placeholder="Nhập mô tả danh mục..."></textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div>
+
+            <div class="cf-card" style="margin-bottom:16px">
+
+                <div class="cf-card-title">
+                    Thông tin
+                </div>
+
+                <div class="info-box">
+                    <i class="bi bi-info-circle"></i>
+                    Thay đổi tên hoặc mô tả sẽ ảnh hưởng tới toàn bộ sản phẩm thuộc danh mục này.
+                </div>
+
+            </div>
+
+            <div class="cf-card">
+
+                <div class="cf-card-title">
+                    Hành động
+                </div>
+
+                <div class="cf-actions">
+
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-check-circle"></i>
+                        Cập nhật danh mục
+                    </button>
+
+                    <a asp-action="Index" class="btn-cancel">
+                        <i class="bi bi-arrow-left"></i>
+                        Quay lại danh sách
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </form>

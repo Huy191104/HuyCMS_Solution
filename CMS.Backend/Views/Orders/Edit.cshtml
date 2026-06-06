@@ -2,52 +2,180 @@
 
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Cập nhật đơn hàng";
 }
 
-<div class="container mt-4">
+<style>
+    .pg-header {
+        margin-bottom: 20px;
+    }
 
-    <h2>Cập nhật đơn hàng</h2>
+    .pg-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 2px;
+    }
 
-    <form asp-action="Edit">
+    .pg-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
 
-        <input asp-for="Id" type="hidden" />
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        padding: 20px;
+    }
 
-        <div class="mb-3">
+    .cf-card-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #6C757D;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #E9ECEF;
+    }
 
-            <label class="form-label">
-                Trạng thái
-            </label>
+    .cf-group {
+        margin-bottom: 16px;
+    }
 
-            <select asp-for="Status" class="form-select">
+    .cf-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: #212529;
+    }
 
-                <option value="0">Chờ duyệt</option>
+    .cf-input {
+        width: 100%;
+        background: #F8F9FA;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 13px;
+        outline: none;
+        transition: .15s;
+    }
 
-                <option value="1">Đang giao</option>
+        .cf-input:focus {
+            background: #fff;
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+        }
 
-                <option value="2">Hoàn thành</option>
+    textarea.cf-input {
+        resize: vertical;
+        min-height: 120px;
+    }
 
-                <option value="3">Đã hủy</option>
+    .cf-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 20px;
+    }
 
-            </select>
+    .btn-save {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #2563EB;
+        color: #fff !important;
+        border: none;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .15s;
+    }
 
+        .btn-save:hover {
+            background: #1D4ED8;
+        }
+
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #F8F9FA;
+        color: #495057 !important;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .15s;
+    }
+
+        .btn-cancel:hover {
+            background: #E9ECEF;
+        }
+</style>
+
+<div class="pg-header">
+    <h2 class="pg-title">Cập nhật đơn hàng</h2>
+    <div class="pg-subtitle">
+        Chỉnh sửa trạng thái và ghi chú của đơn hàng #@Model.Id
+    </div>
+</div>
+
+<form asp-action="Edit" method="post">
+
+    <input asp-for="Id" type="hidden" />
+
+    <div class="cf-card">
+
+        <div class="cf-card-title">
+            Thông tin đơn hàng
         </div>
 
-        <div class="mb-3">
+        <div class="cf-group">
+            <label class="cf-label">
+                <i class="bi bi-truck"></i>
+                Trạng thái đơn hàng
+            </label>
 
-            <label class="form-label">
+            <select asp-for="Status" class="cf-input">
+                <option value="0">Chờ duyệt</option>
+                <option value="1">Đang giao</option>
+                <option value="2">Hoàn thành</option>
+                <option value="3">Đã hủy</option>
+            </select>
+        </div>
+
+        <div class="cf-group">
+            <label class="cf-label">
+                <i class="bi bi-chat-left-text"></i>
                 Ghi chú
             </label>
 
             <textarea asp-for="Notes"
-                      class="form-control">
+                      class="cf-input"
+                      placeholder="Nhập ghi chú cho đơn hàng...">
             </textarea>
-
         </div>
 
-        <button class="btn btn-warning">
-            Cập nhật
-        </button>
+        <div class="cf-actions">
+            <button type="submit" class="btn-save">
+                <i class="bi bi-check-circle"></i>
+                Cập nhật
+            </button>
 
-    </form>
+            <a asp-action="Index" class="btn-cancel">
+                <i class="bi bi-arrow-left"></i>
+                Quay lại
+            </a>
+        </div>
 
-</div>
+    </div>
+
+</form>

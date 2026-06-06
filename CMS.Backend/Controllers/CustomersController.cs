@@ -26,9 +26,11 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        public IActionResult Index() // Hiển thị danh sách khách hàng từ database
+        public IActionResult Index() // Hiển thị danh sách khách hàng cùng với các đơn hàng của họ
         {
-            var data = _context.Customers.ToList();
+            var data = _context.Customers
+                .Include(c => c.Orders)
+                .ToList();
 
             return View(data);
         }
@@ -62,7 +64,20 @@ namespace CMS.Backend.Controllers
         [HttpPost]
         public IActionResult Edit(Customer model)
         {
-            _context.Customers.Update(model);
+            var customer = _context.Customers.Find(model.Id);
+
+            if (customer == null)
+                return NotFound();
+
+            customer.FullName = model.FullName;
+            customer.Email = model.Email;
+            customer.Phone = model.Phone;
+            customer.Address = model.Address;
+
+            if (!string.IsNullOrWhiteSpace(model.Password))
+            {
+                customer.Password = model.Password;
+            }
 
             _context.SaveChanges();
 

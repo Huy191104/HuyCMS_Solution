@@ -2,7 +2,7 @@
 
 // Khởi tạo một thực thể axios với cấu hình base chung
 const axiosClient = axios.create({
-    baseURL: 'https://localhost:7290/api', // Đổi lại đúng cổng Port Backend của máy các em
+    baseURL: 'https://localhost:7290/api', // Đổi lại đúng cổng Port Backend
     headers: {
         'Content-Type': 'application/json',
     },

@@ -1,86 +1,382 @@
 ﻿@model IEnumerable<CMS.Data.Entities.Category>
-
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Danh mục";
 }
 
-<div class="container mt-4">
+<style>
+    .pg-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    .pg-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 2px;
+    }
 
-        <div>
-            <h2 class="text-primary mb-1">
-                DANH SÁCH DANH MỤC
-            </h2>
+    .pg-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
 
-            <small class="text-muted">
-                Tổng số danh mục:
-                <strong>@Model.Count()</strong>
-            </small>
-        </div>
+        .pg-subtitle strong {
+            color: #212529;
+        }
 
-        <a asp-action="Create"
-           class="btn btn-success">
-            <i class="bi bi-plus-circle"></i>
-            Thêm danh mục
-        </a>
+    .btn-add {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #2563EB;
+        color: #fff !important;
+        border: none;
+        border-radius: 6px;
+        padding: 7px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.12s;
+    }
 
-    </div>
+        .btn-add:hover {
+            background: #1D4ED8;
+            color: #fff !important;
+        }
 
-    <table class="table table-bordered table-hover align-middle">
+    .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 14px;
+    }
 
-        <thead class="table-dark">
-            <tr>
-                <th width="80">ID</th>
-                <th>Tên danh mục</th>
-                <th>Mô tả</th>
-                <th width="180">Thao tác</th>
-            </tr>
-        </thead>
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #F8F9FA;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 6px 10px;
+        max-width: 280px;
+        flex: 1;
+    }
 
-        <tbody>
+        .search-box i {
+            font-size: 13px;
+            color: #ADB5BD;
+        }
 
-            @foreach (var item in Model)
-            {
-                <tr>
+        .search-box input {
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            color: #212529;
+            outline: none;
+            width: 100%;
+        }
 
-                    <td>
-                        <strong>#@item.Id</strong>
-                    </td>
-
-                    <td>
-                        @item.Name
-                    </td>
-
-                    <td>
-                        @(string.IsNullOrEmpty(item.Description)
-                            ? "Không có mô tả"
-                            : item.Description)
-                    </td>
-
-                    <td class="text-center">
-
-                        <a asp-action="Edit"
-                           asp-route-id="@item.Id"
-                           class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-square"></i>
-                            Sửa
-                        </a>
-
-                        <a asp-action="Delete"
-                           asp-route-id="@item.Id"
-                           class="btn btn-danger btn-sm">
-                            <i class="bi bi-trash"></i>
-                            Xóa
-                        </a>
-
-                    </td>
-
-                </tr>
+            .search-box input::placeholder {
+                color: #ADB5BD;
             }
 
-        </tbody>
+    .count-badge {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 3px 10px;
+        border-radius: 20px;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        border: 1px solid #BFDBFE;
+        white-space: nowrap;
+    }
 
-    </table>
+    .tbl-wrap {
+        border: 1px solid #E9ECEF;
+        border-radius: 8px;
+        overflow: hidden;
+    }
 
+    .tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+        .tbl thead tr {
+            background: #F8F9FA;
+        }
+
+        .tbl th {
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6C757D;
+            text-align: left;
+            border-bottom: 1px solid #E9ECEF;
+        }
+
+        .tbl td {
+            padding: 11px 14px;
+            color: #212529;
+            border-bottom: 1px solid #F1F3F5;
+            vertical-align: middle;
+        }
+
+        .tbl tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tbl tbody tr:hover {
+            background: #F8F9FA;
+        }
+
+    .id-badge {
+        display: inline-block;
+        background: #F1F3F5;
+        border: 1px solid #DEE2E6;
+        border-radius: 4px;
+        padding: 1px 7px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .name-cell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        color: #212529;
+    }
+
+    .name-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: #EFF6FF;
+        border: 1px solid #BFDBFE;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        color: #2563EB;
+        flex-shrink: 0;
+    }
+
+    .desc-text {
+        color: #6C757D;
+        font-size: 12px;
+    }
+
+    .desc-empty {
+        color: #ADB5BD;
+        font-size: 12px;
+        font-style: italic;
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .btn-edit {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #EFF6FF;
+        color: #1D4ED8 !important;
+        border: 1px solid #BFDBFE;
+        border-radius: 5px;
+        padding: 5px 11px;
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.12s;
+    }
+
+        .btn-edit:hover {
+            background: #DBEAFE;
+            color: #1D4ED8 !important;
+        }
+
+    .btn-del {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #FEF2F2;
+        color: #991B1B !important;
+        border: 1px solid #FECACA;
+        border-radius: 5px;
+        padding: 5px 11px;
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.12s;
+    }
+
+        .btn-del:hover {
+            background: #FEE2E2;
+            color: #991B1B !important;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 48px 0;
+        color: #ADB5BD;
+    }
+
+        .empty-state i {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 8px;
+            color: #DEE2E6;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 13px;
+        }
+
+    .tbl-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .footer-info {
+        font-size: 12px;
+        color: #6C757D;
+    }
+</style>
+
+<!-- Header -->
+<div class="pg-header">
+    <div>
+        <h2 class="pg-title">Danh sách danh mục</h2>
+        <div class="pg-subtitle">
+            Tổng số: <strong>@Model.Count() danh mục</strong> trong hệ thống
+        </div>
+    </div>
+    <a asp-action="Create" class="btn-add">
+        <i class="bi bi-plus-circle"></i> Thêm danh mục
+    </a>
 </div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchInput" placeholder="Tìm theo tên danh mục...">
+    </div>
+    <span class="count-badge" id="countBadge">@Model.Count() kết quả</span>
+</div>
+
+<!-- Table -->
+<div class="tbl-wrap">
+    <table class="tbl" id="categoryTable">
+        <thead>
+            <tr>
+                <th style="width:70px">ID</th>
+                <th>Tên danh mục</th>
+                <th>Mô tả</th>
+                <th style="width:155px;text-align:center">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="4">
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p>Chưa có danh mục nào. Hãy thêm danh mục đầu tiên!</p>
+                        </div>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><span class="id-badge">#@item.Id</span></td>
+                        <td>
+                            <div class="name-cell">
+                                <div class="name-icon"><i class="bi bi-grid"></i></div>
+                                @item.Name
+                            </div>
+                        </td>
+                        <td>
+                            @if (string.IsNullOrEmpty(item.Description))
+                            {
+                                <span class="desc-empty">Không có mô tả</span>
+                            }
+                            else
+                            {
+                                <span class="desc-text">@item.Description</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="actions">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit">
+                                    <i class="bi bi-pencil-square"></i> Sửa
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn-del"
+                                   data-name="@item.Name"
+                                   onclick="return confirm('Bạn có chắc muốn xóa danh mục &quot;' + this.dataset.name + '&quot; không?')">
+                                    <i class="bi bi-trash"></i> Xóa
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Footer -->
+<div class="tbl-footer">
+    <div class="footer-info" id="footerInfo">
+        Hiển thị <strong>@Model.Count()</strong> trong tổng <strong>@Model.Count()</strong> danh mục
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const countBadge = document.getElementById('countBadge');
+        const footerInfo = document.getElementById('footerInfo');
+        const total = @Model.Count();
+
+        searchInput.addEventListener('input', function () {
+            const keyword = this.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('#categoryTable tbody tr');
+            let visible = 0;
+
+            rows.forEach(function (row) {
+                const cell = row.querySelector('.name-cell');
+                if (!cell) return;
+                const match = cell.textContent.toLowerCase().includes(keyword);
+                row.style.display = match ? '' : 'none';
+                if (match) visible++;
+            });
+
+            countBadge.textContent = visible + ' kết quả';
+            footerInfo.innerHTML = 'Hiển thị <strong>' + visible + '</strong> trong tổng <strong>' + total + '</strong> danh mục';
+        });
+    </script>
+}

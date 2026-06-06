@@ -2,26 +2,271 @@
 
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết đơn hàng";
 }
+<style>
+    .pg-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
 
-<div class="container mt-4">
+    .pg-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 2px;
+    }
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-success">
-            Chi tiết đơn hàng
-        </h2>
+    .pg-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+        .pg-subtitle strong {
+            color: #212529;
+        }
+
+    .toolbar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 14px;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #F8F9FA;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 6px 10px;
+        max-width: 280px;
+        flex: 1;
+    }
+
+        .search-box i {
+            font-size: 13px;
+            color: #ADB5BD;
+        }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            font-size: 13px;
+            color: #212529;
+            outline: none;
+            width: 100%;
+        }
+
+    .count-badge {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 3px 10px;
+        border-radius: 20px;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        border: 1px solid #BFDBFE;
+        white-space: nowrap;
+    }
+
+    .tbl-wrap {
+        border: 1px solid #E9ECEF;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+        .tbl thead tr {
+            background: #F8F9FA;
+        }
+
+        .tbl th {
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: #6C757D;
+            text-align: left;
+            border-bottom: 1px solid #E9ECEF;
+        }
+
+        .tbl td {
+            padding: 11px 14px;
+            color: #212529;
+            border-bottom: 1px solid #F1F3F5;
+            vertical-align: middle;
+        }
+
+        .tbl tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tbl tbody tr:hover {
+            background: #F8F9FA;
+        }
+
+    .id-badge {
+        display: inline-block;
+        background: #F1F3F5;
+        border: 1px solid #DEE2E6;
+        border-radius: 4px;
+        padding: 1px 7px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .cat-badge {
+        display: inline-block;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        border: 1px solid #BFDBFE;
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .cat-none {
+        display: inline-block;
+        background: #F1F3F5;
+        color: #6C757D;
+        border: 1px solid #DEE2E6;
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-size: 11px;
+    }
+
+    .date-text {
+        font-size: 12px;
+        color: #6C757D;
+        white-space: nowrap;
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .btn-detail {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #F0FDF4;
+        color: #15803D !important;
+        border: 1px solid #BBF7D0;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .12s;
+    }
+
+        .btn-detail:hover {
+            background: #DCFCE7;
+            color: #15803D !important;
+        }
+
+    .btn-edit {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #EFF6FF;
+        color: #1D4ED8 !important;
+        border: 1px solid #BFDBFE;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .12s;
+    }
+
+        .btn-edit:hover {
+            background: #DBEAFE;
+            color: #1D4ED8 !important;
+        }
+
+    .btn-del {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #FEF2F2;
+        color: #991B1B !important;
+        border: 1px solid #FECACA;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .12s;
+    }
+
+        .btn-del:hover {
+            background: #FEE2E2;
+            color: #991B1B !important;
+        }
+
+    .tbl-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 12px;
+    }
+
+    .footer-info {
+        font-size: 12px;
+        color: #6C757D;
+    }
+</style>
+
+<div class="pg-header">
+    <div>
+        <h2 class="pg-title">Chi tiết đơn hàng</h2>
+        <div class="pg-subtitle">
+            Tổng số:
+            <strong>@Model.Count() sản phẩm</strong>
+        </div>
+    </div>
+</div>
+
+<div class="toolbar">
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text"
+               id="searchInput"
+               placeholder="Tìm theo sản phẩm..." />
     </div>
 
-    <table class="table table-bordered table-hover align-middle">
+    <span class="count-badge" id="countBadge">
+        @Model.Count() kết quả
+    </span>
+</div>
 
-        <thead class="table-dark">
+<div class="tbl-wrap">
+
+    <table class="tbl" id="detailTable">
+
+        <thead>
             <tr>
-                <th>ID</th>
-                <th>Mã đơn</th>
+                <th style="width:80px">ID</th>
+                <th style="width:120px">Mã đơn</th>
                 <th>Sản phẩm</th>
-                <th>Số lượng</th>
-                <th>Đơn giá</th>
-                <th>Thành tiền</th>
+                <th style="width:120px">Số lượng</th>
+                <th style="width:150px">Đơn giá</th>
+                <th style="width:180px">Thành tiền</th>
             </tr>
         </thead>
 
@@ -31,29 +276,33 @@
             {
                 <tr>
 
-                    <td>@item.Id</td>
+                    <td>
+                        <span class="id-badge">
+                            #@item.Id
+                        </span>
+                    </td>
 
                     <td>
-                        <span class="badge bg-primary">
+                        <span class="cat-badge">
                             #@item.OrderId
                         </span>
                     </td>
 
-                    <td>
+                    <td class="product-name">
                         @(item.Product?.Name ?? "Không xác định")
                     </td>
 
                     <td>
-                        <span class="badge bg-info">
+                        <span class="count-badge">
                             @item.Quantity
                         </span>
                     </td>
 
-                    <td>
+                    <td class="text-success fw-semibold">
                         @item.UnitPrice.ToString("N0") VNĐ
                     </td>
 
-                    <td>
+                    <td class="text-success fw-bold">
                         @((item.Quantity * item.UnitPrice).ToString("N0")) VNĐ
                     </td>
 
@@ -65,3 +314,69 @@
     </table>
 
 </div>
+
+<div class="tbl-footer">
+    <div class="footer-info" id="footerInfo">
+        Hiển thị
+        <strong>@Model.Count()</strong>
+        trong tổng
+        <strong>@Model.Count()</strong>
+        chi tiết đơn hàng
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        const searchInput =
+            document.getElementById('searchInput');
+
+        const countBadge =
+            document.getElementById('countBadge');
+
+        const footerInfo =
+            document.getElementById('footerInfo');
+
+        const total = @Model.Count();
+
+        searchInput.addEventListener('input', function () {
+
+            const keyword =
+                this.value.toLowerCase().trim();
+
+            const rows =
+                document.querySelectorAll('#detailTable tbody tr');
+
+            let visible = 0;
+
+            rows.forEach(function (row) {
+
+                const product =
+                    row.querySelector('.product-name');
+
+                if (!product) return;
+
+                const match =
+                    product.textContent
+                        .toLowerCase()
+                        .includes(keyword);
+
+                row.style.display = match ? '' : 'none';
+
+                if (match) visible++;
+            });
+
+            countBadge.textContent =
+                visible + ' kết quả';
+
+            footerInfo.innerHTML =
+                'Hiển thị <strong>' +
+                visible +
+                '</strong> trong tổng <strong>' +
+                total +
+                '</strong> chi tiết đơn hàng';
+
+        });
+
+    </script>
+}

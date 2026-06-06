@@ -25,11 +25,23 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
         // Hiển thị danh sách sản phẩm từ database, bao gồm thông tin liên quan đến CategoryProduct thông qua Include
-        public IActionResult Index() 
+        public IActionResult Index(int page = 1)
         {
+            int pageSize = 9;
+
+            var totalItems = _context.Products.Count();
+
             var data = _context.Products
                 .Include(p => p.CategoryProduct)
+                .OrderByDescending(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
             return View(data);
         }

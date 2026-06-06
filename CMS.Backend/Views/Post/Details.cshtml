@@ -5,68 +5,237 @@
     ViewData["Title"] = "Chi tiết bài viết";
 }
 
-<div class="container mt-5">
+<style>
 
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                <a href="/Post">
-                    Danh sách bài viết
-                </a>
-            </li>
+    .pg-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
 
-            <li class="breadcrumb-item active">
-                Chi tiết bài viết
-            </li>
-        </ol>
-    </nav>
+    .pg-header-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: #F0FDF4;
+        border: 1px solid #BBF7D0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #15803D;
+        flex-shrink: 0;
+    }
 
-    <!-- Card bài viết -->
-    <div class="card shadow-lg border-0">
+    .pg-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 2px;
+    }
 
-        <!-- Ảnh -->
+    .pg-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .post-image {
+        width: 100%;
+        max-height: 500px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #E9ECEF;
+    }
+
+    .img-placeholder {
+        width: 100%;
+        height: 320px;
+        border-radius: 10px;
+        border: 1px dashed #DEE2E6;
+        background: #F8F9FA;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: #ADB5BD;
+        margin-bottom: 20px;
+    }
+
+        .img-placeholder i {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+    .post-title {
+        font-size: 30px;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 15px;
+    }
+
+    .meta-wrap {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .cat-badge {
+        display: inline-block;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        border: 1px solid #BFDBFE;
+        border-radius: 4px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .date-badge {
+        display: inline-block;
+        background: #F8F9FA;
+        color: #495057;
+        border: 1px solid #DEE2E6;
+        border-radius: 4px;
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+
+    .content-divider {
+        border: none;
+        border-top: 1px solid #E9ECEF;
+        margin: 20px 0;
+    }
+
+    .post-content {
+        font-size: 15px;
+        line-height: 1.9;
+        color: #374151;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+        .post-content p {
+            margin-bottom: 16px;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .post-content table {
+            display: block;
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .post-content pre,
+        .post-content code {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+    .footer-actions {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #E9ECEF;
+    }
+
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #F8F9FA;
+        color: #495057;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background .15s;
+    }
+
+        .btn-cancel:hover {
+            background: #E9ECEF;
+            color: #212529;
+        }
+
+</style>
+
+<div class="pg-header">
+
+    <div class="pg-header-icon">
+        <i class="bi bi-eye"></i>
+    </div>
+
+    <div>
+        <h2 class="pg-title">Chi tiết bài viết</h2>
+        <div class="pg-subtitle">
+            Xem đầy đủ nội dung và thông tin bài viết
+        </div>
+    </div>
+
+</div>
+
+<div class="cf-card">
+
+    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+    {
         <img src="@Model.ImageUrl"
-             class="card-img-top"
-             alt="Post Image"
-             style="height:450px; object-fit:cover;">
-
-        <!-- Nội dung -->
-        <div class="card-body p-4">
-
-            <!-- Tiêu đề -->
-            <h1 class="text-primary fw-bold mb-3">
-                @Model.Title
-            </h1>
-
-            <!-- Ngày đăng -->
-            <p class="text-muted mb-4">
-                📅 Ngày đăng:
-                @Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")
-            </p>
-
-            <hr />
-
-            <!-- Nội dung -->
-            <div class="fs-5" style="line-height:1.8; text-align:justify;">
-
-                @Html.Raw(Model.Content)
-
-            </div>
-
+             alt="@Model.Title"
+             class="post-image" />
+    }
+    else
+    {
+        <div class="img-placeholder">
+            <i class="bi bi-image"></i>
+            <span>Không có hình ảnh</span>
         </div>
+    }
 
-        <!-- Footer -->
-        <div class="card-footer bg-white border-0 p-4">
+    <div class="post-title">
+        @Model.Title
+    </div>
 
-            <a href="/Post"
-               class="btn btn-outline-secondary">
+    <div class="meta-wrap">
 
-                ← Quay lại danh sách
+        <span class="cat-badge">
+            @(Model.Category?.Name ?? "Chưa phân loại")
+        </span>
 
-            </a>
+        <span class="date-badge">
+            <i class="bi bi-calendar3"></i>
+            @Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")
+        </span>
 
-        </div>
+    </div>
+
+    <hr class="content-divider" />
+
+    <div class="post-content">
+        @Html.Raw(Model.Content)
+    </div>
+
+    <div class="footer-actions">
+
+        <a asp-action="Index" class="btn-cancel">
+            <i class="bi bi-arrow-left"></i>
+            Quay lại danh sách
+        </a>
 
     </div>
 

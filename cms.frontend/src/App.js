@@ -6,6 +6,7 @@ import CategoryProductList from './components/CategoryProductList';
 function App() {
     return (
         <div className="container mt-5">
+            {/* HEADER (Tên cửa hàng) */ }
             <header className="pb-3 mb-4 border-bottom">
                 <span className="fs-4 font-weight-bold text-dark">
                     👗 FASHION BOUTIQUE - THỜI TRANG CÔNG SỞ & DẠ HỘI
@@ -29,6 +30,11 @@ function App() {
                     <PostList />
                 </div>
             </div>
+            {/* KHU VỰC 3: FOOTER (Thông tin bản quyền) */ }
+            <footer className="pt-3 mt-5 text-muted border-top text-center small">
+                <p>© 2026 - Đồ án thực hành phân tầng ASP.NET Core Web API kết hợp ReactJS Client-side</p>
+            </footer>
+
         </div>
     );
 }

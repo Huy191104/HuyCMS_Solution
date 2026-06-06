@@ -2,80 +2,325 @@
 
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Khách hàng";
 }
 
-<div class="container mt-4">
+<style>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    .pg-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
 
-        <h2 class="text-success">
-            Danh sách khách hàng
-        </h2>
+    .pg-title {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0 0 2px;
+        color: #212529;
+    }
 
-        <a asp-action="Create" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i>
-            Thêm khách hàng
-        </a>
+    .pg-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
 
+    .btn-add {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #2563EB;
+        color: #fff !important;
+        border-radius: 6px;
+        padding: 7px 16px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+        .btn-add:hover {
+            background: #1D4ED8;
+        }
+
+    .toolbar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #F8F9FA;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 6px 10px;
+        max-width: 280px;
+        flex: 1;
+    }
+
+        .search-box input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+        }
+
+    .count-badge {
+        background: #EFF6FF;
+        color: #1D4ED8;
+        border: 1px solid #BFDBFE;
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .tbl-wrap {
+        border: 1px solid #E9ECEF;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+        .tbl thead tr {
+            background: #F8F9FA;
+        }
+
+        .tbl th {
+            padding: 10px 14px;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #6C757D;
+            border-bottom: 1px solid #E9ECEF;
+        }
+
+        .tbl td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #F1F3F5;
+            vertical-align: middle;
+        }
+
+        .tbl tbody tr:hover {
+            background: #F8F9FA;
+        }
+
+    .id-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: #F1F3F5;
+        border: 1px solid #DEE2E6;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .customer-name {
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .customer-email {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+    .order-badge {
+        display: inline-block;
+        background: #EFF6FF;
+        color: #1D4ED8;
+        border: 1px solid #BFDBFE;
+        border-radius: 4px;
+        padding: 2px 8px;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+    }
+
+    .btn-edit {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #EFF6FF;
+        color: #1D4ED8 !important;
+        border: 1px solid #BFDBFE;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 12px;
+        text-decoration: none;
+    }
+
+        .btn-edit:hover {
+            background: #DBEAFE;
+        }
+
+    .btn-del {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #FEF2F2;
+        color: #991B1B !important;
+        border: 1px solid #FECACA;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 12px;
+        text-decoration: none;
+    }
+
+        .btn-del:hover {
+            background: #FEE2E2;
+        }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 0;
+        color: #ADB5BD;
+    }
+
+        .empty-state i {
+            font-size: 34px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+</style>
+
+<div class="pg-header">
+
+    <div>
+        <h2 class="pg-title">Danh sách khách hàng</h2>
+        <div class="pg-subtitle">
+            Tổng số <strong>@Model.Count()</strong> khách hàng trong hệ thống
+        </div>
     </div>
 
-    <table class="table table-bordered table-hover align-middle">
+    <a asp-action="Create" class="btn-add">
+        <i class="bi bi-plus-circle"></i>
+        Thêm khách hàng
+    </a>
 
-        <thead class="table-dark">
+</div>
+
+<div class="toolbar">
+
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input type="text"
+               id="searchInput"
+               placeholder="Tìm khách hàng..." />
+    </div>
+
+    <span class="count-badge"
+          id="countBadge">
+        @Model.Count() kết quả
+    </span>
+
+</div>
+
+<div class="tbl-wrap">
+
+    <table class="tbl" id="customerTable">
+
+        <thead>
             <tr>
-                <th width="70">ID</th>
-                <th>Họ tên</th>
-                <th>Email</th>
-                <th>Số điện thoại</th>
+                <th width="80">ID</th>
+                <th>Khách hàng</th>
+                <th width="220">Số điện thoại</th>
                 <th>Địa chỉ</th>
-                <th width="140">Đơn hàng</th>
+                <th width="120">Đơn hàng</th>
                 <th width="220">Thao tác</th>
             </tr>
         </thead>
 
         <tbody>
 
-            @foreach (var item in Model)
+            @if (!Model.Any())
             {
                 <tr>
+                    <td colspan="6">
 
-                    <td>@item.Id</td>
-
-                    <td>
-                        <strong>@item.FullName</strong>
-                    </td>
-
-                    <td>@item.Email</td>
-
-                    <td>@item.Phone</td>
-
-                    <td>@item.Address</td>
-
-                    <td>
-                        <span class="badge bg-primary">
-                            @(item.Orders?.Count ?? 0)
-                        </span>
-                    </td>
-
-                    <td>
-                        <a asp-action="Edit"
-                           asp-route-id="@item.Id"
-                           class="btn btn-warning btn-sm">
-                            <i class="bi bi-pencil-square"></i>
-                            Sửa
-                        </a>
-
-                        <a asp-action="Delete"
-                           asp-route-id="@item.Id"
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirm('Bạn có chắc muốn xóa khách hàng này?')">
-                            <i class="bi bi-trash"></i>
-                            Xóa
-                        </a>
+                        <div class="empty-state">
+                            <i class="bi bi-people"></i>
+                            Chưa có khách hàng nào
+                        </div>
 
                     </td>
-
                 </tr>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>
+                            <span class="id-badge">
+                                #@item.Id
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <div class="customer-name">
+                                @item.FullName
+                            </div>
+
+                            <div class="customer-email">
+                                @item.Email
+                            </div>
+
+                        </td>
+
+                        <td>@item.Phone</td>
+
+                        <td>@item.Address</td>
+
+                        <td>
+
+                            <span class="order-badge">
+                                @(item.Orders?.Count ?? 0) đơn
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn-edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                    Sửa
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn-del">
+                                    <i class="bi bi-trash"></i>
+                                    Xóa
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+                }
             }
 
         </tbody>
@@ -83,3 +328,41 @@
     </table>
 
 </div>
+
+@section Scripts {
+
+    <script>
+
+        const searchInput = document.getElementById('searchInput');
+        const countBadge = document.getElementById('countBadge');
+
+        searchInput.addEventListener('input', function () {
+
+            const keyword = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#customerTable tbody tr');
+
+            let visible = 0;
+
+            rows.forEach(function (row) {
+
+                const name = row.querySelector('.customer-name');
+
+                if (!name) return;
+
+                const match =
+                    name.textContent.toLowerCase().includes(keyword);
+
+                row.style.display = match ? '' : 'none';
+
+                if (match) visible++;
+
+            });
+
+            countBadge.textContent =
+                visible + ' kết quả';
+
+        });
+
+    </script>
+
+}

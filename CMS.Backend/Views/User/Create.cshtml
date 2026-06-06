@@ -5,44 +5,305 @@
     ViewData["Title"] = "Thêm thành viên";
 }
 
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0">THÊM THÀNH VIÊN HỆ THỐNG</h5>
-        </div>
-        <div class="card-body">
-            <form asp-action="Create" method="post">
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Tên đăng nhập (Username):</label>
-                        <input asp-for="Username" class="form-control" placeholder="Ví dụ: admin_thai" required />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Mật khẩu:</label>
-                        <input asp-for="PasswordHash" type="password" class="form-control" required />
-                    </div>
-                </div>
+<style>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Họ và Tên:</label>
-                        <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" required />
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">Vai trò (Role):</label>
-                        <select asp-for="Role" class="form-select" required>
-                            <option value="">-- Chọn quyền hạn --</option>
-                            <option value="Admin">Quản trị viên (Admin)</option>
-                            <option value="Editor">Biên tập viên (Editor)</option>
-                        </select>
-                    </div>
-                </div>
+    .cf-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
 
-                <div class="mt-3">
-                    <button type="submit" class="btn btn-primary">Lưu thành viên</button>
-                    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-                </div>
-            </form>
+    .cf-header-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: #EFF6FF;
+        border: 1px solid #BFDBFE;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #2563EB;
+        flex-shrink: 0;
+    }
+
+    .cf-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 2px;
+    }
+
+    .cf-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+    .cf-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 16px;
+        align-items: start;
+    }
+
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .cf-card-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #6C757D;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #E9ECEF;
+    }
+
+    .cf-group {
+        margin-bottom: 16px;
+    }
+
+    .cf-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #212529;
+        margin-bottom: 6px;
+    }
+
+    .cf-required {
+        color: #DC3545;
+    }
+
+    .cf-input {
+        width: 100%;
+        background: #F8F9FA;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 13px;
+        outline: none;
+        transition: all .15s;
+    }
+
+        .cf-input:focus {
+            border-color: #2563EB;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+        }
+
+    .cf-hint {
+        font-size: 11px;
+        color: #ADB5BD;
+        margin-top: 4px;
+    }
+
+    .cf-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn-save {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        background: #2563EB;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+        .btn-save:hover {
+            background: #1D4ED8;
+        }
+
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        background: #F8F9FA;
+        color: #495057;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+        .btn-cancel:hover {
+            background: #E9ECEF;
+            color: #212529;
+        }
+
+    .role-preview {
+        padding: 12px;
+        border-radius: 8px;
+        background: #F8F9FA;
+        border: 1px solid #E9ECEF;
+        font-size: 13px;
+        color: #6C757D;
+    }
+
+</style>
+
+<div class="cf-header">
+
+    <div class="cf-header-icon">
+        <i class="bi bi-person-plus"></i>
+    </div>
+
+    <div>
+        <h2 class="cf-title">Thêm thành viên mới</h2>
+        <div class="cf-subtitle">
+            Tạo tài khoản quản trị cho hệ thống CMS
         </div>
     </div>
+
 </div>
+
+<form asp-action="Create" method="post">
+
+    <div class="cf-layout">
+
+        <!-- LEFT -->
+
+        <div>
+
+            <div class="cf-card">
+
+                <div class="cf-card-title">
+                    Thông tin tài khoản
+                </div>
+
+                <div class="cf-group">
+                    <label asp-for="Username" class="cf-label">
+                        <i class="bi bi-person"></i>
+                        Tên đăng nhập
+                        <span class="cf-required">*</span>
+                    </label>
+
+                    <input asp-for="Username"
+                           class="cf-input"
+                           placeholder="Ví dụ: admin_huy" />
+                </div>
+
+                <div class="cf-group">
+                    <label asp-for="PasswordHash" class="cf-label">
+                        <i class="bi bi-key"></i>
+                        Mật khẩu
+                        <span class="cf-required">*</span>
+                    </label>
+
+                    <input asp-for="PasswordHash"
+                           type="password"
+                           class="cf-input"
+                           placeholder="Nhập mật khẩu..." />
+                </div>
+
+                <div class="cf-group">
+                    <label asp-for="FullName" class="cf-label">
+                        <i class="bi bi-person-vcard"></i>
+                        Họ và tên
+                        <span class="cf-required">*</span>
+                    </label>
+
+                    <input asp-for="FullName"
+                           class="cf-input"
+                           placeholder="Nguyễn Văn A" />
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div>
+
+            <div class="cf-card" style="margin-bottom:16px">
+
+                <div class="cf-card-title">
+                    Phân quyền
+                </div>
+
+                <div class="cf-group">
+
+                    <label asp-for="Role" class="cf-label">
+                        <i class="bi bi-shield-lock"></i>
+                        Vai trò
+                    </label>
+
+                    <select asp-for="Role" class="cf-input">
+
+                        <option value="">
+                            -- Chọn quyền hạn --
+                        </option>
+
+                        <option value="Admin">
+                            Quản trị viên (Admin)
+                        </option>
+
+                        <option value="Editor">
+                            Biên tập viên (Editor)
+                        </option>
+
+                    </select>
+
+                    <div class="cf-hint">
+                        Admin có toàn quyền quản lý hệ thống.
+                    </div>
+
+                </div>
+
+                <div class="role-preview">
+                    <i class="bi bi-info-circle"></i>
+                    Tài khoản sẽ được tạo ngay sau khi lưu.
+                </div>
+
+            </div>
+
+            <div class="cf-card">
+
+                <div class="cf-card-title">
+                    Hành động
+                </div>
+
+                <div class="cf-actions">
+
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        Lưu thành viên
+                    </button>
+
+                    <a asp-action="Index" class="btn-cancel">
+                        <i class="bi bi-arrow-left"></i>
+                        Quay lại danh sách
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>
