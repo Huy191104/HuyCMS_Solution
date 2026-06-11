@@ -11,6 +11,8 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using CMS.Data.Entities;
+using BCrypt.Net;
+
 
 namespace CMS.Backend.Controllers
 {
@@ -40,13 +42,13 @@ namespace CMS.Backend.Controllers
         {
             return View();
         }
-
+        // Xử lý dữ liệu từ form tạo mới khách hàng, thêm khách hàng vào database và lưu thay đổi
         [HttpPost]
         public IActionResult Create(Customer model)
         {
+            model.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
             _context.Customers.Add(model);
             _context.SaveChanges();
-
             return RedirectToAction(nameof(Index));
         }
         // Hiển thị form để tạo mới khách hàng
@@ -76,7 +78,7 @@ namespace CMS.Backend.Controllers
 
             if (!string.IsNullOrWhiteSpace(model.Password))
             {
-                customer.Password = model.Password;
+                customer.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
             }
 
             _context.SaveChanges();

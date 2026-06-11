@@ -1,41 +1,189 @@
-﻿Razor CSHTML
-@{
-    Layout = null; // Trang đăng nhập độc lập, không dùng Layout chung
+﻿@{
+    Layout = null;
 }
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Đăng nhập hệ thống</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập — BakeryHouse Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 14px;
+            background: #F8F9FA;
+        }
+
+        /* ── Center form ── */
+        .login-form-panel {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 48px 64px;
+            background: #F8F9FA;
+        }
+        .login-form-wrap { width: 100%; max-width: 360px;
+            width: 100%;
+            max-width: 360px;
+            background: #fff;
+            border: 1px solid #E9ECEF;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .login-form-title {
+            font-size: 22px; font-weight: 600;
+            color: #212529; margin-bottom: 4px;
+        }
+        .login-form-sub {
+            font-size: 13px; color: #6C757D; margin-bottom: 28px;
+        }
+
+        /* Form */
+        .lf-group { margin-bottom: 16px; }
+        .lf-label {
+            display: flex; align-items: center; gap: 5px;
+            font-size: 12px; font-weight: 500;
+            color: #212529; margin-bottom: 6px;
+        }
+        .lf-label i { font-size: 13px; color: #6C757D; }
+        .lf-input {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #E9ECEF;
+            border-radius: 7px;
+            padding: 9px 12px;
+            font-size: 13px; color: #212529;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .lf-input:focus {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .lf-input::placeholder { color: #ADB5BD; }
+
+        /* Error */
+        .lf-error {
+            background: #FEF2F2; border: 1px solid #FECACA;
+            border-radius: 7px; padding: 10px 14px;
+            font-size: 13px; color: #991B1B;
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* Button */
+        .lf-btn {
+            width: 100%;
+            background: #2563EB; color: #fff;
+            border: none; border-radius: 7px;
+            padding: 10px; font-size: 13px; font-weight: 500;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            cursor: pointer;
+            transition: background 0.15s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            margin-top: 4px;
+        }
+        .lf-btn:hover { background: #1D4ED8; }
+
+        /* Divider */
+        .lf-divider {
+            text-align: center;
+            font-size: 11px; color: #ADB5BD;
+            margin: 20px 0;
+            position: relative;
+        }
+        .lf-divider::before {
+            content: '';
+            position: absolute; top: 50%; left: 0; right: 0;
+            height: 1px; background: #E9ECEF;
+        }
+        .lf-divider span {
+            position: relative; background: #F8F9FA;
+            padding: 0 10px;
+        }
+
+        /* Footer note */
+        .lf-note {
+            text-align: center;
+            font-size: 11px; color: #ADB5BD;
+            margin-top: 20px; line-height: 1.6;
+        }
+
+        @@media (max-width: 768px) {
+            body { grid-template-columns: 1fr; }
+            .login-visual { display: none; }
+            .login-form-panel { padding: 40px 24px; }
+        }
+    </style>
 </head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <div class="card shadow border-0">
-                    <div class="card-header bg-primary text-white text-center py-3">
-                        <h5 class="mb-0">HỆ THỐNG QUẢN TRỊ CMS</h5>
-                    </div>
-                    <div class="card-body p-4">
-                        <form asp-action="Login" method="post">
-                            <div class="mb-3">
-                                <label class="form-label">Tên đăng nhập</label>
-                                <input type="text" name="username" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Mật khẩu</label>
-                                <input type="password" name="password" class="form-control" required />
-                            </div>
-                            @if (ViewBag.Error != null)
-                            {
-                                <div class="alert alert-danger py-2">@ViewBag.Error</div>
-                            }
-                            <button type="submit" class="btn btn-primary w-100">ĐĂNG NHẬP</button>
-                        </form>
-                    </div>
+<body>
+
+    <!-- Center form -->
+    <div class="login-form-panel">
+        <div class="login-form-wrap">
+
+            <div class="login-form-title">Đăng nhập</div>
+            <div class="login-form-sub">Nhập thông tin tài khoản quản trị</div>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="lf-error">
+                    <i class="bi bi-exclamation-circle"></i>
+                    @ViewBag.Error
                 </div>
+            }
+
+            <form asp-action="Login" method="post">
+                <div class="lf-group">
+                    <label class="lf-label">
+                        <i class="bi bi-person"></i>
+                        Tên đăng nhập
+                    </label>
+                    <input type="text"
+                           name="username"
+                           class="lf-input"
+                           placeholder="Nhập tên đăng nhập..."
+                           required
+                           autocomplete="username" />
+                </div>
+
+                <div class="lf-group">
+                    <label class="lf-label">
+                        <i class="bi bi-lock"></i>
+                        Mật khẩu
+                    </label>
+                    <input type="password"
+                           name="password"
+                           class="lf-input"
+                           placeholder="Nhập mật khẩu..."
+                           required
+                           autocomplete="current-password" />
+                </div>
+
+                <button type="submit" class="lf-btn">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Đăng nhập
+                </button>
+            </form>
+
+            <div class="lf-divider"><span>BakeryHouse CMS</span></div>
+
+            <div class="lf-note">
+                Chỉ dành cho quản trị viên và biên tập viên.<br />
+                Nếu quên mật khẩu, liên hệ quản trị viên hệ thống.
             </div>
+
         </div>
     </div>
+
 </body>
 </html>

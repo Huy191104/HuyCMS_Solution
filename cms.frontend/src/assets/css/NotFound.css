@@ -1,0 +1,87 @@
+﻿.nf-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream, #FAF7F2);
+    padding: 48px 24px;
+}
+
+.nf-wrap {
+    text-align: center;
+    max-width: 480px;
+}
+
+.nf-code {
+    font-family: 'Playfair Display', serif;
+    font-size: 96px;
+    font-weight: 700;
+    color: var(--border, #EDE0CE);
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.nf-emoji {
+    font-size: 56px;
+    margin-bottom: 20px;
+}
+
+.nf-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--text-main, #1E0E00);
+    margin: 0 0 12px;
+}
+
+.nf-desc {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--text-muted, #8C7355);
+    line-height: 1.7;
+    margin: 0 0 28px;
+}
+
+.nf-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.nf-btn-primary {
+    background: var(--accent, #C17A3A);
+    color: #FFF8EE;
+    border: none;
+    border-radius: 100px;
+    padding: 13px 28px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s, transform 0.1s;
+}
+
+    .nf-btn-primary:hover {
+        background: #9E6028;
+        transform: translateY(-1px);
+    }
+
+.nf-btn-outline {
+    background: transparent;
+    border: 1px solid var(--border, #EDE0CE);
+    border-radius: 100px;
+    padding: 13px 28px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-muted, #8C7355);
+    transition: all 0.15s;
+}
+
+    .nf-btn-outline:hover {
+        border-color: var(--accent, #C17A3A);
+        color: var(--accent, #C17A3A);
+    }

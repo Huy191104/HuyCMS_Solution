@@ -1,0 +1,187 @@
+﻿/* ── Grid ─────────────────────────────────── */
+.plist-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+/* ── Card ─────────────────────────────────── */
+.plist-card {
+    background: var(--card, #FFFCF7);
+    border: 1px solid var(--border, #EDE0CE);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+    .plist-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(193,122,58,0.12);
+        border-color: var(--accent, #C17A3A);
+    }
+
+/* ── Image ────────────────────────────────── */
+.plist-img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: var(--cream-deep, #F2EBE0);
+}
+
+.plist-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.plist-card:hover .plist-img {
+    transform: scale(1.05);
+}
+
+.plist-img-plistaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+}
+
+.plist-cat-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--accent, #C17A3A);
+    color: #FFF8EE;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+/* ── Body ─────────────────────────────────── */
+.plist-body {
+    padding: 16px 18px 10px;
+    flex: 1;
+}
+
+.plist-date {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: var(--text-light, #B8A48A);
+    margin-bottom: 8px;
+}
+
+.plist-title {
+    font-family: 'plistayfair Displistay', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-main, #1E0E00);
+    margin: 0 0 10px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.plist-excerpt {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-muted, #8C7355);
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* ── Footer ───────────────────────────────── */
+.plist-footer {
+    padding: 12px 18px 16px;
+}
+
+.plist-read-more {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent, #C17A3A);
+    transition: gap 0.15s;
+}
+
+/* ── Skeleton ─────────────────────────────── */
+.plist-skeleton {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border, #EDE0CE);
+}
+
+.plist-skeleton-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: linear-gradient(90deg, #F5EDE0 25%, #EDE0CE 50%, #F5EDE0 75%);
+    background-size: 200% 100%;
+    animation: plist-shimmer 1.4s infinite;
+}
+
+.plist-skeleton-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.plist-skeleton-line {
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #F5EDE0 25%, #EDE0CE 50%, #F5EDE0 75%);
+    background-size: 200% 100%;
+    animation: plist-shimmer 1.4s infinite;
+}
+
+@keyframes plist-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ── Empty ────────────────────────────────── */
+.plist-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 48px 0;
+    color: var(--text-muted, #8C7355);
+}
+
+    .plist-empty span {
+        font-size: 36px;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .plist-empty p {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        margin: 0;
+    }
+
+/* ── Responsive ───────────────────────────── */
+@media (max-width: 1024px) {
+    .plist-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .plist-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -41,6 +41,7 @@ namespace CMS.Backend.Controllers
                     p.Price,
                     p.StockQuantity,
                     p.ImageUrl,
+                    p.CategoryProductId,
                     CategoryName = p.CategoryProduct != null
                         ? p.CategoryProduct.Name
                         : ""
@@ -65,7 +66,8 @@ namespace CMS.Backend.Controllers
                     p.Name,
                     p.Price,
                     p.StockQuantity,
-                    p.ImageUrl
+                    p.ImageUrl,
+                    p.CategoryProductId
                 })
                 .ToListAsync();
 
@@ -104,6 +106,33 @@ namespace CMS.Backend.Controllers
                     ? product.CategoryProduct.Name
                     : "Không xác định"
             });
+        }
+        // Lấy sản phẩm mới nhất dựa trên ngày tạo, sắp xếp theo thứ tự giảm dần và giới hạn số lượng trả về bằng tham số take
+        [HttpGet("newest")]
+        public async Task<IActionResult> GetNewest([FromQuery] int take = 8)
+        {
+            var products = await _context.Products
+                .OrderByDescending(p => p.Id)
+                .Take(take)
+                .ToListAsync();
+            return Ok(products);
+        }
+
+        // Lấy sản phẩm bán chạy nhất dựa trên tổng số lượng đã bán, nhóm theo ProductId, sắp xếp theo tổng số lượng giảm dần và giới hạn số lượng trả về bằng tham số take
+        [HttpGet("bestseller")]
+        public async Task<IActionResult> GetBestSeller([FromQuery] int take = 8)
+        {
+            var products = await _context.OrderDetails
+                .GroupBy(od => od.ProductId)
+                .Select(g => new { ProductId = g.Key, TotalSold = g.Sum(od => od.Quantity) })
+                .OrderByDescending(x => x.TotalSold)
+                .Take(take)
+                .Join(_context.Products,
+                      x => x.ProductId,
+                      p => p.Id,
+                      (x, p) => p)
+                .ToListAsync();
+            return Ok(products);
         }
     }
 }

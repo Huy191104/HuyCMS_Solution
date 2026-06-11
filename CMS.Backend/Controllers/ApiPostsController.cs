@@ -51,7 +51,8 @@ namespace CMS.Backend.Controllers
                     p.Title,
                     p.Content,
                     p.ImageUrl,
-                    p.CreatedDate
+                    p.CreatedDate,
+                    p.CategoryId
                 })
                 .ToListAsync();
 
@@ -115,6 +116,7 @@ namespace CMS.Backend.Controllers
                     p.Content,
                     p.ImageUrl,
                     p.CreatedDate,
+                    p.CategoryId,
                     CategoryName = p.Category != null
                         ? p.Category.Name
                         : "Không xác định"

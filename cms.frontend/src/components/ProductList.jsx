@@ -1,66 +1,113 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import productService from '../services/productService';
+import { useNavigate } from "react-router-dom";
+import "../assets/css/ProductList.css";
 
-const ProductList = () => {
+const API_BASE = "https://localhost:7290";
+
+const formatVND = (price) =>
+    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+
+const ProductList = ({ mode = "all", take = 8 }) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-                const data = await productService.getAllProducts();
+                let data;
+                if (mode === "newest") data = await productService.getNewestProducts(take);
+                else if (mode === "bestseller") data = await productService.getBestSellerProducts(take);
+                else data = await productService.getAllProducts();
                 setProducts(data);
             } catch (error) {
-                console.error("Lỗi khi tải danh sách sản phẩm:", error);
+                console.error("Lỗi khi tải sản phẩm:", error);
             } finally {
                 setLoading(false);
             }
         };
-
         fetchProducts();
-    }, []);
+    }, [mode, take]);
 
     if (loading) {
-        return <div className="text-center my-4">Đang tải danh sách sản phẩm thời trang...</div>;
+        return (
+            <div className="pl-grid">
+                {[...Array(4)].map((_, i) => (
+                    <div className="pl-skeleton" key={i}>
+                        <div className="pl-skeleton-img" />
+                        <div className="pl-skeleton-body">
+                            <div className="pl-skeleton-line" style={{ width: "70%" }} />
+                            <div className="pl-skeleton-line" style={{ width: "45%" }} />
+                            <div className="pl-skeleton-line" style={{ width: "55%" }} />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
+    if (products.length === 0) {
+        return (
+            <div className="pl-empty">
+                <span>🍰</span>
+                <p>Chưa có sản phẩm nào trong hệ thống.</p>
+            </div>
+        );
     }
 
     return (
-        <div className="row">
-            {products.length === 0 ? (
-                <div className="col-12"><p className="text-muted">Chưa có sản phẩm nào trong hệ thống.</p></div>
-            ) : (
-                products.map((item) => (
-                    <div className="col-md-6 mb-4" key={item.id}>
-                        <div className="card shadow-sm border-0 h-100">
-                            {item.imageUrl && (
-                                <img
-                                    src={`https://localhost:7290${item.imageUrl}`}
-                                    alt={item.name}
-                                    className="card-img-top"
-                                    style={{
-                                        height: "400px",
-                                        objectFit: "cover"
-                                    }}
-                                />
-                            )}
-                            <div className="card-body">
-                                <h5 className="card-title font-weight-bold text-dark">{item.name}</h5>
-                                <p className="card-text text-danger font-weight-bold">
-                                    {/* Hàm tự động chuyển số thành định dạng tiền tệ Việt Nam (VND) */}
-                                    Giá bán: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price)}
-                                </p>
-                                <p className="card-text small text-muted">Số lượng tồn kho: {item.stockQuantity} sản phẩm</p>
-                            </div>
-                            <div className="card-footer bg-transparent border-top-0">
-                                <button className="btn btn-outline-primary btn-block btn-sm">
-                                    <i className="fa-solid fa-cart-plus mr-1"></i> Xem chi tiết
-                                </button>
-                            </div>
+        <div className="pl-grid">
+            {products.map((item) => (
+                <button className="pl-card" onClick={() => navigate(`/products/${item.id}`)}>
+                    {/* Image */}
+                    <div className="pl-img-wrap">
+                        {item.imageUrl ? (
+                            <img
+                                src={`${API_BASE}${item.imageUrl}`}
+                                alt={item.name}
+                                className="pl-img"
+                            />
+                        ) : (
+                            <div className="pl-img-placeholder">🍞</div>
+                        )}
+                        {/* Stock badge */}
+                        {item.stockQuantity <= 5 && item.stockQuantity > 0 && (
+                            <div className="pl-badge pl-badge--low">Sắp hết</div>
+                        )}
+                        {item.stockQuantity === 0 && (
+                            <div className="pl-badge pl-badge--out">Hết hàng</div>
+                        )}
+                    </div>
+
+                    {/* Body */}
+                    <div className="pl-body">
+                        <div className="pl-name">{item.name}</div>
+                        <div className="pl-price">{formatVND(item.price)}</div>
+                        <div className="pl-stock">
+                            <span className={item.stockQuantity > 0 ? "pl-stock-dot--in" : "pl-stock-dot--out"} />
+                            {item.stockQuantity > 0
+                                ? `Còn ${item.stockQuantity} sản phẩm`
+                                : "Tạm hết hàng"}
                         </div>
                     </div>
-                ))
-            )}
+
+                    {/* Footer */}
+                    <div className="pl-footer">
+                        <button
+                            className="pl-btn-detail"
+                            disabled={item.stockQuantity === 0}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/products/${item.id}`);
+                            }}
+                        >
+                            Xem chi tiết →
+                        </button>
+                    </div>
+                </button>
+            ))}
         </div>
     );
 };

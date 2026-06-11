@@ -1,42 +1,37 @@
-﻿import React from 'react';
-import ProductList from './components/ProductList';
-import PostList from './components/PostList';
-import CategoryProductList from './components/CategoryProductList';
+﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Product from "./pages/Product";
+import ProductDetail from "./pages/ProductDetail";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import Blog from "./pages/Blog";
+import Postdetail from "./pages/Postdetail";
+import Orders from "./pages/Orders";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import NotFound from "./pages/NotFound";
 
 function App() {
     return (
-        <div className="container mt-5">
-            {/* HEADER (Tên cửa hàng) */ }
-            <header className="pb-3 mb-4 border-bottom">
-                <span className="fs-4 font-weight-bold text-dark">
-                    👗 FASHION BOUTIQUE - THỜI TRANG CÔNG SỞ & DẠ HỘI
-                </span>
-            </header>
-
-            {/* KHU VỰC 1: SHOPPING (Sản phẩm và Bộ lọc danh mục sản phẩm) */}
-            <div className="row">
-                <div className="col-md-4">
-                    <CategoryProductList />
-                </div>
-                <div className="col-md-8">
-                    <h4 className="mb-4 text-uppercase text-secondary font-weight-bold">Bộ sưu tập mới nhất</h4>
-                    <ProductList />
-                </div>
-            </div>
-
-            {/* KHU VỰC 2: BLOG & BLOG CATEGORIES (Tin tức thời trang công sở, dạ hội) */}
-            <div className="row mt-5">
-                <div className="col-12">
-                    <PostList />
-                </div>
-            </div>
-            {/* KHU VỰC 3: FOOTER (Thông tin bản quyền) */ }
-            <footer className="pt-3 mt-5 text-muted border-top text-center small">
-                <p>© 2026 - Đồ án thực hành phân tầng ASP.NET Core Web API kết hợp ReactJS Client-side</p>
-            </footer>
-
-        </div>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/products" element={<Product />} />
+                <Route path="/products/:id" element={<ProductDetail />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/posts" element={<Blog />} />
+                <Route path="/posts/:id" element={<Postdetail />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+        </BrowserRouter>
     );
 }
-
 export default App;

@@ -8,10 +8,15 @@ const postService = {
     },
 
     // Hàm gọi API lấy toàn bộ các bài viết (Mẹo phối đồ, tin tức thời trang)
-    getAllPosts: () => {
-        const url = '/ApiPosts'; // Khớp với Route quản lý bài viết ở Backend
+    getAllPosts: async () => {
+        const res = await axiosClient.get('/ApiPosts');
+        return res.data || [];
+    },
+    // Hàm gọi API lấy chi tiết một bài viết theo ID
+    getPostById: (id) => {
+        const url = `/ApiPosts/${id}`;
         return axiosClient.get(url);
-    }
+    },
 };
 
 export default postService;

@@ -30,30 +30,27 @@ namespace CMS.Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
-            // 1. Kiểm tra tài khoản trong Database
-            var user = _context.Users.FirstOrDefault(u => u.Username == username && u.PasswordHash == password);
+            var user = _context.Users.FirstOrDefault(u => u.Username == username);
 
-            if (user != null)
+            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
-                // 2. Thiết lập danh tính (Claims)
-                var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, user.Role), // Lưu vai trò: Admin/Editor
-            new Claim("FullName", user.FullName)
-        };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                // 3. Đăng nhập và lưu Cookie vào trình duyệt
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity));
-
-                return RedirectToAction("Index", "Home");
+                ViewBag.Error = "Tên đăng nhập hoặc mật khẩu không đúng!";
+                return View();
             }
 
-            ViewBag.Error = "Tên đăng nhập hoặc mật khẩu không đúng!";
-            return View();
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim("FullName", user.FullName)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
+
+            return RedirectToAction("Index", "Home");
         }
 
         // Hàm đăng xuất

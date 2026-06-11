@@ -1,0 +1,132 @@
+﻿/* Grid layout */
+.cpl-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+/* Card */
+.cpl-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background: var(--card, #FFFCF7);
+    border: 1px solid var(--border, #EDE0CE);
+    border-radius: 14px;
+    padding: 24px 16px 20px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+    .cpl-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--accent-light, #FDF0DC);
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    .cpl-card:hover {
+        border-color: var(--accent, #C17A3A);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(193,122,58,0.12);
+    }
+
+        .cpl-card:hover::before {
+            opacity: 1;
+        }
+
+.cpl-card--active {
+    border-color: var(--accent, #C17A3A);
+    background: var(--accent-light, #FDF0DC);
+}
+
+/* Icon */
+.cpl-icon {
+    position: relative;
+    z-index: 1;
+    font-size: 32px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 6px rgba(193,122,58,0.2));
+    transition: transform 0.2s;
+}
+
+.cpl-card:hover .cpl-icon {
+    transform: scale(1.12);
+}
+
+/* Name */
+.cpl-name {
+    position: relative;
+    z-index: 1;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-main, #1E0E00);
+    line-height: 1.3;
+}
+
+/* Arrow */
+.cpl-arrow {
+    position: relative;
+    z-index: 1;
+    font-size: 12px;
+    color: var(--accent, #C17A3A);
+    opacity: 0;
+    transform: translateX(-4px);
+    transition: opacity 0.15s, transform 0.15s;
+}
+
+.cpl-card:hover .cpl-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Skeleton loading */
+.cpl-skeleton {
+    height: 120px;
+    border-radius: 14px;
+    background: linear-gradient(90deg, #F5EDE0 25%, #EDE0CE 50%, #F5EDE0 75%);
+    background-size: 200% 100%;
+    animation: cpl-shimmer 1.4s infinite;
+}
+
+@keyframes cpl-shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Empty state */
+.cpl-empty {
+    text-align: center;
+    padding: 48px 0;
+    color: var(--text-muted, #8C7355);
+}
+
+    .cpl-empty span {
+        font-size: 36px;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .cpl-empty p {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        margin: 0;
+    }
+
+@media (max-width: 480px) {
+    .cpl-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
