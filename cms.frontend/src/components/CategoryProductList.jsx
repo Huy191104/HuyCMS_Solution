@@ -1,7 +1,9 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import categoryProductService from '../services/categoryProductService';
 import "../assets/css/CategoryProductList.css";
 import { useNavigate } from "react-router-dom";
+
+const API_BASE = "https://localhost:7290";
 
 const CategoryProductList = () => {
     const [categoryProducts, setCategoryProducts] = useState([]);
@@ -24,7 +26,7 @@ const CategoryProductList = () => {
         fetchCategoryProducts();
     }, []);
 
-    // Icon mapping theo tên danh mục
+    // Icon mapping theo tên danh mục làm phương án fallback
     const getIcon = (name = "") => {
         const n = name.toLowerCase();
         if (n.includes("combo") || n.includes("tiệc")) return "🎉";
@@ -42,7 +44,10 @@ const CategoryProductList = () => {
         return (
             <div className="cpl-grid">
                 {[...Array(6)].map((_, i) => (
-                    <div className="cpl-skeleton" key={i} />
+                    <div className="cpl-skeleton-card" key={i}>
+                        <div className="cpl-skeleton-circle" />
+                        <div className="cpl-skeleton-text" />
+                    </div>
                 ))}
             </div>
         );
@@ -69,9 +74,20 @@ const CategoryProductList = () => {
                         navigate(`/products?category=${item.id}`);
                     }}
                 >
-                    <div className="cpl-icon">{getIcon(item.name)}</div>
+                    <div className="cpl-img-wrap">
+                        {item.imageUrl ? (
+                            <img
+                                src={`${API_BASE}${item.imageUrl}`}
+                                alt={item.name}
+                                className="cpl-img"
+                            />
+                        ) : (
+                            <div className="cpl-fallback-img">
+                                {getIcon(item.name)}
+                            </div>
+                        )}
+                    </div>
                     <div className="cpl-name">{item.name}</div>
-                    <div className="cpl-arrow">→</div>
                 </button>
             ))}
         </div>

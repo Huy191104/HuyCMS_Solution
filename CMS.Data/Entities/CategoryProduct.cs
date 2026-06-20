@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -26,6 +26,8 @@ namespace CMS.Data.Entities
         public string Name { get; set; } // Tên danh mục (vd: Điện tử, Thời trang)
 
         public string? Description { get; set; } // Mô tả ngắn về danh mục (không bắt buộc)
+
+        public string? ImageUrl { get; set; } // Đường dẫn ảnh đại diện của danh mục (không bắt buộc)
 
         // Quan hệ: Một danh mục có nhiều sản phẩm
         public virtual ICollection<Product>? Products { get; set; }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMS.Data.Entities.CategoryProduct>
+@model IEnumerable<CMS.Data.Entities.CategoryProduct>
 
 @{
     Layout = "_LayoutAdmin";
@@ -211,6 +211,15 @@
         color: #6C757D;
     }
 
+    .cat-thumb {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #E9ECEF;
+        display: block;
+    }
+
 </style>
 
 <div class="pg-header">
@@ -252,6 +261,7 @@
         <thead>
             <tr>
                 <th style="width:80px">ID</th>
+                <th style="width:80px; text-align:center">Ảnh</th>
                 <th>Tên danh mục</th>
                 <th>Mô tả</th>
                 <th style="width:220px;text-align:center">Thao tác</th>
@@ -263,7 +273,7 @@
             @if (!Model.Any())
             {
                 <tr>
-                    <td colspan="4">
+                    <td colspan="5">
                         <div class="empty-state">
                             <i class="bi bi-folder-x"></i>
                             Chưa có danh mục nào
@@ -281,6 +291,17 @@
                             <span class="id-badge">
                                 #@item.Id
                             </span>
+                        </td>
+
+                        <td style="text-align:center">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" class="cat-thumb" alt="@item.Name" style="margin: 0 auto;" />
+                            }
+                            else
+                            {
+                                <span class="text-muted" style="font-size: 11px;">Không có</span>
+                            }
                         </td>
 
                         <td>

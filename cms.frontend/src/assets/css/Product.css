@@ -1,4 +1,4 @@
-﻿/* ── Hero ─────────────────────────────────── */
+/* ── Hero ─────────────────────────────────── */
 .prd-hero {
     position: relative;
     padding: 100px 48px 56px;
@@ -374,6 +374,36 @@
         cursor: pointer;
         font-family: 'DM Sans', sans-serif;
     }
+
+/* ── Price filter ─────────────────────────── */
+.prd-price-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.prd-price-input {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--cream, #FAF7F2);
+    border: 1px solid var(--border, #EDE0CE);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-main, #1E0E00);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.prd-price-input:focus {
+    border-color: var(--accent, #C17A3A);
+    box-shadow: 0 0 0 2px rgba(193,122,58,0.1);
+}
+
+.prd-price-separator {
+    color: var(--text-muted, #8C7355);
+    font-weight: 500;
+}
 
 /* ── Responsive ───────────────────────────── */
 @media (max-width: 1024px) {

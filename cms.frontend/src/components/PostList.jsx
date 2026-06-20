@@ -18,6 +18,12 @@ const PostList = () => {
             try {
                 setLoading(true);
                 const data = await postService.getAllPosts();
+
+                const latestPosts = data
+                    .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))
+                    .slice(0, 3);
+
+                setPosts(latestPosts);
                 setPosts(Array.isArray(data) ? data : []);
             } catch (error) {
                 console.error("Lỗi khi tải bài viết:", error);
@@ -56,7 +62,7 @@ const PostList = () => {
 
     return (
         <div className="plist-grid">
-            {posts.map((post) => (
+            {posts.slice(0, 3).map((post) => (
                 <div
                     className="plist-card"
                     key={post.id}

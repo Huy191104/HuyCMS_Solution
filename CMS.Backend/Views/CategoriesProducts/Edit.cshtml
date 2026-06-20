@@ -1,4 +1,4 @@
-﻿@model CMS.Data.Entities.CategoryProduct
+@model CMS.Data.Entities.CategoryProduct
 
 @{
     Layout = "_LayoutAdmin";
@@ -107,6 +107,69 @@
         margin-top: 4px;
     }
 
+    /* Image upload */
+    .img-current {
+        width: 100%;
+        max-height: 160px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #E9ECEF;
+    }
+
+    .img-upload-area {
+        border: 2px dashed #BFDBFE;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color .2s, background .2s;
+        background: #F8FAFF;
+        position: relative;
+    }
+
+        .img-upload-area:hover {
+            border-color: #2563EB;
+            background: #EFF6FF;
+        }
+
+    .img-upload-icon {
+        font-size: 28px;
+        color: #93C5FD;
+        margin-bottom: 6px;
+    }
+
+    .img-upload-text {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+    .img-upload-text strong {
+        color: #2563EB;
+    }
+
+    .img-preview {
+        width: 100%;
+        max-height: 180px;
+        object-fit: cover;
+        border-radius: 6px;
+        display: none;
+        margin-bottom: 8px;
+    }
+
+    .img-preview.show {
+        display: block;
+    }
+
+    #imageFileInput {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+    }
+
     .cf-actions {
         display: flex;
         flex-direction: column;
@@ -179,7 +242,7 @@
 
 </div>
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
 
     <input type="hidden" asp-for="Id" />
 
@@ -218,6 +281,38 @@
                     <textarea asp-for="Description"
                               class="cf-input"
                               placeholder="Nhập mô tả danh mục..."></textarea>
+
+                </div>
+
+                <div class="cf-group">
+
+                    <label class="cf-label">
+                        <i class="bi bi-image"></i>
+                        Ảnh đại diện
+                    </label>
+
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <div style="margin-bottom:8px;font-size:11px;color:#6C757D;">Ảnh hiện tại:</div>
+                        <img src="@Model.ImageUrl" class="img-current" alt="Ảnh hiện tại" />
+                    }
+
+                    <div class="img-upload-area">
+                        <input type="file"
+                               name="ImageFile"
+                               id="imageFileInput"
+                               accept="image/*" />
+                        <img id="imgPreview" class="img-preview" src="#" alt="Preview" />
+                        <div id="uploadPlaceholder">
+                            <div class="img-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                            <div class="img-upload-text">
+                                <strong>Chọn ảnh mới</strong> để thay thế<br />
+                                PNG, JPG, JPEG (tối đa 5MB)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cf-hint">Nếu không chọn ảnh mới, ảnh cũ sẽ được giữ nguyên.</div>
 
                 </div>
 
@@ -269,3 +364,24 @@
     </div>
 
 </form>
+
+@section Scripts {
+    <script>
+        const imageFileInput = document.getElementById('imageFileInput');
+        const imgPreview = document.getElementById('imgPreview');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+
+        imageFileInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imgPreview.src = e.target.result;
+                imgPreview.classList.add('show');
+                uploadPlaceholder.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+}

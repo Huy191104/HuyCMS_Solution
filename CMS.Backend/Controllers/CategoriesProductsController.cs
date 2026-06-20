@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -39,8 +39,28 @@ namespace CMS.Backend.Controllers
         }
         // Xử lý dữ liệu từ form tạo mới mối quan hệ giữa Categories và Products
         [HttpPost]
-        public IActionResult Create(CategoryProduct model)
+        public IActionResult Create(CategoryProduct model, IFormFile? ImageFile)
         {
+            // Xử lý upload ảnh đại diện nếu có
+            if (ImageFile != null)
+            {
+                string fileName =
+                    Guid.NewGuid().ToString()
+                    + Path.GetExtension(ImageFile.FileName);
+
+                string uploadFolder =
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+                string filePath = Path.Combine(uploadFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    ImageFile.CopyTo(stream);
+                }
+
+                model.ImageUrl = "/uploads/" + fileName;
+            }
+
             _context.CategoriesProducts.Add(model);
 
             _context.SaveChanges();
@@ -60,9 +80,35 @@ namespace CMS.Backend.Controllers
         }
         // Xử lý dữ liệu từ form chỉnh sửa mối quan hệ giữa Categories và Products
         [HttpPost]
-        public IActionResult Edit(CategoryProduct model)
+        public IActionResult Edit(CategoryProduct model, IFormFile? ImageFile)
         {
-            _context.CategoriesProducts.Update(model);
+            var category = _context.CategoriesProducts.Find(model.Id);
+
+            if (category == null)
+                return NotFound();
+
+            category.Name = model.Name;
+            category.Description = model.Description;
+
+            // Cập nhật ảnh nếu có file mới được upload
+            if (ImageFile != null)
+            {
+                string fileName =
+                    Guid.NewGuid().ToString()
+                    + Path.GetExtension(ImageFile.FileName);
+
+                string uploadFolder =
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+
+                string filePath = Path.Combine(uploadFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    ImageFile.CopyTo(stream);
+                }
+
+                category.ImageUrl = "/uploads/" + fileName;
+            }
 
             _context.SaveChanges();
 

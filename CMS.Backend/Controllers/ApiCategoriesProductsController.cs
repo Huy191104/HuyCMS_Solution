@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -35,7 +35,8 @@ namespace CMS.Backend.Controllers
                 {
                     c.Id,
                     c.Name,
-                    c.Description
+                    c.Description,
+                    c.ImageUrl
                 })
                 .ToList();
 

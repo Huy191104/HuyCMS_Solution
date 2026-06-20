@@ -1,4 +1,5 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import authService from "../services/authService";
 import "../assets/css/Header.css";
 
@@ -10,6 +11,34 @@ function Header() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [cartCount, setCartCount] = useState(0);
     const dropdownRef = useRef(null);
+
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Đọc từ URL khi khởi tạo hoặc URL thay đổi
+    const getQueryParam = () => {
+        const params = new URLSearchParams(location.search);
+        return location.pathname === "/search" ? params.get("q") || "" : "";
+    };
+
+    const [searchQuery, setSearchQuery] = useState(getQueryParam());
+
+    useEffect(() => {
+        setSearchQuery(getQueryParam());
+    }, [location]);
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        } else {
+            navigate("/products");
+        }
+    };
 
     useEffect(() => {
         setActive(window.location.pathname);
@@ -74,6 +103,18 @@ function Header() {
                         <div className="bh-logo-tagline">Thủ công · Tươi mỗi ngày</div>
                     </div>
                 </a>
+
+                {/* Thanh tìm kiếm desktop */}
+                <form className="bh-search-form" onSubmit={handleSearchSubmit}>
+                    <input
+                        type="text"
+                        placeholder="Tìm bánh ngon..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="bh-search-input"
+                    />
+                    <span className="bh-search-icon" onClick={handleSearchSubmit} style={{ cursor: "pointer" }}>🔍</span>
+                </form>
 
                 {/* Nav desktop */}
                 <nav className="bh-nav">
@@ -158,6 +199,16 @@ function Header() {
 
             {/* Mobile menu */}
             <div className={`bh-mobile-menu ${menuOpen ? "bh-mobile-menu--open" : ""}`}>
+                {/* Tìm kiếm mobile */}
+                <form className="bh-mobile-search-form" onSubmit={handleSearchSubmit} style={{ marginBottom: "12px" }}>
+                    <input
+                        type="text"
+                        placeholder="Tìm bánh ngon..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="bh-mobile-search-input"
+                    />
+                </form>
                 {links.map((l) => (
                     <a
                         key={l.href}

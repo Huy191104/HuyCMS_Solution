@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -26,13 +26,24 @@ namespace CMS.Backend.Controllers
 
         // =====================================
         // GET: api/ProductsApi
-        // Lấy toàn bộ sản phẩm
+        // Lấy toàn bộ sản phẩm (Hỗ trợ lọc theo khoảng giá)
         // =====================================
         [HttpGet]
-        public async Task<IActionResult> GetAll() // Sử dụng async/await để không làm nghẽn server khi truy vấn dữ liệu
+        public async Task<IActionResult> GetAll([FromQuery] decimal? minPrice, [FromQuery] decimal? maxPrice) // Sử dụng async/await để không làm nghẽn server khi truy vấn dữ liệu
         {
-            var products = await _context.Products // Truy vấn từ bảng Products
-                .Include(p => p.CategoryProduct)
+            var query = _context.Products.Include(p => p.CategoryProduct).AsQueryable();
+
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            var products = await query // Truy vấn từ bảng Products
                 .OrderByDescending(p => p.Id)
                 .Select(p => new
                 {
@@ -68,6 +79,40 @@ namespace CMS.Backend.Controllers
                     p.StockQuantity,
                     p.ImageUrl,
                     p.CategoryProductId
+                })
+                .ToListAsync();
+
+            return Ok(products);
+        }
+
+        // =====================================
+        // GET: api/ApiProducts/search?q=...
+        // Tìm kiếm sản phẩm
+        // =====================================
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string q)
+        {
+            if (string.IsNullOrWhiteSpace(q))
+            {
+                return Ok(new List<object>());
+            }
+
+            var query = q.ToLower().Trim();
+            var products = await _context.Products
+                .Include(p => p.CategoryProduct)
+                .Where(p => p.Name.ToLower().Contains(query) || (p.Description != null && p.Description.ToLower().Contains(query)))
+                .OrderByDescending(p => p.Id)
+                .Select(p => new
+                {
+                    p.Id,
+                    p.Name,
+                    p.Price,
+                    p.StockQuantity,
+                    p.ImageUrl,
+                    p.CategoryProductId,
+                    CategoryName = p.CategoryProduct != null
+                        ? p.CategoryProduct.Name
+                        : ""
                 })
                 .ToListAsync();
 

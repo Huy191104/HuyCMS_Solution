@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import productService from '../services/productService';
 import { useNavigate } from "react-router-dom";
 import "../assets/css/ProductList.css";
@@ -11,7 +11,33 @@ const formatVND = (price) =>
 const ProductList = ({ mode = "all", take = 8 }) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [addedProductId, setAddedProductId] = useState(null);
     const navigate = useNavigate();
+
+    const handleAddToCart = (product) => {
+        if (!product) return;
+
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const existing = cart.find((i) => i.id === product.id);
+
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                imageUrl: product.imageUrl,
+                quantity: 1,
+            });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.dispatchEvent(new Event("cartUpdated"));
+
+        setAddedProductId(product.id);
+        setTimeout(() => setAddedProductId(null), 2000);
+    };
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -60,7 +86,12 @@ const ProductList = ({ mode = "all", take = 8 }) => {
     return (
         <div className="pl-grid">
             {products.map((item) => (
-                <button className="pl-card" onClick={() => navigate(`/products/${item.id}`)}>
+                <div
+                    className="pl-card"
+                    key={item.id}
+                    onClick={() => navigate(`/products/${item.id}`)}
+                    style={{ cursor: "pointer" }}
+                >
                     {/* Image */}
                     <div className="pl-img-wrap">
                         {item.imageUrl ? (
@@ -97,16 +128,29 @@ const ProductList = ({ mode = "all", take = 8 }) => {
                     <div className="pl-footer">
                         <button
                             className="pl-btn-detail"
-                            disabled={item.stockQuantity === 0}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 navigate(`/products/${item.id}`);
                             }}
                         >
-                            Xem chi tiết →
+                            Chi tiết
+                        </button>
+                        <button
+                            className={`pl-btn-add ${addedProductId === item.id ? "pl-btn-add--added" : ""}`}
+                            disabled={item.stockQuantity === 0}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddToCart(item);
+                            }}
+                        >
+                            {item.stockQuantity === 0
+                                ? "Hết hàng"
+                                : addedProductId === item.id
+                                    ? "✓ Đã thêm"
+                                    : "Thêm ngay"}
                         </button>
                     </div>
-                </button>
+                </div>
             ))}
         </div>
     );

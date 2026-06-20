@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import productService from "../services/productService";
 import categoryProductService from "../services/categoryProductService";
@@ -23,26 +23,55 @@ export default function Product() {
     const [search, setSearch] = useState("");
     const [activeCat, setActiveCat] = useState(null);
     const [sort, setSort] = useState("default");
+    const [minPrice, setMinPrice] = useState("");
+    const [maxPrice, setMaxPrice] = useState("");
+    const [debouncedMinPrice, setDebouncedMinPrice] = useState("");
+    const [debouncedMaxPrice, setDebouncedMaxPrice] = useState("");
 
+    // Debounce price input to prevent API call spamming
     useEffect(() => {
-        const fetchAll = async () => {
-            try {
-                setLoading(true);
-                const [prod, cats] = await Promise.all([
-                    productService.getAllProducts(),
-                    categoryProductService.getAllCategoryProducts(),
-                ]);
+        const handler = setTimeout(() => {
+            setDebouncedMinPrice(minPrice);
+            setDebouncedMaxPrice(maxPrice);
+        }, 500);
 
-                setProducts(prod);
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [minPrice, maxPrice]);
+
+    // Fetch categories on mount
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const cats = await categoryProductService.getAllCategoryProducts();
                 setCategories(cats);
             } catch (e) {
-                console.error(e);
+                console.error("Failed to fetch categories:", e);
+            }
+        };
+        fetchCategories();
+    }, []);
+
+    // Fetch products whenever price filter parameters change
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+                const params = {};
+                if (debouncedMinPrice) params.minPrice = debouncedMinPrice;
+                if (debouncedMaxPrice) params.maxPrice = debouncedMaxPrice;
+
+                const prod = await productService.getAllProducts(params);
+                setProducts(prod);
+            } catch (e) {
+                console.error("Failed to fetch products:", e);
             } finally {
                 setLoading(false);
             }
         };
-        fetchAll();
-    }, []);
+        fetchProducts();
+    }, [debouncedMinPrice, debouncedMaxPrice]);
 
     useEffect(() => {
         if (categoryId) {
@@ -122,6 +151,29 @@ export default function Product() {
                     </div>
 
                     <div className="prd-sidebar-card">
+                        <div className="prd-sidebar-title">Khoảng giá (đ)</div>
+                        <div className="prd-price-filter">
+                            <input
+                                type="number"
+                                placeholder="Từ"
+                                value={minPrice}
+                                onChange={(e) => setMinPrice(e.target.value)}
+                                className="prd-price-input"
+                                min="0"
+                            />
+                            <span className="prd-price-separator">-</span>
+                            <input
+                                type="number"
+                                placeholder="Đến"
+                                value={maxPrice}
+                                onChange={(e) => setMaxPrice(e.target.value)}
+                                className="prd-price-input"
+                                min="0"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="prd-sidebar-card">
                         <div className="prd-sidebar-title">Sắp xếp</div>
                         {[
                             { value: "default", label: "Mặc định" },
@@ -164,7 +216,7 @@ export default function Product() {
                         <div className="prd-empty">
                             <span>🔍</span>
                             <p>Không tìm thấy sản phẩm phù hợp.</p>
-                            <button onClick={() => { setSearch(""); setActiveCat(null); }}>
+                            <button onClick={() => { setSearch(""); setActiveCat(null); setMinPrice(""); setMaxPrice(""); }}>
                                 Xoá bộ lọc
                             </button>
                         </div>

@@ -27,7 +27,7 @@
 .plist-img-wrap {
     position: relative;
     width: 100%;
-    aspect-ratio: 16/9;
+    height: 300px;
     overflow: hidden;
     background: var(--cream-deep, #F2EBE0);
 }

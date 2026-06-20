@@ -26,6 +26,7 @@ body {
     align-items: center;
     overflow: hidden;
     background: var(--sidebar);
+    padding-top: 68px;
 }
 
 .bh-hero-bg {
