@@ -1,5 +1,5 @@
-﻿import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import authService from "../services/authService";
 import "../assets/css/Auth.css";
 
@@ -123,6 +123,9 @@ function Login() {
                                 </button>
                             </div>
                         </div>
+                        <Link to="/forgot-password" className="auth-forgot">
+                            Quên mật khẩu?
+                        </Link>
 
                         <button type="submit" className="auth-btn" disabled={loading}>
                             {loading ? "Đang đăng nhập..." : "Đăng nhập →"}
@@ -133,7 +136,7 @@ function Login() {
 
                     <div className="auth-switch">
                         Chưa có tài khoản?{" "}
-                        <a href="/register">Đăng ký ngay</a>
+                        <Link to="/register">Đăng ký ngay</Link>
                     </div>
 
                 </div>

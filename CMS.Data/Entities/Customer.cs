@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -33,7 +33,12 @@ namespace CMS.Data.Entities
         public string? Address { get; set; } // Địa chỉ của khách hàng, không bắt buộc
 
         [Required]
-        public string Password { get; set; } // Lưu mật khẩu thô theo yêu cầu tối giản
+        public string Password { get; set; } // Lưu mật khẩu (đã hash bằng BCrypt)
+
+        // ── Reset Password ─────────────────────
+        public string? ResetPasswordToken { get; set; }       // Token dùng để đặt lại mật khẩu
+
+        public DateTime? ResetPasswordTokenExpiry { get; set; } // Thời hạn của token (1 giờ)
 
         public virtual ICollection<Order>? Orders { get; set; }
     }

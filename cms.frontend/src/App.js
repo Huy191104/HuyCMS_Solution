@@ -1,4 +1,4 @@
-﻿import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -11,7 +11,10 @@ import Postdetail from "./pages/Postdetail";
 import Orders from "./pages/Orders";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
     return (
@@ -29,6 +32,9 @@ function App() {
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>

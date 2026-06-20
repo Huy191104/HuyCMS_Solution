@@ -1,4 +1,4 @@
-﻿import axios from "axios";
+import axios from "axios";
 
 const API_URL = "https://localhost:7290/api/auth";
 
@@ -35,6 +35,22 @@ const authService = {
     // ── CHECK LOGGED IN ───────────────────────
     isLoggedIn: () => {
         return !!localStorage.getItem("token");
+    },
+
+    // ── FORGOT PASSWORD ─────────────────────
+    forgotPassword: async (email) => {
+        const res = await axios.post(`${API_URL}/forgot-password`, { email });
+        return res.data;
+    },
+
+    // ── RESET PASSWORD ─────────────────────
+    resetPassword: async (token, newPassword, confirmPassword) => {
+        const res = await axios.post(`${API_URL}/reset-password`, {
+            token,
+            newPassword,
+            confirmPassword,
+        });
+        return res.data;
     },
 
     // ── GET TOKEN ─────────────────────────────

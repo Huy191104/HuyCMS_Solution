@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -70,6 +70,67 @@ namespace CMS.Backend.Controllers
             });
         }
 
+        // ── FORGOT PASSWORD ──────────────────────────
+        [HttpPost("forgot-password")]
+        public IActionResult ForgotPassword([FromBody] ForgotPasswordRequest req)
+        {
+            var customer = _context.Customers
+                .FirstOrDefault(c => c.Email == req.Email);
+
+            if (customer == null)
+            {
+                // Bảo mật: trả về thông báo chung để tránh lộ email hợp lệ
+                return Ok(new { message = "Nếu email tồn tại, bạn sẽ nhận được hướng dẫn đặt lại mật khẩu." });
+            }
+
+            // Tạo token ngẫu nhiên an toàn
+            var token = Convert.ToHexString(System.Security.Cryptography.RandomNumberGenerator.GetBytes(32));
+
+            customer.ResetPasswordToken = token;
+            customer.ResetPasswordTokenExpiry = DateTime.UtcNow.AddHours(1); // Token hết hạn sau 1 giờ
+
+            _context.SaveChanges();
+
+            // ⚠️ Môi trường DEV: log token ra console
+            // TODO: Thay bằng SMTP email service trong môi trường thật
+            var resetLink = $"http://localhost:3000/reset-password?token={token}";
+            Console.WriteLine($"[ForgotPassword] Reset link for {req.Email}: {resetLink}");
+
+            return Ok(new
+            {
+                message = "Nếu email tồn tại, bạn sẽ nhận được hướng dẫn đặt lại mật khẩu.",
+                // Chỉ trả token trong môi trường DEV — xóa dòng này khi lên production
+                devToken = token
+            });
+        }
+
+        // ── RESET PASSWORD ──────────────────────────
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword([FromBody] ResetPasswordRequest req)
+        {
+            var customer = _context.Customers
+                .FirstOrDefault(c => c.ResetPasswordToken == req.Token);
+
+            if (customer == null)
+                return BadRequest(new { message = "Token không hợp lệ." });
+
+            if (customer.ResetPasswordTokenExpiry == null ||
+                customer.ResetPasswordTokenExpiry < DateTime.UtcNow)
+                return BadRequest(new { message = "Token đã hết hạn. Vui lòng yêu cầu đặt lại mật khẩu mới." });
+
+            if (req.NewPassword.Length < 6)
+                return BadRequest(new { message = "Mật khẩu phải có ít nhất 6 ký tự." });
+
+            // Cập nhật mật khẩu mới (hash bằng BCrypt giống Register)
+            customer.Password = BCrypt.Net.BCrypt.HashPassword(req.NewPassword);
+            customer.ResetPasswordToken = null;    // Xóa token sau khi dùng
+            customer.ResetPasswordTokenExpiry = null;
+
+            _context.SaveChanges();
+
+            return Ok(new { message = "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay." });
+        }
+
         // ── GENERATE JWT ──────────────────────────
         private string GenerateJwt(Customer customer)
         {
@@ -109,5 +170,17 @@ namespace CMS.Backend.Controllers
     {
         public string Email { get; set; }
         public string Password { get; set; }
+    }
+
+    public class ForgotPasswordRequest
+    {
+        public string Email { get; set; }
+    }
+
+    public class ResetPasswordRequest
+    {
+        public string Token { get; set; }
+        public string NewPassword { get; set; }
+        public string ConfirmPassword { get; set; }
     }
 }
