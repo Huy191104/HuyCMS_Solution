@@ -41,6 +41,15 @@
     filter: drop-shadow(0 8px 24px rgba(193,122,58,0.3));
 }
 
+.auth-visual-logo-img {
+    height: 100px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 24px;
+    filter: drop-shadow(0 8px 24px rgba(193,122,58,0.3));
+}
+
 .auth-visual-title {
     font-family: 'Playfair Display', serif;
     font-size: 32px;
@@ -124,8 +133,11 @@
     margin-bottom: 36px;
 }
 
-.auth-logo-icon {
-    font-size: 24px;
+.auth-logo-img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    display: block;
 }
 
 .auth-logo-name {

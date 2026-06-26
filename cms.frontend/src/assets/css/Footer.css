@@ -1,4 +1,4 @@
-﻿.bh-footer {
+.bh-footer {
     background: var(--sidebar, #2C1A0E);
 }
 
@@ -28,8 +28,11 @@
     margin-bottom: 16px;
 }
 
-    .bh-footer-logo span {
-        font-size: 24px;
+    .bh-footer-logo-img {
+        height: 32px;
+        width: auto;
+        object-fit: contain;
+        display: block;
     }
     .bh-footer-logo:hover {
         text-decoration: none;

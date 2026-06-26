@@ -38,9 +38,11 @@
     color: inherit;
 }
 
-.bh-logo-icon {
-    font-size: 26px;
-    line-height: 1;
+.bh-logo-img {
+    height: 38px;
+    width: auto;
+    object-fit: contain;
+    display: block;
 }
 
 .bh-logo-name {

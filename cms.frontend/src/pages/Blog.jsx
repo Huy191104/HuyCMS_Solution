@@ -1,11 +1,12 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import postService from '../services/postService';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import "../assets/css/Blog.css";
+import { IMAGE_BASE_URL } from '../api/config';
 
-const API_BASE = "https://localhost:7290";
+const API_BASE = IMAGE_BASE_URL;
 const stripHtml = (html = "") => html.replace(/<[^>]+>/g, "");
 const formatDate = (d) => new Date(d).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
 

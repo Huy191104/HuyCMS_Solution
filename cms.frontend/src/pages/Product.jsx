@@ -6,8 +6,9 @@ import { useSearchParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../assets/css/Product.css";
+import { IMAGE_BASE_URL } from "../api/config";
 
-const API_BASE = "https://localhost:7290";
+const API_BASE = IMAGE_BASE_URL;
 const formatVND = (p) => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(p);
 
 export default function Product() {
@@ -78,6 +79,30 @@ export default function Product() {
             setActiveCat(Number(categoryId));
         }
     }, [categoryId]);
+
+    const handleBuyNow = (product, e) => {
+        e.stopPropagation();
+        if (!product || product.stockQuantity === 0) return;
+
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const existing = cart.find((i) => i.id === product.id);
+
+        if (existing) {
+            existing.quantity += 1;
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                imageUrl: product.imageUrl,
+                quantity: 1,
+            });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        window.dispatchEvent(new Event("cartUpdated"));
+        navigate("/cart");
+    };
 
     // Filter + sort logic
     const filtered = products
@@ -251,11 +276,17 @@ export default function Product() {
                                     </div>
                                     <div className="prd-card-footer">
                                         <button
-                                            className="prd-card-btn"
-                                            disabled={item.stockQuantity === 0}
+                                            className="prd-card-btn prd-card-btn-detail"
                                             onClick={(e) => { e.stopPropagation(); navigate(`/products/${item.id}`); }}
                                         >
-                                            Xem chi tiết →
+                                            Chi tiết
+                                        </button>
+                                        <button
+                                            className="prd-card-btn prd-card-btn-buy"
+                                            disabled={item.stockQuantity === 0}
+                                            onClick={(e) => handleBuyNow(item, e)}
+                                        >
+                                            Mua ngay
                                         </button>
                                     </div>
                                 </div>

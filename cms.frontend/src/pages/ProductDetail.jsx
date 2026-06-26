@@ -1,11 +1,12 @@
-﻿import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import productService from "../services/productService";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../assets/css/ProductDetail.css";
+import { IMAGE_BASE_URL } from "../api/config";
 
-const API_BASE = "https://localhost:7290";
+const API_BASE = IMAGE_BASE_URL;
 const formatVND = (p) => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(p);
 
 export default function ProductDetail() {
@@ -96,9 +97,9 @@ export default function ProductDetail() {
 
                 {/* Breadcrumb */}
                 <div className="pd-breadcrumb">
-                    <a href="/">Trang chủ</a>
+                    <Link to="/">Trang chủ</Link>
                     <span>›</span>
-                    <a href="/products">Sản phẩm</a>
+                    <Link to="/products">Sản phẩm</Link>
                     <span>›</span>
                     <span>{product.name}</span>
                 </div>

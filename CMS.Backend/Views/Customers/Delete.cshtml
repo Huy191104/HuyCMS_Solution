@@ -1,63 +1,166 @@
-﻿@model CMS.Data.Entities.Customer
+@model CMS.Data.Entities.Customer
 
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Xóa khách hàng";
 }
 
-<div class="container mt-4">
+<style>
+    .pg-header {
+        margin-bottom: 20px;
+    }
 
-    <div class="card border-danger">
+    .pg-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 2px;
+    }
 
-        <div class="card-header bg-danger text-white">
-            Xác nhận xóa khách hàng
-        </div>
+    .pg-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
 
-        <div class="card-body">
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 650px;
+    }
 
-            <h5>
-                Bạn có chắc muốn xóa khách hàng này?
-            </h5>
+    .cf-card-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #DC2626;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #E9ECEF;
+    }
 
-            <hr />
+    .cf-info-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #F1F3F5;
+        font-size: 13px;
+    }
 
-            <p>
-                <strong>Họ tên:</strong>
-                @Model.FullName
-            </p>
+    .cf-info-row:last-of-type {
+        border-bottom: none;
+    }
 
-            <p>
-                <strong>Email:</strong>
-                @Model.Email
-            </p>
+    .cf-info-label {
+        width: 150px;
+        font-weight: 600;
+        color: #495057;
+        flex-shrink: 0;
+    }
 
-            <p>
-                <strong>Số điện thoại:</strong>
-                @Model.Phone
-            </p>
+    .cf-info-value {
+        color: #212529;
+        flex-grow: 1;
+    }
 
-            <p>
-                <strong>Địa chỉ:</strong>
-                @Model.Address
-            </p>
+    .cf-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 24px;
+        padding-top: 15px;
+        border-top: 1px solid #E9ECEF;
+    }
 
-            <form asp-action="Delete">
+    .btn-danger-confirm {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #DC2626;
+        color: #fff !important;
+        border: none;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .15s;
+        cursor: pointer;
+    }
 
-                <input asp-for="Id" type="hidden" />
+    .btn-danger-confirm:hover {
+        background: #B91C1C;
+    }
 
-                <button type="submit"
-                        class="btn btn-danger">
-                    Xóa
-                </button>
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #F8F9FA;
+        color: #495057 !important;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .15s;
+    }
 
-                <a asp-action="Index"
-                   class="btn btn-secondary">
-                    Hủy
-                </a>
+    .btn-cancel:hover {
+        background: #E9ECEF;
+    }
+</style>
 
-            </form>
-
-        </div>
-
+<div class="pg-header">
+    <h2 class="pg-title">Xác nhận xóa khách hàng</h2>
+    <div class="pg-subtitle">
+        Hành động này sẽ xóa vĩnh viễn tài khoản khách hàng này khỏi hệ thống.
     </div>
-
 </div>
+
+<form asp-action="Delete" method="post">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="cf-card">
+        <div class="cf-card-title">
+            <i class="bi bi-exclamation-triangle-fill"></i> Cảnh báo: Hành động không thể hoàn tác
+        </div>
+
+        <div>
+            <div class="cf-info-row">
+                <div class="cf-info-label">ID khách hàng</div>
+                <div class="cf-info-value"><span class="badge bg-secondary" style="font-size: 11px;">#@Model.Id</span></div>
+            </div>
+            <div class="cf-info-row">
+                <div class="cf-info-label">Họ và tên</div>
+                <div class="cf-info-value" style="font-weight: 600;">@Model.FullName</div>
+            </div>
+            <div class="cf-info-row">
+                <div class="cf-info-label">Email</div>
+                <div class="cf-info-value">@Model.Email</div>
+            </div>
+            <div class="cf-info-row">
+                <div class="cf-info-label">Số điện thoại</div>
+                <div class="cf-info-value">@Model.Phone</div>
+            </div>
+            <div class="cf-info-row">
+                <div class="cf-info-label">Địa chỉ</div>
+                <div class="cf-info-value">@Model.Address</div>
+            </div>
+        </div>
+
+        <div class="alert alert-danger-custom" style="background-color: #FEF2F2; border: 1px solid #FEE2E2; border-radius: 6px; padding: 12px; font-size: 13px; color: #991B1B; margin-top: 20px; font-weight: 500;">
+            <i class="bi bi-info-circle-fill" style="margin-right: 6px;"></i> Bạn có chắc chắn muốn xóa thông tin khách hàng này không?
+        </div>
+
+        <div class="cf-actions">
+            <button type="submit" class="btn-danger-confirm">
+                <i class="bi bi-trash"></i> Xác nhận xóa
+            </button>
+            <a asp-action="Index" class="btn-cancel">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+</form>

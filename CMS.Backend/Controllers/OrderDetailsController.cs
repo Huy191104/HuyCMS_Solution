@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -25,11 +25,51 @@ namespace CMS.Backend.Controllers
         }
 
         // GET: OrderDetails
-        public IActionResult Index() // Hiển thị danh sách OrderDetails từ database, bao gồm thông tin sản phẩm liên quan thông qua Include
+        public IActionResult Index(string search, int? productId, int? orderId, int page = 1) // Hiển thị danh sách OrderDetails từ database, bao gồm thông tin sản phẩm liên quan thông qua Include, hỗ trợ tìm kiếm và lọc
         {
-            var data = _context.OrderDetails
+            int pageSize = 5;
+
+            var query = _context.OrderDetails
                 .Include(o => o.Product)
+                .AsQueryable();
+
+            // Tìm kiếm theo ID chi tiết hoặc ID đơn hàng hoặc tên sản phẩm
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchLower = search.Trim().ToLower();
+                query = query.Where(o => o.Id.ToString().Contains(searchLower) || o.OrderId.ToString().Contains(searchLower) || (o.Product != null && o.Product.Name.ToLower().Contains(searchLower)));
+            }
+
+            // Lọc theo sản phẩm
+            if (productId.HasValue)
+            {
+                query = query.Where(o => o.ProductId == productId.Value);
+            }
+
+            // Lọc theo đơn hàng (Mã đơn hàng)
+            if (orderId.HasValue)
+            {
+                query = query.Where(o => o.OrderId == orderId.Value);
+            }
+
+            var totalItems = query.Count();
+
+            var data = query
+                .OrderByDescending(o => o.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            // Các ViewBag phục vụ hiển thị lại form bộ lọc
+            ViewBag.Search = search;
+            ViewBag.ProductId = productId;
+            ViewBag.OrderId = orderId;
+            ViewBag.ProductsList = _context.Products.ToList();
 
             return View(data);
         }

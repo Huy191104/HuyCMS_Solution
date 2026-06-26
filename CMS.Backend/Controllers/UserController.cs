@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -51,6 +51,9 @@ namespace CMS.Backend.Controllers
                 return View(model);
             }
 
+            // Mã hóa mật khẩu trước khi lưu
+            model.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.PasswordHash);
+
             // Lưu User mới vào Database
             _context.Users.Add(model);
             _context.SaveChanges();
@@ -76,10 +79,10 @@ namespace CMS.Backend.Controllers
 
             if (existingUser == null) return NotFound();
 
-            // 2. Xử lý mật khẩu: Nếu nhập mới thì lấy cái mới, nếu trống thì lấy cái cũ
+            // 2. Xử lý mật khẩu: Nếu nhập mới thì lấy cái mới (và mã hóa), nếu trống thì lấy cái cũ
             if (!string.IsNullOrEmpty(NewPassword))
             {
-                model.PasswordHash = NewPassword; // Sau này sẽ mã hóa tại đây
+                model.PasswordHash = BCrypt.Net.BCrypt.HashPassword(NewPassword);
             }
             else
             {

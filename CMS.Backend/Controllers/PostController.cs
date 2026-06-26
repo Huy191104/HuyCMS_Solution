@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -27,8 +27,10 @@ namespace CMS.Backend.Controllers
         // ==========================
         // DANH SÁCH BÀI VIẾT
         // ==========================
-        public IActionResult Index(int? id)
+        public IActionResult Index(int? id, string search, int page = 1)
         {
+            int pageSize = 10;
+
             var posts = _context.Posts
                 .Include(p => p.Category)
                 .AsQueryable();
@@ -38,9 +40,27 @@ namespace CMS.Backend.Controllers
                 posts = posts.Where(p => p.CategoryId == id);
             }
 
+            // Tìm kiếm theo tiêu đề bài viết
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchLower = search.Trim().ToLower();
+                posts = posts.Where(p => p.Title.ToLower().Contains(searchLower));
+            }
+
+            var totalItems = posts.Count();
+
             var data = posts
                 .OrderByDescending(p => p.CreatedDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.CategoryFilterId = id;
+            ViewBag.Search = search;
 
             return View(data);
         }

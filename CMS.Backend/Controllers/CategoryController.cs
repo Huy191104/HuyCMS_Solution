@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -53,23 +53,31 @@ namespace CMS.Backend.Controllers
             return RedirectToAction("Index");
         }
 
-        // Action nhận vào Id của danh mục cần xóa
+        // GET: Hiển thị form xác nhận xóa danh mục
+        [HttpGet]
         public IActionResult Delete(int id)
         {
-            // Bước 1: Tìm đối tượng danh mục trong Database bằng Id
             var category = _context.Categories.Find(id);
 
-            // Kiểm tra nếu tìm thấy thì mới xóa
+            if (category == null)
+                return NotFound();
+
+            return View(category);
+        }
+
+        // POST: Thực hiện xóa danh mục khỏi database
+        [HttpPost]
+        [ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var category = _context.Categories.Find(id);
+
             if (category != null)
             {
-                // Bước 2: Lệnh xóa khỏi bộ nhớ tạm (Tracking)
                 _context.Categories.Remove(category);
-
-                // Bước 3: Chốt phiên làm việc, xóa thực sự trong SQL Server
                 _context.SaveChanges();
             }
 
-            // Sau khi xóa xong, quay lại trang danh sách để cập nhật giao diện
             return RedirectToAction("Index");
         }
 

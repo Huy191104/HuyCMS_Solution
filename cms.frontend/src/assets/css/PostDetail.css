@@ -1,4 +1,4 @@
-﻿/* ── Hero ─────────────────────────────────── */
+/* ── Hero ─────────────────────────────────── */
 .pd-hero {
     position: relative;
     min-height: 420px;
@@ -103,11 +103,79 @@
         margin: 0 0 16px;
     }
 
+    /* CKEditor Alignment Classes */
+    .pd-content .text-align-left {
+        text-align: left !important;
+    }
+
+    .pd-content .text-align-center {
+        text-align: center !important;
+    }
+
+    .pd-content .text-align-right {
+        text-align: right !important;
+    }
+
+    .pd-content .text-align-justify {
+        text-align: justify !important;
+    }
+
+    /* CKEditor Image and Figure Formatting */
+    .pd-content figure {
+        margin: 24px auto;
+        display: table;
+        clear: both;
+        text-align: center;
+    }
+
+    .pd-content figure figcaption {
+        font-size: 13px;
+        color: var(--text-muted, #8C7355);
+        margin-top: 8px;
+        text-align: center;
+        font-style: italic;
+    }
+
     .pd-content img {
-        width: 100%;
+        max-width: 100%;
+        height: auto;
         border-radius: 12px;
-        margin: 20px 0;
+        margin: 20px auto;
         border: 1px solid var(--border, #EDE0CE);
+        display: block;
+    }
+
+    /* CKEditor image alignments */
+    .pd-content figure.image-style-block-align-center,
+    .pd-content figure.image-style-align-center,
+    .pd-content figure.image {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .pd-content figure.image-style-block-align-left,
+    .pd-content figure.image-style-align-left {
+        margin-right: auto;
+        margin-left: 0;
+        float: left;
+        margin-right: 24px;
+        margin-bottom: 16px;
+    }
+
+    .pd-content figure.image-style-block-align-right,
+    .pd-content figure.image-style-align-right {
+        margin-left: auto;
+        margin-right: 0;
+        float: right;
+        margin-left: 24px;
+        margin-bottom: 16px;
+    }
+
+    .pd-content figure.image-style-side {
+        float: right;
+        margin-left: 24px;
+        margin-bottom: 16px;
+        max-width: 50%;
     }
 
     .pd-content ul, .pd-content ol {

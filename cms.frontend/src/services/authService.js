@@ -1,6 +1,7 @@
 import axios from "axios";
+import { API_BASE_URL } from "../api/config";
 
-const API_URL = "https://localhost:7290/api/auth";
+const API_URL = `${API_BASE_URL}/auth`;
 
 const authService = {
 

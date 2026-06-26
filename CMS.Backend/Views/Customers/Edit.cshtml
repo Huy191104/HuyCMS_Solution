@@ -1,4 +1,4 @@
-﻿@model CMS.Data.Entities.Customer
+@model CMS.Data.Entities.Customer
 
 @{
     Layout = "_LayoutAdmin";
@@ -215,13 +215,11 @@
                         Mật khẩu
                     </label>
 
-                    <input asp-for="Password"
-                           type="password"
+                    <input type="password"
+                           id="Password"
+                           name="Password"
                            class="cf-input"
                            placeholder="Để trống nếu không đổi mật khẩu" />
-
-                    <span asp-validation-for="Password"
-                          class="field-validation-error"></span>
                 </div>
 
                 <div class="cf-group">
@@ -231,6 +229,8 @@
                     </label>
 
                     <input asp-for="Phone" class="cf-input" />
+                    <span asp-validation-for="Phone"
+                          class="field-validation-error"></span>
                 </div>
 
                 <div class="cf-group">

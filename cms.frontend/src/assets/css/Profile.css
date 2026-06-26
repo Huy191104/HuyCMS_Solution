@@ -1,0 +1,331 @@
+/* ── Hero ─────────────────────────────────── */
+.pf-hero {
+    position: relative;
+    padding: 100px 48px 56px;
+    background: var(--sidebar, #2C1A0E);
+    overflow: hidden;
+    text-align: center;
+}
+
+.pf-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(193, 122, 58, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.pf-hero-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.pf-hero-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent, #C17A3A);
+    margin-bottom: 10px;
+}
+
+.pf-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 500;
+    color: #F5E6C8;
+    margin: 0 0 12px;
+    line-height: 1.1;
+}
+
+.pf-hero-title em {
+    font-style: italic;
+    color: var(--accent, #C17A3A);
+}
+
+.pf-hero-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(245, 230, 200, 0.5);
+    margin: 0;
+}
+
+/* ── Page Layout ──────────────────────────── */
+.pf-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 48px 80px;
+    background: var(--cream, #FAF7F2);
+}
+
+.pf-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* ── Sidebar Profile Card ──────────────────── */
+.pf-sidebar {
+    position: sticky;
+    top: 88px;
+}
+
+.pf-profile-card {
+    background: var(--card, #FFFCF7);
+    border: 1px solid var(--border, #EDE0CE);
+    border-radius: 16px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(44, 26, 14, 0.04);
+}
+
+.pf-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent, #C17A3A);
+    color: #FFF8EE;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    box-shadow: 0 4px 14px rgba(193, 122, 58, 0.25);
+    border: 3px solid #FFF8EE;
+}
+
+.pf-profile-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-main, #1E0E00);
+    margin: 0 0 4px;
+}
+
+.pf-profile-role {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted, #8C7355);
+    margin: 0 0 20px;
+}
+
+.pf-profile-divider {
+    height: 1px;
+    background: var(--border, #EDE0CE);
+    margin: 20px 0;
+}
+
+.pf-quick-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: left;
+    margin-bottom: 24px;
+}
+
+.pf-qi-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.pf-qi-icon {
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.pf-qi-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--accent, #C17A3A);
+    margin-bottom: 2px;
+}
+
+.pf-qi-val {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-main, #1E0E00);
+    word-break: break-all;
+}
+
+.pf-orders-btn {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--accent, #C17A3A);
+    color: var(--accent, #C17A3A);
+    border-radius: 8px;
+    padding: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.pf-orders-btn:hover {
+    background: var(--accent, #C17A3A);
+    color: #FFF8EE;
+}
+
+/* ── Main Form Card ───────────────────────── */
+.pf-form-card {
+    background: var(--card, #FFFCF7);
+    border: 1px solid var(--border, #EDE0CE);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 8px 30px rgba(44, 26, 14, 0.04);
+}
+
+.pf-form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-main, #1E0E00);
+    margin: 0 0 6px;
+}
+
+.pf-form-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted, #8C7355);
+    margin: 0 0 28px;
+}
+
+/* ── Form Inputs ──────────────────────────── */
+.pf-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pf-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pf-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-main, #1E0E00);
+}
+
+.pf-label span {
+    color: #DC3545;
+}
+
+.pf-input {
+    width: 100%;
+    background: var(--cream, #FAF7F2);
+    border: 1px solid var(--border, #EDE0CE);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-main, #1E0E00);
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.pf-input:focus {
+    border-color: var(--accent, #C17A3A);
+    box-shadow: 0 0 0 3px rgba(193, 122, 58, 0.12);
+}
+
+.pf-input--readonly {
+    background: #F2EBE0;
+    color: var(--text-muted, #8C7355);
+    cursor: not-allowed;
+    border-color: var(--border, #EDE0CE);
+}
+
+.pf-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.pf-submit-btn {
+    background: var(--accent, #C17A3A);
+    color: #FFF8EE;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background 0.15s;
+    min-width: 140px;
+}
+
+.pf-submit-btn:hover {
+    background: #9E6028;
+}
+
+.pf-submit-btn:disabled {
+    background: #C4A882;
+    cursor: not-allowed;
+}
+
+/* ── Alerts ───────────────────────────────── */
+.pf-alert {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+}
+
+.pf-alert--success {
+    background: #E8F5E9;
+    color: #2E7D32;
+    border: 1px solid #C8E6C9;
+}
+
+.pf-alert--error {
+    background: #FFEBEE;
+    color: #C62828;
+    border: 1px solid #FFCDD2;
+}
+
+.pf-alert-icon {
+    font-weight: 600;
+}
+
+/* ── Responsive ───────────────────────────── */
+@media (max-width: 768px) {
+    .pf-page {
+        padding: 32px 16px 60px;
+    }
+
+    .pf-layout {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .pf-hero {
+        padding: 80px 20px 40px;
+    }
+
+    .pf-form-card {
+        padding: 24px;
+    }
+
+    .pf-submit-btn {
+        width: 100%;
+        align-self: center;
+    }
+}

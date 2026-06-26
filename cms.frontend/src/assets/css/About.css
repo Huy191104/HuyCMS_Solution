@@ -1,4 +1,4 @@
-﻿/* ── Hero ─────────────────────────────────── */
+/* ── Hero ─────────────────────────────────── */
 .ab-hero {
     position: relative;
     padding: 100px 48px 72px;
@@ -151,6 +151,14 @@
     justify-content: center;
     font-size: 80px;
     filter: drop-shadow(0 16px 40px rgba(193,122,58,0.2));
+}
+
+.ab-story-logo-img {
+    width: 180px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 8px 24px rgba(193,122,58,0.3));
 }
 
 /* ── Values ───────────────────────────────── */

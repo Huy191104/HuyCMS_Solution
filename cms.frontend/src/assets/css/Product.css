@@ -277,6 +277,8 @@
 
 .prd-card-footer {
     padding: 0 16px 16px;
+    display: flex;
+    gap: 8px;
 }
 
 .prd-card-btn {
@@ -302,6 +304,18 @@
     .prd-card-btn:disabled {
         opacity: 0.4;
         cursor: not-allowed;
+    }
+
+.prd-card-btn-buy {
+    background: var(--accent, #C17A3A);
+    color: #FFF8EE;
+    border-color: var(--accent, #C17A3A);
+}
+
+    .prd-card-btn-buy:hover:not(:disabled) {
+        background: var(--text-main, #1E0E00);
+        border-color: var(--text-main, #1E0E00);
+        color: #FFF8EE;
     }
 
 /* ── Skeleton ─────────────────────────────── */

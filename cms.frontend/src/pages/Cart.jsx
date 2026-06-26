@@ -1,10 +1,11 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../assets/css/Cart.css";
+import { IMAGE_BASE_URL } from "../api/config";
 
-const API_BASE = "https://localhost:7290";
+const API_BASE = IMAGE_BASE_URL;
 const formatVND = (p) => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(p);
 
 export default function Cart() {

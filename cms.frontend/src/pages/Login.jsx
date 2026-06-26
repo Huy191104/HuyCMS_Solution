@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import authService from "../services/authService";
+import logoImg from "../assets/images/logo.png";
 import "../assets/css/Auth.css";
 
 function Login() {
@@ -40,7 +41,7 @@ function Login() {
             <div className="auth-visual">
                 <div className="auth-visual-bg" />
                 <div className="auth-visual-content">
-                    <span className="auth-visual-emoji">🥐</span>
+                    <img src={logoImg} alt="Bakery House Logo" className="auth-visual-logo-img" />
                     <h2 className="auth-visual-title">
                         Chào mừng<br />trở lại <em>Bakery House</em>
                     </h2>
@@ -53,7 +54,7 @@ function Login() {
                             <span className="auth-badge-icon">🎁</span>
                             <div className="auth-badge-text">
                                 <strong>Ưu đãi thành viên</strong>
-                                Giảm 10% cho đơn hàng đầu tiên
+                                Miễn phí vận chuyển cho đơn hàng đầu tiên
                             </div>
                         </div>
                         <div className="auth-visual-badge">
@@ -78,10 +79,10 @@ function Login() {
             <div className="auth-form-panel">
                 <div className="auth-form-wrap">
 
-                    <a href="/" className="auth-logo">
-                        <span className="auth-logo-icon">🥐</span>
+                    <Link to="/" className="auth-logo">
+                        <img src={logoImg} alt="Bakery House Logo" className="auth-logo-img" />
                         <span className="auth-logo-name">Bakery House</span>
-                    </a>
+                    </Link>
 
                     <h1 className="auth-heading">Đăng <em>nhập</em></h1>
                     <p className="auth-subheading">Nhập thông tin tài khoản của bạn</p>

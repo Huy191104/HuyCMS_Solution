@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMS.Data.Entities.Product>
+@model IEnumerable<CMS.Data.Entities.Product>
 
 @{
     Layout = "_LayoutAdmin";
@@ -315,20 +315,48 @@
     </div>
 }
 
-<div class="toolbar">
-
+<form method="get" action="@Url.Action("Index")" class="toolbar" id="filterForm">
     <div class="search-box">
         <i class="bi bi-search"></i>
         <input type="text"
-               id="searchInput"
-               placeholder="Tìm theo tên sản phẩm..." />
+               name="search"
+               value="@ViewBag.Search"
+               placeholder="Tìm theo tên..." />
     </div>
 
-    <span class="count-badge" id="countBadge">
+    <div style="display: flex; gap: 8px; align-items: center;">
+        <select name="categoryId" class="form-select form-select-sm" style="font-size: 13px; border-radius: 6px; padding: 6px 12px; border: 1px solid #E9ECEF; min-width: 220px;" onchange="this.form.submit()">
+            <option value="">Tất cả danh mục</option>
+            @if (ViewBag.CategoriesList != null)
+            {
+                foreach (var cat in ViewBag.CategoriesList)
+                {
+                    if (ViewBag.CategoryId == cat.Id)
+                    {
+                        <option value="@cat.Id" selected="selected">@cat.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@cat.Id">@cat.Name</option>
+                    }
+                }
+            }
+        </select>
+
+        <select name="stockStatus" class="form-select form-select-sm" style="font-size: 13px; border-radius: 6px; padding: 6px 12px; border: 1px solid #E9ECEF; min-width: 220px;" onchange="this.form.submit()">
+            <option value="" selected="@(string.IsNullOrEmpty(ViewBag.StockStatus))">Tất cả trạng thái tồn</option>
+            <option value="instock" selected="@(ViewBag.StockStatus == "instock")">Còn hàng</option>
+            <option value="outofstock" selected="@(ViewBag.StockStatus == "outofstock")">Hết hàng</option>
+            <option value="lowstock" selected="@(ViewBag.StockStatus == "lowstock")">Sắp hết hàng (&lt;=5)</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary btn-sm" style="background: #2563EB; color: #fff; border: none; border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 500; cursor: pointer;">Lọc</button>
+    </div>
+
+    <span class="count-badge" id="countBadge" style="margin-left: auto;">
         @ViewBag.TotalItems kết quả
     </span>
-
-</div>
+</form>
 
 <div class="tbl-wrap">
 
@@ -456,6 +484,16 @@
     </table>
 
 </div>
+<div class="tbl-footer">
+    <div class="footer-info">
+        Hiển thị
+        <strong>@Model.Count()</strong>
+        trong tổng
+        <strong>@ViewBag.TotalItems</strong>
+        sản phẩm
+    </div>
+</div>
+
 @if (ViewBag.TotalPages > 1)
 {
     <div class="pagination-wrap">
@@ -466,6 +504,9 @@
             {
                 <a asp-action="Index"
                    asp-route-page="@(ViewBag.CurrentPage - 1)"
+                   asp-route-search="@ViewBag.Search"
+                   asp-route-categoryId="@ViewBag.CategoryId"
+                   asp-route-stockStatus="@ViewBag.StockStatus"
                    class="page-btn">
                     <i class="bi bi-chevron-left"></i>
                 </a>
@@ -475,6 +516,9 @@
             {
                 <a asp-action="Index"
                    asp-route-page="@i"
+                   asp-route-search="@ViewBag.Search"
+                   asp-route-categoryId="@ViewBag.CategoryId"
+                   asp-route-stockStatus="@ViewBag.StockStatus"
                    class="page-btn @(i == ViewBag.CurrentPage ? "active" : "")">
                     @i
                 </a>
@@ -484,6 +528,9 @@
             {
                 <a asp-action="Index"
                    asp-route-page="@(ViewBag.CurrentPage + 1)"
+                   asp-route-search="@ViewBag.Search"
+                   asp-route-categoryId="@ViewBag.CategoryId"
+                   asp-route-stockStatus="@ViewBag.StockStatus"
                    class="page-btn">
                     <i class="bi bi-chevron-right"></i>
                 </a>
@@ -495,37 +542,5 @@
 }
 
 @section Scripts {
-
-    <script>
-
-        const searchInput = document.getElementById('searchInput');
-        const countBadge = document.getElementById('countBadge');
-
-        searchInput.addEventListener('input', function () {
-
-            const keyword = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#productTable tbody tr');
-
-            let visible = 0;
-
-            rows.forEach(row => {
-
-                const name = row.querySelector('.product-name');
-
-                if (!name) return;
-
-                const match = name.textContent.toLowerCase().includes(keyword);
-
-                row.style.display = match ? '' : 'none';
-
-                if (match) visible++;
-
-            });
-
-            countBadge.textContent = visible + ' kết quả';
-
-        });
-
-    </script>
-
+    <!-- Đã chuyển sang tìm kiếm và lọc Server-side -->
 }

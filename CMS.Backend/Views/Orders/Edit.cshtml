@@ -1,4 +1,4 @@
-﻿@model CMS.Data.Entities.Order
+@model CMS.Data.Entities.Order
 
 @{
     Layout = "_LayoutAdmin";
@@ -128,7 +128,7 @@
     </div>
 </div>
 
-<form asp-action="Edit" method="post">
+<form asp-action="Edit" method="post" id="editOrderForm">
 
     <input asp-for="Id" type="hidden" />
 
@@ -144,12 +144,15 @@
                 Trạng thái đơn hàng
             </label>
 
-            <select asp-for="Status" class="cf-input">
+            <select asp-for="Status" class="cf-input" id="statusSelect">
                 <option value="0">Chờ duyệt</option>
                 <option value="1">Đang giao</option>
                 <option value="2">Hoàn thành</option>
-                <option value="3">Đã hủy</option>
             </select>
+
+            <div id="statusWarning" class="alert alert-warning mt-2" style="display: none; border-radius: 6px; font-size: 13px; padding: 10px 14px; border: 1px solid #FFEBA2; background-color: #FFF8E1; color: #856404; font-weight: 500;">
+                <i class="bi bi-exclamation-triangle-fill" style="margin-right: 6px; color: #E0A800;"></i> Sau khi cập nhật trạng thái hoàn thành sẽ không thể thay đổi
+            </div>
         </div>
 
         <div class="cf-group">
@@ -179,3 +182,37 @@
     </div>
 
 </form>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var statusSelect = document.getElementById("statusSelect");
+            var statusWarning = document.getElementById("statusWarning");
+            var form = document.getElementById("editOrderForm");
+
+            function checkStatus() {
+                if (statusSelect.value === "2") {
+                    statusWarning.style.display = "block";
+                } else {
+                    statusWarning.style.display = "none";
+                }
+            }
+
+            if (statusSelect && statusWarning) {
+                statusSelect.addEventListener("change", checkStatus);
+                checkStatus(); // Run initial check
+            }
+
+            if (form && statusSelect) {
+                form.addEventListener("submit", function(e) {
+                    if (statusSelect.value === "2") {
+                        var confirmed = confirm("Sau khi cập nhật trạng thái hoàn thành sẽ không thể thay đổi. Bạn có chắc chắn muốn tiếp tục?");
+                        if (!confirmed) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

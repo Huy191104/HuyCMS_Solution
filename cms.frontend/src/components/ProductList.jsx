@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import productService from '../services/productService';
 import { useNavigate } from "react-router-dom";
 import "../assets/css/ProductList.css";
+import { IMAGE_BASE_URL } from '../api/config';
 
-const API_BASE = "https://localhost:7290";
+const API_BASE = IMAGE_BASE_URL;
 
 const formatVND = (price) =>
     new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);

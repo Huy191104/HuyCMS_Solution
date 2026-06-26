@@ -1,4 +1,4 @@
-﻿@model CMS.Data.Entities.Customer
+@model CMS.Data.Entities.Customer
 
 @{
     Layout = "_LayoutAdmin";
@@ -185,6 +185,8 @@
                     <input asp-for="FullName"
                            class="cf-input"
                            placeholder="Nhập họ tên khách hàng..." />
+                    <span asp-validation-for="FullName"
+                          class="field-validation-error"></span>
                 </div>
 
                 <div class="cf-group">
@@ -196,6 +198,8 @@
                     <input asp-for="Email"
                            class="cf-input"
                            placeholder="example@gmail.com" />
+                    <span asp-validation-for="Email"
+                          class="field-validation-error"></span>
                 </div>
 
                 <div class="cf-group">
@@ -223,6 +227,8 @@
                     <input asp-for="Phone"
                            class="cf-input"
                            placeholder="090xxxxxxx" />
+                    <span asp-validation-for="Phone"
+                          class="field-validation-error"></span>
                 </div>
 
                 <div class="cf-group">
@@ -273,3 +279,9 @@
     </div>
 
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

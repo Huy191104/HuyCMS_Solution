@@ -28,6 +28,7 @@ namespace CMS.Data.Entities
         [EmailAddress]
         public string Email { get; set; } // Địa chỉ email của khách hàng, phải hợp lệ
 
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại phải gồm đúng 10 chữ số.")]
         public string? Phone { get; set; } // Số điện thoại của khách hàng, không bắt buộc
 
         public string? Address { get; set; } // Địa chỉ của khách hàng, không bắt buộc

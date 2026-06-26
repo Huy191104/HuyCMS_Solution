@@ -4,8 +4,9 @@ import productService from "../services/productService";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../assets/css/ProductList.css";
+import { IMAGE_BASE_URL } from "../api/config";
 
-const API_BASE = "https://localhost:7290";
+const API_BASE = IMAGE_BASE_URL;
 const formatVND = (price) =>
     new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
 

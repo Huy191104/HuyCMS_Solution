@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
 
 :root {
     --cream: #FAF7F2;
@@ -229,10 +229,13 @@ body {
     gap: 12px;
 }
 
-    .bh-hero-img-placeholder span {
-        font-size: 72px;
-        filter: drop-shadow(0 8px 24px rgba(193,122,58,0.3));
-    }
+.bh-hero-logo-img {
+    height: 120px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 8px 24px rgba(193,122,58,0.3));
+}
 
     .bh-hero-img-placeholder p {
         font-family: 'DM Sans', sans-serif;

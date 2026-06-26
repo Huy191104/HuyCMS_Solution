@@ -1,7 +1,158 @@
-﻿
+@model CMS.Data.Entities.Category
+
 @{
-    ViewData["Title"] = "Delete";
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Xóa danh mục";
 }
 
-<h1>Delete</h1>
+<style>
+    .pg-header {
+        margin-bottom: 20px;
+    }
 
+    .pg-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 2px;
+    }
+
+    .pg-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 650px;
+    }
+
+    .cf-card-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #DC2626;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #E9ECEF;
+    }
+
+    .cf-info-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #F1F3F5;
+        font-size: 13px;
+    }
+
+    .cf-info-row:last-of-type {
+        border-bottom: none;
+    }
+
+    .cf-info-label {
+        width: 150px;
+        font-weight: 600;
+        color: #495057;
+        flex-shrink: 0;
+    }
+
+    .cf-info-value {
+        color: #212529;
+        flex-grow: 1;
+    }
+
+    .cf-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 24px;
+        padding-top: 15px;
+        border-top: 1px solid #E9ECEF;
+    }
+
+    .btn-danger-confirm {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #DC2626;
+        color: #fff !important;
+        border: none;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .15s;
+        cursor: pointer;
+    }
+
+    .btn-danger-confirm:hover {
+        background: #B91C1C;
+    }
+
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #F8F9FA;
+        color: #495057 !important;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .15s;
+    }
+
+    .btn-cancel:hover {
+        background: #E9ECEF;
+    }
+</style>
+
+<div class="pg-header">
+    <h2 class="pg-title">Xác nhận xóa danh mục</h2>
+    <div class="pg-subtitle">
+        Hành động này sẽ xóa vĩnh viễn danh mục bài viết khỏi cơ sở dữ liệu hệ thống.
+    </div>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="cf-card">
+        <div class="cf-card-title">
+            <i class="bi bi-exclamation-triangle-fill"></i> Cảnh báo: Hành động không thể hoàn tác
+        </div>
+
+        <div>
+            <div class="cf-info-row">
+                <div class="cf-info-label">ID danh mục</div>
+                <div class="cf-info-value"><span class="badge bg-secondary" style="font-size: 11px;">#@Model.Id</span></div>
+            </div>
+            <div class="cf-info-row">
+                <div class="cf-info-label">Tên danh mục</div>
+                <div class="cf-info-value" style="font-weight: 600;">@Model.Name</div>
+            </div>
+            <div class="cf-info-row">
+                <div class="cf-info-label">Mô tả</div>
+                <div class="cf-info-value">@(string.IsNullOrEmpty(Model.Description) ? "Không có mô tả" : Model.Description)</div>
+            </div>
+        </div>
+
+        <div class="alert alert-danger-custom" style="background-color: #FEF2F2; border: 1px solid #FEE2E2; border-radius: 6px; padding: 12px; font-size: 13px; color: #991B1B; margin-top: 20px; font-weight: 500;">
+            <i class="bi bi-info-circle-fill" style="margin-right: 6px;"></i> Bạn có chắc chắn muốn xóa danh mục này không? Các bài viết thuộc danh mục này có thể bị ảnh hưởng.
+        </div>
+
+        <div class="cf-actions">
+            <button type="submit" class="btn-danger-confirm">
+                <i class="bi bi-trash"></i> Xác nhận xóa danh mục
+            </button>
+            <a asp-action="Index" class="btn-cancel">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+</form>

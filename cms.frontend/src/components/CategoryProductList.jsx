@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import categoryProductService from '../services/categoryProductService';
 import "../assets/css/CategoryProductList.css";
 import { useNavigate } from "react-router-dom";
+import { IMAGE_BASE_URL } from '../api/config';
 
-const API_BASE = "https://localhost:7290";
+const API_BASE = IMAGE_BASE_URL;
 
 const CategoryProductList = () => {
     const [categoryProducts, setCategoryProducts] = useState([]);

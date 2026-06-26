@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Đăng ký các dịch vụ cần thiết cho ứng dụng
 builder.Services.AddControllersWithViews();
 // Đăng ký dịch vụ hỗ trợ API (nếu cần)
 builder.Services.AddEndpointsApiExplorer();
@@ -21,14 +21,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 1. Khai báo dịch vụ xác thực Cookie
+// Khai báo dịch vụ xác thực Cookie
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login"; // Đường dẫn nếu chưa đăng nhập
         options.AccessDeniedPath = "/Account/AccessDenied"; // Đường dẫn nếu vào trang không được phép
     })
-    // 2. Khai báo dịch vụ xác thực JWT Bearer để hỗ trợ bảo vệ API
+    // Khai báo dịch vụ xác thực JWT Bearer để hỗ trợ bảo vệ API
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters

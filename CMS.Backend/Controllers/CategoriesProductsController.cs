@@ -114,7 +114,7 @@ namespace CMS.Backend.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        // Xử lý yêu cầu xóa mối quan hệ giữa Categories và Products
+        // GET: Hiển thị form xác nhận xóa danh mục sản phẩm
         [HttpGet]
         public IActionResult Delete(int id)
         {
@@ -123,9 +123,21 @@ namespace CMS.Backend.Controllers
             if (category == null)
                 return NotFound();
 
-            _context.CategoriesProducts.Remove(category);
+            return View(category);
+        }
 
-            _context.SaveChanges();
+        // POST: Thực hiện xóa danh mục sản phẩm khỏi database
+        [HttpPost]
+        [ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var category = _context.CategoriesProducts.Find(id);
+
+            if (category != null)
+            {
+                _context.CategoriesProducts.Remove(category);
+                _context.SaveChanges();
+            }
 
             return RedirectToAction(nameof(Index));
         }

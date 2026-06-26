@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import authService from "../services/authService";
+import logoImg from "../assets/images/logo.png";
 import "../assets/css/Auth.css";
 
 function ResetPassword() {
@@ -131,10 +132,10 @@ function ResetPassword() {
             <div className="auth-form-panel">
                 <div className="auth-form-wrap">
 
-                    <a href="/" className="auth-logo">
-                        <span className="auth-logo-icon">🥐</span>
+                    <Link to="/" className="auth-logo">
+                        <img src={logoImg} alt="Bakery House Logo" className="auth-logo-img" />
                         <span className="auth-logo-name">Bakery House</span>
-                    </a>
+                    </Link>
 
                     <h1 className="auth-heading">Đặt lại <em>mật khẩu</em></h1>
                     <p className="auth-subheading">Tạo mật khẩu mới cho tài khoản của bạn</p>

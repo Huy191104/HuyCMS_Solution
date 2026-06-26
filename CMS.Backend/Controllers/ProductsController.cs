@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -24,15 +24,48 @@ namespace CMS.Backend.Controllers
         {
             _context = context;
         }
-        // Hiển thị danh sách sản phẩm từ database, bao gồm thông tin liên quan đến CategoryProduct thông qua Include
-        public IActionResult Index(int page = 1)
+        // Hiển thị danh sách sản phẩm từ database, bao gồm thông tin liên quan đến CategoryProduct thông qua Include, có tìm kiếm và bộ lọc
+        public IActionResult Index(string search, int? categoryId, string stockStatus, int page = 1)
         {
-            int pageSize = 9;
+            int pageSize = 5;
 
-            var totalItems = _context.Products.Count();
-
-            var data = _context.Products
+            var query = _context.Products
                 .Include(p => p.CategoryProduct)
+                .AsQueryable();
+
+            // Tìm kiếm
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchLower = search.Trim().ToLower();
+                query = query.Where(p => p.Name.ToLower().Contains(searchLower) || (p.Description != null && p.Description.ToLower().Contains(searchLower)));
+            }
+
+            // Lọc theo danh mục
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryProductId == categoryId.Value);
+            }
+
+            // Lọc theo tồn kho
+            if (!string.IsNullOrEmpty(stockStatus))
+            {
+                if (stockStatus == "instock")
+                {
+                    query = query.Where(p => p.StockQuantity > 0);
+                }
+                else if (stockStatus == "outofstock")
+                {
+                    query = query.Where(p => p.StockQuantity == 0);
+                }
+                else if (stockStatus == "lowstock")
+                {
+                    query = query.Where(p => p.StockQuantity <= 5 && p.StockQuantity > 0);
+                }
+            }
+
+            var totalItems = query.Count();
+
+            var data = query
                 .OrderByDescending(p => p.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -42,6 +75,12 @@ namespace CMS.Backend.Controllers
             ViewBag.PageSize = pageSize;
             ViewBag.TotalItems = totalItems;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            // Các ViewBag phục vụ hiển thị lại form bộ lọc
+            ViewBag.Search = search;
+            ViewBag.CategoryId = categoryId;
+            ViewBag.StockStatus = stockStatus;
+            ViewBag.CategoriesList = _context.CategoriesProducts.ToList();
 
             return View(data);
         }

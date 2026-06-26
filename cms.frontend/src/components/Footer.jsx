@@ -1,4 +1,6 @@
-﻿import "../assets/css/Footer.css";
+import { Link } from "react-router-dom";
+import logoImg from "../assets/images/logo.png";
+import "../assets/css/Footer.css";
 
 function Footer() {
     return (
@@ -10,15 +12,15 @@ function Footer() {
 
                     {/* Brand */}
                     <div className="bh-footer-brand">
-                        <a href="/" className="bh-footer-logo">
-                            <span>🥐</span>
+                        <Link to="/" className="bh-footer-logo">
+                            <img src={logoImg} alt="Bakery House Logo" className="bh-footer-logo-img" />
                             <div>
                                 <div className="bh-footer-logo-name">Bakery House</div>
                                 <div className="bh-footer-logo-tag">Thủ công · Tươi mỗi ngày</div>
                             </div>
-                        </a>
+                        </Link>
                         <p className="bh-footer-about">
-                            Chuyên cung cấp bánh sinh nhật, bánh kem tươi, croissant
+                            Chuyên cung cấp bánh sinh nhật, bánh kem tươi, tiramisu
                             và các loại bánh ngọt thủ công cao cấp — làm mới mỗi sáng.
                         </p>
                         <div className="bh-footer-socials">
@@ -45,10 +47,10 @@ function Footer() {
                     {/* Links */}
                     <div className="bh-footer-col">
                         <div className="bh-footer-col-title">Khám phá</div>
-                        <a href="/" className="bh-footer-link">Trang chủ</a>
-                        <a href="/products" className="bh-footer-link">Sản phẩm</a>
-                        <a href="/posts" className="bh-footer-link">Tin tức</a>
-                        <a href="/about" className="bh-footer-link">Giới thiệu</a>
+                        <Link to="/" className="bh-footer-link">Trang chủ</Link>
+                        <Link to="/products" className="bh-footer-link">Sản phẩm</Link>
+                        <Link to="/posts" className="bh-footer-link">Tin tức</Link>
+                        <Link to="/about" className="bh-footer-link">Giới thiệu</Link>
                     </div>
 
                     {/* Contact */}
@@ -61,7 +63,7 @@ function Footer() {
                             <span>📞</span> 0909 123 456
                         </div>
                         <div className="bh-footer-contact-item">
-                            <span>✉️</span> hello@bakeryhouse.vn
+                            <span>✉️</span> support@bakeryhouse.vn
                         </div>
                         <div className="bh-footer-contact-item">
                             <span>🕐</span> T2–T7: 07:00 – 21:00
@@ -92,8 +94,8 @@ function Footer() {
                 <div className="bh-footer-inner bh-footer-bottom-inner">
                     <span>© 2026 Bakery House. All Rights Reserved.</span>
                     <div className="bh-footer-bottom-links">
-                        <a href="/privacy">Chính sách bảo mật</a>
-                        <a href="/terms">Điều khoản sử dụng</a>
+                        <Link to="/privacy">Chính sách bảo mật</Link>
+                        <Link to="/terms">Điều khoản sử dụng</Link>
                     </div>
                 </div>
             </div>

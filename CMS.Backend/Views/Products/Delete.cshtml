@@ -1,59 +1,164 @@
-﻿@model CMS.Data.Entities.Product
+@model CMS.Data.Entities.Product
 
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Xóa sản phẩm";
 }
 
-<div class="container mt-4">
+<style>
+    .pg-header {
+        margin-bottom: 20px;
+    }
 
-    <div class="card border-danger">
+    .pg-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 2px;
+    }
 
-        <div class="card-header bg-danger text-white">
+    .pg-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
 
-            Xác nhận xóa sản phẩm
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        padding: 20px;
+        max-width: 650px;
+    }
 
-        </div>
+    .cf-card-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #DC2626;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #E9ECEF;
+    }
 
-        <div class="card-body">
+    .cf-info-row {
+        display: flex;
+        padding: 10px 0;
+        border-bottom: 1px solid #F1F3F5;
+        font-size: 13px;
+    }
 
-            <h4>
-                @Model.Name
-            </h4>
+    .cf-info-row:last-of-type {
+        border-bottom: none;
+    }
 
-            <img src="@Model.ImageUrl"
-                 width="250"
-                 class="img-thumbnail mb-3" />
+    .cf-info-label {
+        width: 120px;
+        font-weight: 600;
+        color: #495057;
+        flex-shrink: 0;
+    }
 
-            <p>
+    .cf-info-value {
+        color: #212529;
+        flex-grow: 1;
+    }
 
-                <strong>Giá:</strong>
+    .cf-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 24px;
+        padding-top: 15px;
+        border-top: 1px solid #E9ECEF;
+    }
 
-                @Model.Price.ToString("N0") VNĐ
+    .btn-danger-confirm {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #DC2626;
+        color: #fff !important;
+        border: none;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .15s;
+        cursor: pointer;
+    }
 
-            </p>
+    .btn-danger-confirm:hover {
+        background: #B91C1C;
+    }
 
-            <form asp-action="Delete">
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #F8F9FA;
+        color: #495057 !important;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: .15s;
+    }
 
-                <input asp-for="Id"
-                       type="hidden" />
+    .btn-cancel:hover {
+        background: #E9ECEF;
+    }
+</style>
 
-                <button class="btn btn-danger">
-
-                    Xóa
-
-                </button>
-
-                <a asp-action="Index"
-                   class="btn btn-secondary">
-
-                    Hủy
-
-                </a>
-
-            </form>
-
-        </div>
-
+<div class="pg-header">
+    <h2 class="pg-title">Xác nhận xóa sản phẩm</h2>
+    <div class="pg-subtitle">
+        Hành động này sẽ xóa vĩnh viễn thông tin sản phẩm khỏi hệ thống.
     </div>
-
 </div>
+
+<form asp-action="Delete" method="post">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="cf-card">
+        <div class="cf-card-title">
+            <i class="bi bi-exclamation-triangle-fill"></i> Cảnh báo: Hành động không thể hoàn tác
+        </div>
+
+        <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap;">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" style="width: 140px; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid #E9ECEF;" />
+            }
+            <div style="flex: 1; min-width: 250px;">
+                <div class="cf-info-row">
+                    <div class="cf-info-label">Mã sản phẩm</div>
+                    <div class="cf-info-value"><span class="badge bg-secondary" style="font-size: 11px;">#@Model.Id</span></div>
+                </div>
+                <div class="cf-info-row">
+                    <div class="cf-info-label">Tên sản phẩm</div>
+                    <div class="cf-info-value" style="font-weight: 600;">@Model.Name</div>
+                </div>
+                <div class="cf-info-row">
+                    <div class="cf-info-label">Giá bán</div>
+                    <div class="cf-info-value text-success" style="font-weight: 600;">@Model.Price.ToString("N0") VNĐ</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-danger-custom" style="background-color: #FEF2F2; border: 1px solid #FEE2E2; border-radius: 6px; padding: 12px; font-size: 13px; color: #991B1B; margin-top: 20px; font-weight: 500;">
+            <i class="bi bi-info-circle-fill" style="margin-right: 6px;"></i> Bạn có chắc chắn muốn xóa sản phẩm này không?
+        </div>
+
+        <div class="cf-actions">
+            <button type="submit" class="btn-danger-confirm">
+                <i class="bi bi-trash"></i> Xác nhận xóa
+            </button>
+            <a asp-action="Index" class="btn-cancel">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
+</form>

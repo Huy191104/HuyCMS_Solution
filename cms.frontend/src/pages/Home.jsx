@@ -1,7 +1,9 @@
-﻿import "../assets/css/HomeView.css";
+import "../assets/css/HomeView.css";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import logoImg from "../assets/images/logo.png";
 import ProductList from "../components/ProductList";
 import PostList from "../components/PostList";
 import CategoryProductList from "../components/CategoryProductList";
@@ -66,8 +68,8 @@ function Home() {
                         </p>
 
                         <div className="bh-hero-actions">
-                            <a href="/products" className="bh-btn-primary">Khám phá ngay →</a>
-                            <a href="/posts" className="bh-btn-ghost">Cẩm nang bánh ngọt</a>
+                            <Link to="/products" className="bh-btn-primary">Khám phá ngay →</Link>
+                            <Link to="/posts" className="bh-btn-ghost">Cẩm nang bánh ngọt</Link>
                         </div>
 
                         <div className="bh-hero-stats">
@@ -81,7 +83,7 @@ function Home() {
                     <div className="bh-hero-visual">
                         <div className="bh-hero-img-wrap">
                             <div className="bh-hero-img-placeholder">
-                                <span>🥐</span>
+                                <img src={logoImg} alt="Bakery House Logo" className="bh-hero-logo-img" />
                                 <p>BAKERY HOUSE</p>
                             </div>
                         </div>
@@ -139,7 +141,7 @@ function Home() {
                             <h2 className="bh-section-title">Vừa ra <em>lò hôm nay</em></h2>
                             <p className="bh-section-sub">Những chiếc bánh tươi nhất vừa được làm xong</p>
                         </div>
-                        <a href="/products?mode=newest" className="bh-link-all bh-fade-up">Xem tất cả →</a>
+                        <Link to="/products?mode=newest" className="bh-link-all bh-fade-up">Xem tất cả →</Link>
                     </div>
                     <div className="bh-fade-up">
                         <ProductList mode="newest" take={4} />
@@ -156,7 +158,7 @@ function Home() {
                             <h2 className="bh-section-title">Được yêu thích <em>nhất tuần</em></h2>
                             <p className="bh-section-sub">Những chiếc bánh khách hàng đặt nhiều nhất</p>
                         </div>
-                        <a href="/products?mode=bestseller" className="bh-link-all bh-fade-up">Xem tất cả →</a>
+                        <Link to="/products?mode=bestseller" className="bh-link-all bh-fade-up">Xem tất cả →</Link>
                     </div>
                     <div className="bh-fade-up">
                         <ProductList mode="bestseller" take={4} />
@@ -192,7 +194,7 @@ function Home() {
                             <h2 className="bh-section-title">Tin tức & <em>bánh ngọt</em></h2>
                             <p className="bh-section-sub">Bí quyết, công thức và câu chuyện từ bếp bánh của chúng tôi</p>
                         </div>
-                        <a href="/posts" className="bh-link-all bh-fade-up">Xem tất cả →</a>
+                        <Link to="/posts" className="bh-link-all bh-fade-up">Xem tất cả →</Link>
                     </div>
                     <div className="bh-fade-up"><PostList /></div>
                 </div>

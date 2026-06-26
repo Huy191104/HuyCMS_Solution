@@ -1,6 +1,6 @@
 # HuyCMS_Solution - CMS & E-commerce System
 
-Dự án **HuyCMS_Solution** là một hệ thống quản lý nội dung (CMS) kết hợp tính năng bán hàng trực tuyến (E-commerce). Hệ thống được phát triển với kiến trúc tách biệt giữa **Backend API & Admin Portal (ASP.NET Core)** và **Client Storefront (React SPA)**.
+Dự án **HuyCMS_Solution** là một hệ thống quản lý nội dung (CMS) tích hợp tính năng bán lẻ trực tuyến (E-commerce). Hệ thống được phát triển theo mô hình hiện đại với kiến trúc tách biệt giữa **Backend API & Admin Portal (ASP.NET Core)** và **Client Storefront (React SPA)**.
 
 ---
 
@@ -8,6 +8,7 @@ Dự án **HuyCMS_Solution** là một hệ thống quản lý nội dung (CMS) 
 - **Sinh viên**: Phạm Thanh Huy
 - **Mã sinh viên**: 2122110384
 - **Lớp**: CCQ2211J
+- **Ngày tạo**: 16/05/2026
 
 ---
 
@@ -50,8 +51,6 @@ HuyCMS_Solution/
 * [Node.js](https://nodejs.org/) (Phiên bản LTS)
 * SQL Server (hoặc SQL Server Express LocalDB)
 
----
-
 ### Bước 1: Thiết lập Cơ sở dữ liệu (Database)
 
 1. Mở file [appsettings.json](file:///c:/Users/user/source/repos/HuyCMS_Solution/CMS.Backend/appsettings.json) trong dự án `CMS.Backend` để cấu hình chuỗi kết nối SQL Server:
@@ -69,8 +68,6 @@ HuyCMS_Solution/
    dotnet ef database update --project CMS.Data --startup-project CMS.Backend
    ```
 
----
-
 ### Bước 2: Chạy Backend (ASP.NET Core)
 
 1. Điều hướng vào thư mục `CMS.Backend` và chạy lệnh:
@@ -80,8 +77,6 @@ HuyCMS_Solution/
 2. Sau khi khởi chạy thành công:
    * **Admin Dashboard (MVC)**: Truy cập vào địa chỉ mặc định (ví dụ: `https://localhost:7290`) để quản lý sản phẩm, đơn hàng, bài viết.
    * **API Swagger**: Truy cập vào `https://localhost:7290/swagger` để xem tài liệu API chi tiết.
-
----
 
 ### Bước 3: Chạy Frontend (React)
 
@@ -105,15 +100,97 @@ HuyCMS_Solution/
 
 ---
 
+## 📊 Sơ đồ quan hệ thực thể (Entity Relationship Diagram - ERD)
+
+Dưới đây là sơ đồ mô tả mối quan hệ giữa các thực thể trong cơ sở dữ liệu của hệ thống:
+
+```mermaid
+erDiagram
+    CUSTOMER ||--o{ ORDER : "đặt hàng (places)"
+    ORDER ||--|{ ORDER_DETAIL : "bao gồm (contains)"
+    PRODUCT ||--o{ ORDER_DETAIL : "thuộc chi tiết (ordered in)"
+    CATEGORY_PRODUCT ||--o{ PRODUCT : "phân loại sản phẩm (contains)"
+    CATEGORY ||--o{ POST : "phân loại bài viết (contains)"
+
+    USER {
+        int Id PK "Khóa chính tự tăng"
+        string Username "Tên đăng nhập quản trị"
+        string PasswordHash "Mật khẩu đã hash"
+        string FullName "Họ và tên quản trị viên"
+        string Role "Vai trò quản trị (Admin/Editor)"
+    }
+
+    CUSTOMER {
+        int Id PK "Khóa chính tự tăng"
+        string FullName "Họ và tên khách hàng"
+        string Email "Địa chỉ email (Duy nhất)"
+        string Phone "Số điện thoại (10 chữ số)"
+        string Address "Địa chỉ giao hàng mặc định"
+        string Password "Mật khẩu đã hash"
+        string ResetPasswordToken "Token khôi phục mật khẩu"
+        datetime ResetPasswordTokenExpiry "Thời hạn token khôi phục"
+    }
+
+    ORDER {
+        int Id PK "Khóa chính tự tăng"
+        datetime OrderDate "Ngày đặt hàng"
+        int CustomerId FK "Liên kết tới Customer"
+        int Status "Trạng thái (0: Chờ duyệt, 1: Đang giao, 2: Đã xong)"
+        string Notes "Ghi chú đơn hàng"
+    }
+
+    ORDER_DETAIL {
+        int Id PK "Khóa chính tự tăng"
+        int OrderId FK "Liên kết tới Order"
+        int ProductId FK "Liên kết tới Product"
+        int Quantity "Số lượng mua"
+        decimal UnitPrice "Giá bán tại thời điểm mua"
+    }
+
+    PRODUCT {
+        int Id PK "Khóa chính tự tăng"
+        string Name "Tên sản phẩm"
+        string Description "Mô tả sản phẩm"
+        decimal Price "Giá sản phẩm"
+        int StockQuantity "Số lượng tồn kho"
+        string ImageUrl "Đường dẫn ảnh sản phẩm"
+        int CategoryProductId FK "Liên kết tới CategoryProduct"
+    }
+
+    CATEGORY_PRODUCT {
+        int Id PK "Khóa chính tự tăng"
+        string Name "Tên danh mục sản phẩm"
+        string Description "Mô tả danh mục"
+        string ImageUrl "Ảnh đại diện danh mục"
+    }
+
+    CATEGORY {
+        int Id PK "Khóa chính tự tăng"
+        string Name "Tên danh mục bài viết"
+        string Description "Mô tả danh mục bài viết"
+    }
+
+    POST {
+        int Id PK "Khóa chính tự tăng"
+        string Title "Tiêu đề bài viết"
+        string Content "Nội dung chi tiết bài viết"
+        string ImageUrl "Ảnh đại diện bài viết"
+        datetime CreatedDate "Ngày viết bài"
+        int CategoryId FK "Liên kết tới Category"
+    }
+```
+
+---
+
 ## 💡 Các chức năng chính của dự án
 
-### 🛍️ Client Storefront (Khách hàng)
+### 🛍️ Client Storefront (Dành cho Khách hàng)
 - **Xem & Lọc sản phẩm**: Duyệt qua danh sách sản phẩm theo danh mục (`CategoryProduct`).
 - **Tin tức & Blog**: Đọc tin tức, các bài viết chia sẻ từ hệ thống CMS (`Category` & `Post`).
 - **Giỏ hàng & Đặt hàng**: Thêm sản phẩm vào giỏ hàng, cập nhật số lượng, tạo đơn hàng mới thông qua trang thanh toán (Checkout).
 - **Lịch sử đơn hàng**: Đăng ký/Đăng nhập tài khoản khách hàng để theo dõi lịch sử và trạng thái xử lý các đơn hàng đã đặt.
 
-### ⚙️ Admin Portal (Quản trị viên)
+### ⚙️ Admin Portal (Dành cho Quản trị viên)
 - **Quản lý Catalog**: Thêm, sửa, xóa sản phẩm và danh mục sản phẩm.
 - **Quản lý Blog**: Tạo mới và chỉnh sửa bài viết tin tức.
 - **Quản lý Đơn hàng**: Tiếp nhận đơn đặt hàng từ khách hàng, thay đổi trạng thái đơn hàng (Chờ duyệt -> Đang giao -> Đã xong).

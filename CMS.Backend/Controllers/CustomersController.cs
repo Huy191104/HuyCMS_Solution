@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -28,11 +28,50 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        public IActionResult Index() // Hiển thị danh sách khách hàng cùng với các đơn hàng của họ
+        public IActionResult Index(string search, string orderStatus, int page = 1) // Hiển thị danh sách khách hàng cùng với các đơn hàng của họ, hỗ trợ tìm kiếm và lọc
         {
-            var data = _context.Customers
+            int pageSize = 5;
+
+            var query = _context.Customers
                 .Include(c => c.Orders)
+                .AsQueryable();
+
+            // Tìm kiếm theo tên, email hoặc số điện thoại
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchLower = search.Trim().ToLower();
+                query = query.Where(c => c.FullName.ToLower().Contains(searchLower) || c.Email.ToLower().Contains(searchLower) || c.Phone.ToLower().Contains(searchLower));
+            }
+
+            // Lọc theo lịch sử đặt hàng (hasorders / noorders)
+            if (!string.IsNullOrEmpty(orderStatus))
+            {
+                if (orderStatus == "hasorders")
+                {
+                    query = query.Where(c => c.Orders != null && c.Orders.Any());
+                }
+                else if (orderStatus == "noorders")
+                {
+                    query = query.Where(c => c.Orders == null || !c.Orders.Any());
+                }
+            }
+
+            var totalItems = query.Count();
+
+            var data = query
+                .OrderByDescending(c => c.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            // Các ViewBag phục vụ hiển thị lại form bộ lọc
+            ViewBag.Search = search;
+            ViewBag.OrderStatus = orderStatus;
 
             return View(data);
         }
@@ -46,12 +85,23 @@ namespace CMS.Backend.Controllers
         [HttpPost]
         public IActionResult Create(Customer model)
         {
+            // Kiểm tra email trùng
+            if (_context.Customers.Any(c => c.Email == model.Email))
+            {
+                ModelState.AddModelError("Email", "Email này đã được sử dụng.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             model.Password = BCrypt.Net.BCrypt.HashPassword(model.Password);
             _context.Customers.Add(model);
             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-        // Hiển thị form để tạo mới khách hàng
+        // Hiển thị form để chỉnh sửa khách hàng
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -66,6 +116,20 @@ namespace CMS.Backend.Controllers
         [HttpPost]
         public IActionResult Edit(Customer model)
         {
+            // Kiểm tra email trùng với người khác
+            if (_context.Customers.Any(c => c.Email == model.Email && c.Id != model.Id))
+            {
+                ModelState.AddModelError("Email", "Email này đã được sử dụng bởi tài khoản khác.");
+            }
+
+            // Loại bỏ kiểm tra Password vì password được phép để trống nếu không đổi
+            ModelState.Remove("Password");
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
             var customer = _context.Customers.Find(model.Id);
 
             if (customer == null)

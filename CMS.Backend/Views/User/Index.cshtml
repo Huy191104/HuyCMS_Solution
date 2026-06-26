@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMS.Data.Entities.User>
+@model IEnumerable<CMS.Data.Entities.User>
 
 @{
     Layout = "_LayoutAdmin";
@@ -315,8 +315,7 @@
 
                             <a asp-action="Delete"
                                asp-route-id="@item.Id"
-                               class="btn-del"
-                               onclick="return confirm('Bạn có chắc muốn xóa thành viên này?')">
+                               class="btn-del">
                                 <i class="bi bi-trash"></i>
                                 Xóa
                             </a>

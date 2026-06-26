@@ -29,6 +29,16 @@ namespace CMS.Backend.Controllers
             if (_context.Customers.Any(c => c.Email == req.Email))
                 return BadRequest(new { message = "Email này đã được sử dụng." });
 
+            // Kiểm tra số điện thoại nếu có nhập
+            if (!string.IsNullOrEmpty(req.Phone))
+            {
+                var phoneClean = req.Phone.Trim();
+                if (!System.Text.RegularExpressions.Regex.IsMatch(phoneClean, @"^\d{10}$"))
+                {
+                    return BadRequest(new { message = "Số điện thoại phải gồm đúng 10 chữ số." });
+                }
+            }
+
             var customer = new Customer
             {
                 FullName = req.FullName,

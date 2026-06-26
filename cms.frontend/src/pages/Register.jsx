@@ -1,6 +1,7 @@
-﻿import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import authService from "../services/authService";
+import logoImg from "../assets/images/logo.png";
 import "../assets/css/Auth.css";
 
 function Register() {
@@ -28,6 +29,12 @@ function Register() {
             return "Mật khẩu phải có ít nhất 3 ký tự.";
         if (form.password !== form.confirmPassword)
             return "Mật khẩu xác nhận không khớp.";
+        if (form.phone && form.phone.trim() !== "") {
+            const cleanPhone = form.phone.trim();
+            if (!/^\d{10}$/.test(cleanPhone)) {
+                return "Số điện thoại phải gồm đúng 10 chữ số.";
+            }
+        }
         return null;
     };
 
@@ -74,7 +81,7 @@ function Register() {
                             <span className="auth-badge-icon">🎉</span>
                             <div className="auth-badge-text">
                                 <strong>Quà tặng chào mừng</strong>
-                                Giảm 10% cho đơn hàng đầu tiên
+                                Miễn phí vận chuyển cho đơn hàng đầu tiên
                             </div>
                         </div>
                         <div className="auth-visual-badge">
@@ -99,10 +106,10 @@ function Register() {
             <div className="auth-form-panel">
                 <div className="auth-form-wrap">
 
-                    <a href="/" className="auth-logo">
-                        <span className="auth-logo-icon">🥐</span>
+                    <Link to="/" className="auth-logo">
+                        <img src={logoImg} alt="Bakery House Logo" className="auth-logo-img" />
                         <span className="auth-logo-name">Bakery House</span>
-                    </a>
+                    </Link>
 
                     <h1 className="auth-heading">Tạo tài <em>khoản</em></h1>
                     <p className="auth-subheading">Điền thông tin để đăng ký thành viên</p>
@@ -182,9 +189,10 @@ function Register() {
                                     type="tel"
                                     name="phone"
                                     className="auth-input"
-                                    placeholder="0909 123 456"
+                                    placeholder="0909123456"
                                     value={form.phone}
                                     onChange={handleChange}
+                                    maxLength={10}
                                 />
                             </div>
                             <div className="auth-group">
@@ -210,7 +218,7 @@ function Register() {
 
                     <div className="auth-switch">
                         Đã có tài khoản?{" "}
-                        <a href="/login">Đăng nhập ngay</a>
+                        <Link to="/login">Đăng nhập ngay</Link>
                     </div>
 
                 </div>

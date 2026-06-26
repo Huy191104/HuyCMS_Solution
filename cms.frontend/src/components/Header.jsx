@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import authService from "../services/authService";
+import logoImg from "../assets/images/logo.png";
 import "../assets/css/Header.css";
 
 function Header() {
@@ -63,9 +64,15 @@ function Header() {
         updateCartCount();
         window.addEventListener("cartUpdated", updateCartCount);
 
+        const updateUserInfo = () => {
+            setUser(authService.getCurrentUser());
+        };
+        window.addEventListener("userUpdated", updateUserInfo);
+
         return () => {
             window.removeEventListener("scroll", onScroll);
             window.removeEventListener("cartUpdated", updateCartCount);
+            window.removeEventListener("userUpdated", updateUserInfo);
             document.removeEventListener("mousedown", onClickOutside);
         };
     }, []);
@@ -96,13 +103,13 @@ function Header() {
             <div className="bh-header-inner">
 
                 {/* Logo */}
-                <a href="/" className="bh-logo">
-                    <span className="bh-logo-icon">🥐</span>
+                <Link to="/" className="bh-logo">
+                    <img src={logoImg} alt="Bakery House Logo" className="bh-logo-img" />
                     <div>
                         <div className="bh-logo-name">Bakery House</div>
                         <div className="bh-logo-tagline">Thủ công · Tươi mỗi ngày</div>
                     </div>
-                </a>
+                </Link>
 
                 {/* Thanh tìm kiếm desktop */}
                 <form className="bh-search-form" onSubmit={handleSearchSubmit}>
@@ -119,13 +126,13 @@ function Header() {
                 {/* Nav desktop */}
                 <nav className="bh-nav">
                     {links.map((l) => (
-                        <a
+                        <Link
                             key={l.href}
-                            href={l.href}
+                            to={l.href}
                             className={`bh-nav-link ${active === l.href ? "bh-nav-link--active" : ""}`}
                         >
                             {l.label}
-                        </a>
+                        </Link>
                     ))}
                 </nav>
 
@@ -133,7 +140,7 @@ function Header() {
                 <div className="bh-header-actions">
 
                     {/* Giỏ hàng */}
-                    <a href="/cart" className="bh-cart-btn" title="Giỏ hàng">
+                    <Link to="/cart" className="bh-cart-btn" title="Giỏ hàng">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                             <line x1="3" y1="6" x2="21" y2="6" />
@@ -142,11 +149,11 @@ function Header() {
                         {cartCount > 0 && (
                             <span className="bh-cart-badge">{cartCount > 99 ? "99+" : cartCount}</span>
                         )}
-                    </a>
+                    </Link>
 
                     {/* Chưa đăng nhập */}
                     {!user ? (
-                        <a href="/login" className="bh-login-btn">Đăng nhập</a>
+                        <Link to="/login" className="bh-login-btn">Đăng nhập</Link>
                     ) : (
                         /* Đã đăng nhập — User dropdown */
                         <div className="bh-user-wrap" ref={dropdownRef}>
@@ -171,12 +178,12 @@ function Header() {
                                         <div className="bh-dropdown-email">{user.email}</div>
                                     </div>
                                     <div className="bh-dropdown-divider" />
-                                    <a href="/profile" className="bh-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                                    <Link to="/profile" className="bh-dropdown-item" onClick={() => setDropdownOpen(false)}>
                                         👤 Thông tin tài khoản
-                                    </a>
-                                    <a href="/orders" className="bh-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                                    </Link>
+                                    <Link to="/orders" className="bh-dropdown-item" onClick={() => setDropdownOpen(false)}>
                                         📦 Đơn hàng của tôi
-                                    </a>
+                                    </Link>
                                     <div className="bh-dropdown-divider" />
                                     <button className="bh-dropdown-item bh-dropdown-logout" onClick={handleLogout}>
                                         🚪 Đăng xuất
@@ -210,18 +217,18 @@ function Header() {
                     />
                 </form>
                 {links.map((l) => (
-                    <a
+                    <Link
                         key={l.href}
-                        href={l.href}
+                        to={l.href}
                         className={`bh-mobile-link ${active === l.href ? "bh-mobile-link--active" : ""}`}
                         onClick={() => setMenuOpen(false)}
                     >
                         {l.label}
-                    </a>
+                    </Link>
                 ))}
                 <div className="bh-dropdown-divider" style={{ margin: "8px 0" }} />
                 {!user ? (
-                    <a href="/login" className="bh-mobile-login">Đăng nhập</a>
+                    <Link to="/login" className="bh-mobile-login">Đăng nhập</Link>
                 ) : (
                     <>
                         <div className="bh-mobile-user-info">
@@ -231,8 +238,8 @@ function Header() {
                             <div style={{ color: "#F5E6C8", fontSize: "13px", fontWeight: 500 }}>{user.fullName}</div>
                             <div style={{ color: "rgba(245,230,200,0.45)", fontSize: "11px" }}>{user.email}</div>
                         </div>
-                        <a href="/profile" className="bh-mobile-link" onClick={() => setMenuOpen(false)}>👤 Tài khoản</a>
-                        <a href="/orders" className="bh-mobile-link" onClick={() => setMenuOpen(false)}>📦 Đơn hàng</a>
+                        <Link to="/profile" className="bh-mobile-link" onClick={() => setMenuOpen(false)}>👤 Tài khoản</Link>
+                        <Link to="/orders" className="bh-mobile-link" onClick={() => setMenuOpen(false)}>📦 Đơn hàng</Link>
                         <button className="bh-mobile-login" style={{ background: "rgba(255,255,255,0.08)", marginTop: 8 }} onClick={handleLogout}>
                             🚪 Đăng xuất
                         </button>

@@ -1,5 +1,7 @@
-﻿import Header from "../components/Header";
+import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom";
+import logoImg from "../assets/images/logo.png";
 import "../assets/css/About.css";
 
 const VALUES = [
@@ -74,7 +76,7 @@ export default function About() {
                         </div>
                         <div className="ab-story-visual">
                             <div className="ab-story-img">
-                                <span>🥐</span>
+                                <img src={logoImg} alt="Bakery House Logo" className="ab-story-logo-img" />
                             </div>
                         </div>
                     </div>
@@ -147,7 +149,7 @@ export default function About() {
                 <div className="ab-cta-inner">
                     <h2 className="ab-cta-title">Sẵn sàng thưởng thức <em>bánh ngon</em>?</h2>
                     <p className="ab-cta-sub">Khám phá hơn 200 loại bánh thủ công của chúng tôi</p>
-                    <a href="/products" className="ab-cta-btn">Xem sản phẩm →</a>
+                    <Link to="/products" className="ab-cta-btn">Xem sản phẩm →</Link>
                 </div>
             </section>
 

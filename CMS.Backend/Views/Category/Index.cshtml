@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMS.Data.Entities.Category>
+@model IEnumerable<CMS.Data.Entities.Category>
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Danh mục";
@@ -334,9 +334,7 @@
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit">
                                     <i class="bi bi-pencil-square"></i> Sửa
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn-del"
-                                   data-name="@item.Name"
-                                   onclick="return confirm('Bạn có chắc muốn xóa danh mục &quot;' + this.dataset.name + '&quot; không?')">
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn-del">
                                     <i class="bi bi-trash"></i> Xóa
                                 </a>
                             </div>

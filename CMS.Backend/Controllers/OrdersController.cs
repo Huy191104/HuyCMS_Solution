@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -11,6 +11,8 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using CMS.Data.Entities;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace CMS.Backend.Controllers
 {
@@ -24,13 +26,44 @@ namespace CMS.Backend.Controllers
         {
             _context = context;
         }
-        //Hiển thị danh sách Orders từ database, bao gồm thông tin khách hàng liên quan thông qua Include, sắp xếp theo ngày đặt hàng giảm dần
-        public IActionResult Index() 
+        //Hiển thị danh sách Orders từ database, bao gồm thông tin khách hàng liên quan thông qua Include, sắp xếp theo ngày đặt hàng giảm dần, hỗ trợ tìm kiếm và lọc
+        public IActionResult Index(string search, int? status, int page = 1) 
         {
-            var data = _context.Orders
+            int pageSize = 5;
+
+            var query = _context.Orders
                 .Include(o => o.Customer)
+                .AsQueryable();
+
+            // Tìm kiếm (theo ID đơn hàng hoặc tên khách hàng)
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchLower = search.Trim().ToLower();
+                query = query.Where(o => o.Id.ToString().Contains(searchLower) || (o.Customer != null && o.Customer.FullName.ToLower().Contains(searchLower)));
+            }
+
+            // Lọc theo trạng thái (0: Chờ duyệt, 1: Đang giao, 2: Đã xong)
+            if (status.HasValue)
+            {
+                query = query.Where(o => o.Status == status.Value);
+            }
+
+            var totalItems = query.Count();
+
+            var data = query
                 .OrderByDescending(o => o.OrderDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            // Các ViewBag phục vụ hiển thị lại form bộ lọc
+            ViewBag.Search = search;
+            ViewBag.Status = status;
 
             return View(data);
         }
@@ -56,6 +89,12 @@ namespace CMS.Backend.Controllers
             if (order == null)
                 return NotFound();
 
+            if (order.Status == 2)
+            {
+                TempData["Error"] = "Đơn hàng đã hoàn thành, không thể thay đổi thông tin.";
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(order);
         }
         // Xử lý dữ liệu từ form chỉnh sửa đơn hàng, cập nhật trạng thái và ghi chú của đơn hàng trong database
@@ -66,6 +105,12 @@ namespace CMS.Backend.Controllers
 
             if (order == null)
                 return NotFound();
+
+            if (order.Status == 2)
+            {
+                TempData["Error"] = "Đơn hàng đã hoàn thành, không thể thay đổi thông tin.";
+                return RedirectToAction(nameof(Index));
+            }
 
             order.Status = model.Status;
             order.Notes = model.Notes;
@@ -106,6 +151,109 @@ namespace CMS.Backend.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Orders/ExportToExcel
+        [HttpGet]
+        public IActionResult ExportToExcel(string search, int? status)
+        {
+            var query = _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails)
+                .AsQueryable();
+
+            // Tìm kiếm (theo ID đơn hàng hoặc tên khách hàng)
+            if (!string.IsNullOrEmpty(search))
+            {
+                var searchLower = search.Trim().ToLower();
+                query = query.Where(o => o.Id.ToString().Contains(searchLower) || (o.Customer != null && o.Customer.FullName.ToLower().Contains(searchLower)));
+            }
+
+            // Lọc theo trạng thái
+            if (status.HasValue)
+            {
+                query = query.Where(o => o.Status == status.Value);
+            }
+
+            var orders = query.OrderByDescending(o => o.OrderDate).ToList();
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Đơn hàng");
+
+                // Tiêu đề bảng
+                worksheet.Cell(1, 1).Value = "Mã đơn";
+                worksheet.Cell(1, 2).Value = "Khách hàng";
+                worksheet.Cell(1, 3).Value = "Ngày đặt hàng";
+                worksheet.Cell(1, 4).Value = "Trạng thái";
+                worksheet.Cell(1, 5).Value = "Tổng tiền (VNĐ)";
+                worksheet.Cell(1, 6).Value = "Ghi chú";
+
+                // Định dạng tiêu đề cột
+                var headerRange = worksheet.Range("A1:F1");
+                headerRange.Style.Font.Bold = true;
+                headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#16A34A"); // Green Excel
+                headerRange.Style.Font.FontColor = XLColor.White;
+                headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                headerRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                worksheet.Row(1).Height = 24;
+
+                int row = 2;
+                foreach (var order in orders)
+                {
+                    worksheet.Cell(row, 1).Value = $"#{order.Id}";
+                    worksheet.Cell(row, 2).Value = order.Customer?.FullName ?? "Khách vãng lai";
+                    worksheet.Cell(row, 3).Value = order.OrderDate.ToString("dd/MM/yyyy HH:mm");
+
+                    worksheet.Cell(row, 4).Value = order.Status switch
+                    {
+                        0 => "Chờ duyệt",
+                        1 => "Đang giao",
+                        2 => "Hoàn thành",
+                        3 => "Đã hủy",
+                        _ => "Không xác định"
+                    };
+
+                    // Tính tổng tiền từ chi tiết đơn hàng
+                    decimal totalAmount = order.OrderDetails?.Sum(od => od.Quantity * od.UnitPrice) ?? 0;
+                    worksheet.Cell(row, 5).Value = totalAmount;
+                    worksheet.Cell(row, 5).Style.NumberFormat.Format = "#,##0"; // Định dạng số phân tách hàng nghìn
+
+                    worksheet.Cell(row, 6).Value = order.Notes ?? "";
+
+                    // Căn lề các ô dữ liệu
+                    worksheet.Cell(row, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(row, 3).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(row, 4).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Cell(row, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+
+                    row++;
+                }
+
+                // Thiết kế viền mờ cho bảng dữ liệu
+                if (row > 2)
+                {
+                    var dataRange = worksheet.Range($"A1:F{row - 1}");
+                    dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+                    dataRange.Style.Border.OutsideBorderColor = XLColor.FromHtml("#E9ECEF");
+                    dataRange.Style.Border.InsideBorderColor = XLColor.FromHtml("#F1F3F5");
+                }
+
+                // Tự động điều chỉnh kích thước cột
+                worksheet.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        $"danh-sach-don-hang-{DateTime.Now:yyyyMMddHHmmss}.xlsx"
+                    );
+                }
+            }
         }
     }
 }
