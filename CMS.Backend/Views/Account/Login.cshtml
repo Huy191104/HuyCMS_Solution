@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -7,147 +7,273 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đăng nhập — BakeryHouse Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
 
         body {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
             font-size: 14px;
-            background: #F8F9FA;
-        }
-
-        /* ── Center form ── */
-        .login-form-panel {
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 48px 64px;
-            background: #F8F9FA;
-        }
-        .login-form-wrap { width: 100%; max-width: 360px;
-            width: 100%;
-            max-width: 360px;
-            background: #fff;
-            border: 1px solid #E9ECEF;
-            border-radius: 12px;
-            padding: 32px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        }
-
-        .login-form-title {
-            font-size: 22px; font-weight: 600;
-            color: #212529; margin-bottom: 4px;
-        }
-        .login-form-sub {
-            font-size: 13px; color: #6C757D; margin-bottom: 28px;
-        }
-
-        /* Form */
-        .lf-group { margin-bottom: 16px; }
-        .lf-label {
-            display: flex; align-items: center; gap: 5px;
-            font-size: 12px; font-weight: 500;
-            color: #212529; margin-bottom: 6px;
-        }
-        .lf-label i { font-size: 13px; color: #6C757D; }
-        .lf-input {
-            width: 100%;
-            background: #fff;
-            border: 1px solid #E9ECEF;
-            border-radius: 7px;
-            padding: 9px 12px;
-            font-size: 13px; color: #212529;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            outline: none;
-            transition: border-color 0.15s, box-shadow 0.15s;
-        }
-        .lf-input:focus {
-            border-color: #2563EB;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-        }
-        .lf-input::placeholder { color: #ADB5BD; }
-
-        /* Error */
-        .lf-error {
-            background: #FEF2F2; border: 1px solid #FECACA;
-            border-radius: 7px; padding: 10px 14px;
-            font-size: 13px; color: #991B1B;
-            display: flex; align-items: center; gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        /* Button */
-        .lf-btn {
-            width: 100%;
-            background: #2563EB; color: #fff;
-            border: none; border-radius: 7px;
-            padding: 10px; font-size: 13px; font-weight: 500;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            cursor: pointer;
-            transition: background 0.15s;
-            display: flex; align-items: center; justify-content: center; gap: 6px;
-            margin-top: 4px;
-        }
-        .lf-btn:hover { background: #1D4ED8; }
-
-        /* Divider */
-        .lf-divider {
-            text-align: center;
-            font-size: 11px; color: #ADB5BD;
-            margin: 20px 0;
+            background: radial-gradient(circle at 10% 20%, rgba(254, 252, 243, 1) 0%, rgba(245, 245, 245, 1) 90%);
+            overflow: hidden;
             position: relative;
         }
+
+        /* ── Ambient Background Blobs ── */
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 0;
+        }
+        .blob-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(245, 158, 11, 0.15); /* Warm Orange */
+            top: -100px;
+            left: -100px;
+        }
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background: rgba(239, 68, 68, 0.1); /* Soft Red */
+            bottom: -150px;
+            right: -100px;
+        }
+
+        /* ── Glassmorphism Form Wrap ── */
+        .login-form-wrap { 
+            position: relative;
+            z-index: 10;
+            width: 100%; 
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 20px;
+            padding: 40px 36px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.02);
+            transition: transform 0.3s ease;
+        }
+
+        /* Brand Identity Header */
+        .brand-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 28px;
+            text-align: center;
+        }
+        
+        .brand-logo-img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08));
+        }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1F2937;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-badge {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #B45309;
+            background: #FEF3C7;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-top: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Input Fields ── */
+        .lf-group { 
+            margin-bottom: 20px; 
+        }
+        
+        .lf-label {
+            display: block;
+            font-size: 12px; 
+            font-weight: 600;
+            color: #4B5563; 
+            margin-bottom: 6px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #9CA3AF;
+            font-size: 16px;
+            transition: color 0.15s;
+        }
+
+        .lf-input {
+            width: 100%;
+            background: rgba(249, 250, 251, 0.8);
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            padding: 12px 14px 12px 42px;
+            font-size: 13px; 
+            color: #1F2937;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+        }
+
+        .lf-input:focus {
+            background: #fff;
+            border-color: #D97706;
+            box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+        }
+
+        .lf-input:focus + .input-icon,
+        .input-wrapper:focus-within .input-icon {
+            color: #D97706;
+        }
+
+        .lf-input::placeholder { 
+            color: #9CA3AF; 
+        }
+
+        /* ── Error Message Banner ── */
+        .lf-error {
+            background: #FEF2F2; 
+            border: 1px solid #FECACA;
+            border-radius: 10px; 
+            padding: 12px 14px;
+            font-size: 13px; 
+            color: #991B1B;
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* ── Button Action ── */
+        .lf-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #F59E0B, #D97706); 
+            color: #fff;
+            border: none; 
+            border-radius: 10px;
+            padding: 12px; 
+            font-size: 14px; 
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+            margin-top: 24px;
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.2);
+        }
+
+        .lf-btn:hover { 
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(217, 119, 6, 0.35);
+        }
+
+        .lf-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* ── Footer Elements ── */
+        .lf-divider {
+            text-align: center;
+            font-size: 11px; 
+            color: #9CA3AF;
+            margin: 24px 0;
+            position: relative;
+        }
+        
         .lf-divider::before {
             content: '';
-            position: absolute; top: 50%; left: 0; right: 0;
-            height: 1px; background: #E9ECEF;
+            position: absolute; 
+            top: 50%; 
+            left: 0; 
+            right: 0;
+            height: 1px; 
+            background: rgba(229, 231, 235, 0.8);
         }
+        
         .lf-divider span {
-            position: relative; background: #F8F9FA;
-            padding: 0 10px;
+            position: relative; 
+            background: #fff;
+            padding: 0 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(229, 231, 235, 0.5);
+            font-weight: 500;
         }
 
-        /* Footer note */
         .lf-note {
             text-align: center;
-            font-size: 11px; color: #ADB5BD;
-            margin-top: 20px; line-height: 1.6;
+            font-size: 11px; 
+            color: #9CA3AF;
+            margin-top: 10px; 
+            line-height: 1.6;
         }
 
-        @@media (max-width: 768px) {
-            body { grid-template-columns: 1fr; }
-            .login-visual { display: none; }
-            .login-form-panel { padding: 40px 24px; }
+        @@media (max-width: 480px) {
+            .login-form-wrap {
+                padding: 30px 24px;
+                margin: 16px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Center form -->
-    <div class="login-form-panel">
-        <div class="login-form-wrap">
+    <!-- Ambient Blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
 
-            <div class="login-form-title">Đăng nhập</div>
-            <div class="login-form-sub">Nhập thông tin tài khoản quản trị</div>
+    <!-- Center Login Card -->
+    <div class="login-form-wrap">
 
-            @if (ViewBag.Error != null)
-            {
-                <div class="lf-error">
-                    <i class="bi bi-exclamation-circle"></i>
-                    @ViewBag.Error
-                </div>
-            }
+        <div class="brand-header">
+            <img src="/images/logo.png" alt="Bakery House Logo" class="brand-logo-img" />
+            <h1 class="brand-name">Bakery House</h1>
+            <span class="brand-badge">Hệ thống quản trị CMS</span>
+        </div>
 
-            <form asp-action="Login" method="post">
-                <div class="lf-group">
-                    <label class="lf-label">
-                        <i class="bi bi-person"></i>
-                        Tên đăng nhập
-                    </label>
+        @if (ViewBag.Error != null)
+        {
+            <div class="lf-error">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                @ViewBag.Error
+            </div>
+        }
+
+        <form asp-action="Login" method="post">
+            <div class="lf-group">
+                <label class="lf-label">Tên đăng nhập</label>
+                <div class="input-wrapper">
+                    <i class="bi bi-person input-icon"></i>
                     <input type="text"
                            name="username"
                            class="lf-input"
@@ -155,12 +281,12 @@
                            required
                            autocomplete="username" />
                 </div>
+            </div>
 
-                <div class="lf-group">
-                    <label class="lf-label">
-                        <i class="bi bi-lock"></i>
-                        Mật khẩu
-                    </label>
+            <div class="lf-group">
+                <label class="lf-label">Mật khẩu</label>
+                <div class="input-wrapper">
+                    <i class="bi bi-lock input-icon"></i>
                     <input type="password"
                            name="password"
                            class="lf-input"
@@ -168,21 +294,21 @@
                            required
                            autocomplete="current-password" />
                 </div>
-
-                <button type="submit" class="lf-btn">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Đăng nhập
-                </button>
-            </form>
-
-            <div class="lf-divider"><span>BakeryHouse CMS</span></div>
-
-            <div class="lf-note">
-                Chỉ dành cho quản trị viên và biên tập viên.<br />
-                Nếu quên mật khẩu, liên hệ quản trị viên hệ thống.
             </div>
 
+            <button type="submit" class="lf-btn">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Đăng nhập hệ thống
+            </button>
+        </form>
+
+        <div class="lf-divider"><span>HuyCMS Portal</span></div>
+
+        <div class="lf-note">
+            Chỉ dành cho quản trị viên và nhân viên tiệm bánh.<br />
+            Mọi hành động truy cập trái phép đều bị ghi nhận.
         </div>
+
     </div>
 
 </body>

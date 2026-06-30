@@ -1,4 +1,4 @@
-﻿@model CMS.Data.Entities.Product
+@model CMS.Data.Entities.Product
 
 @{
     Layout = "_LayoutAdmin";
@@ -182,6 +182,11 @@
         display: block;
     }
 
+    /* CKEditor Custom height */
+    .ck-editor__editable_inline {
+        min-height: 250px;
+    }
+
 </style>
 
 <div class="cf-header">
@@ -353,8 +358,17 @@
 @section Scripts {
 
     @await Html.PartialAsync("_ValidationScriptsPartial")
-
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
+        ClassicEditor
+            .create(document.querySelector('#Description'), {
+                ckfinder: {
+                    uploadUrl: '/Post/UploadCkImage'
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
 
         document.getElementById('imageInput')
             .addEventListener('change', function () {

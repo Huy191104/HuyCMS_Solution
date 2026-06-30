@@ -422,7 +422,12 @@
 
                         <td>
                             <span class="product-desc">
-                                @item.Description
+                                @{
+                                    string desc = System.Net.WebUtility.HtmlDecode(item.Description ?? "");
+                                    desc = System.Text.RegularExpressions.Regex.Replace(desc, "<.*?>", "").Replace("\u00A0", " ").Replace("&nbsp;", " ");
+                                    if (desc.Length > 80) desc = desc.Substring(0, 80) + "...";
+                                }
+                                @desc
                             </span>
                         </td>
 

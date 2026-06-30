@@ -1,7 +1,8 @@
-@model IEnumerable<CMS.Data.Entities.Post>
+@model IEnumerable<CMS.Data.Entities.Banner>
+
 @{
     Layout = "_LayoutAdmin";
-    ViewData["Title"] = "Bài viết";
+    ViewData["Title"] = "Quản lý Banner";
 }
 
 <style>
@@ -86,49 +87,33 @@
         font-size: 11px; font-weight: 500; color: #495057;
     }
 
-    .post-thumb {
-        width: 100px; height: 70px;
-        border-radius: 8px; object-fit: cover;
+    .banner-thumb {
+        width: 120px; height: 60px;
+        border-radius: 6px; object-fit: cover;
         border: 1px solid #E9ECEF;
     }
-    .post-no-thumb {
-        width: 100px; height: 70px;
-        border-radius: 8px;
-        background: #F1F3F5; border: 1px solid #E9ECEF;
-        display: flex; align-items: center; justify-content: center;
-        color: #ADB5BD; font-size: 24px;
-    }
 
-    .post-title { font-weight: 500; color: #212529; }
-    .post-excerpt { font-size: 12px; color: #6C757D; margin-top: 2px; }
-
-    .cat-badge {
-        display: inline-block;
-        background: #EFF6FF; color: #1D4ED8;
-        border: 1px solid #BFDBFE;
-        border-radius: 4px; padding: 2px 8px;
-        font-size: 11px; font-weight: 500;
-    }
-    .cat-none {
-        display: inline-block;
-        background: #F1F3F5; color: #6C757D;
-        border: 1px solid #DEE2E6;
-        border-radius: 4px; padding: 2px 8px;
+    .badge-active {
+        background: #D1FAE5;
+        color: #065F46;
         font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+        border: 1px solid #A7F3D0;
     }
 
-    .date-text { font-size: 12px; color: #6C757D; white-space: nowrap; }
+    .badge-inactive {
+        background: #F3F4F6;
+        color: #4B5563;
+        font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+        border: 1px solid #E5E7EB;
+    }
 
     .actions { display: flex; align-items: center; justify-content: center; gap: 5px; }
-
-    .btn-detail {
-        display: inline-flex; align-items: center; gap: 4px;
-        background: #F0FDF4; color: #15803D !important;
-        border: 1px solid #BBF7D0; border-radius: 5px;
-        padding: 5px 10px; font-size: 12px; font-weight: 500;
-        text-decoration: none; transition: background 0.12s;
-    }
-    .btn-detail:hover { background: #DCFCE7; color: #15803D !important; }
 
     .btn-edit {
         display: inline-flex; align-items: center; gap: 4px;
@@ -184,32 +169,28 @@
         font-weight: 500;
     }
 
-        .page-btn:hover {
-            background: #F3F4F6;
-        }
+    .page-btn:hover {
+        background: #F3F4F6;
+    }
 
-        .page-btn.active {
-            background: #2563EB;
-            color: white;
-            border-color: #2563EB;
-        }
+    .page-btn.active {
+        background: #2563EB;
+        color: white;
+        border-color: #2563EB;
+    }
 </style>
 
 <div class="pg-header">
     <div>
-        <h2 class="pg-title">Danh sách bài viết</h2>
-        <div class="pg-subtitle">Tổng số: <strong>@ViewBag.TotalItems bài viết</strong> trong hệ thống</div>
+        <h2 class="pg-title">Danh sách Banner Slider</h2>
+        <div class="pg-subtitle">Tổng số: <strong>@ViewBag.TotalItems banner</strong> trong hệ thống</div>
     </div>
     <a asp-action="Create" class="btn-add">
-        <i class="bi bi-plus-circle"></i> Thêm bài viết mới
+        <i class="bi bi-plus-circle"></i> Thêm banner mới
     </a>
 </div>
 
 <form method="get" action="@Url.Action("Index")" class="toolbar" id="filterForm">
-    @if (ViewBag.CategoryFilterId != null)
-    {
-        <input type="hidden" name="id" value="@ViewBag.CategoryFilterId" />
-    }
     <div class="search-box">
         <i class="bi bi-search"></i>
         <input type="text"
@@ -221,25 +202,26 @@
 </form>
 
 <div class="tbl-wrap">
-    <table class="tbl" id="postTable">
+    <table class="tbl" id="bannerTable">
         <thead>
             <tr>
-                <th style="width:80px">ID</th>
-                <th style="width:140px">Ảnh</th>
-                <th>Tiêu đề</th>
-                <th style="width:170px">Danh mục</th>
-                <th style="width:100px">Ngày đăng</th>
-                <th style="width:250px;text-align:center">Thao tác</th>
+                <th style="width: 80px;">ID</th>
+                <th style="width: 140px;">Hình ảnh</th>
+                <th>Tiêu đề Banner</th>
+                <th style="width: 250px;">Đường dẫn liên kết</th>
+                <th style="width: 90px; text-align: center;">Thứ tự</th>
+                <th style="width: 120px; text-align: center;">Trạng thái</th>
+                <th style="width: 250px; text-align: center;">Thao tác</th>
             </tr>
         </thead>
         <tbody>
-            @if (!Model.Any())
+            @if (Model == null || !Model.Any())
             {
                 <tr>
-                    <td colspan="6">
+                    <td colspan="7">
                         <div class="empty-state">
-                            <i class="bi bi-file-earmark-x"></i>
-                            <p>Chưa có bài viết nào. Hãy thêm bài viết đầu tiên!</p>
+                            <i class="bi bi-image-alt"></i>
+                            <p>Chưa có banner nào. Hãy nhấn "Thêm Banner Mới" để bắt đầu.</p>
                         </div>
                     </td>
                 </tr>
@@ -248,46 +230,32 @@
             {
                 @foreach (var item in Model)
                 {
-                        string content = System.Net.WebUtility.HtmlDecode(item.Content ?? "");
-                        content = System.Text.RegularExpressions.Regex.Replace(content, "<.*?>", "").Replace("\u00A0", " ").Replace("&nbsp;", " ");
-
-                        if (content.Length > 80) content = content.Substring(0, 80) + "...";
                     <tr>
                         <td><span class="id-badge">#@item.Id</span></td>
                         <td>
-                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            <img src="@item.ImageUrl" alt="@item.Title" class="banner-thumb" />
+                        </td>
+                        <td>
+                            <strong style="color: #212529;">@item.Title</strong>
+                        </td>
+                        <td class="text-muted">
+                            @(string.IsNullOrEmpty(item.LinkUrl) ? "Không có" : item.LinkUrl)
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-secondary">@item.Order</span>
+                        </td>
+                        <td class="text-center">
+                            @if (item.IsActive)
                             {
-                                <img src="@item.ImageUrl" class="post-thumb" alt="@item.Title" />
+                                <span class="badge-active">Hoạt động</span>
                             }
                             else
                             {
-                                <div class="post-no-thumb">
-                                    <i class="bi bi-image"></i>
-                                </div>
+                                <span class="badge-inactive">Tạm ẩn</span>
                             }
-                        </td>
-                        <td>
-                            <div class="post-title">@item.Title</div>
-                            <div class="post-excerpt">@content</div>
-                        </td>
-                        <td>
-                            @if (item.Category != null)
-                            {
-                                <span class="cat-badge">@item.Category.Name</span>
-                            }
-                            else
-                            {
-                                <span class="cat-none">Chưa phân loại</span>
-                            }
-                        </td>
-                        <td>
-                            <span class="date-text">@item.CreatedDate.ToString("dd/MM/yyyy")</span>
                         </td>
                         <td>
                             <div class="actions">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn-detail">
-                                    <i class="bi bi-eye"></i> Chi tiết
-                                </a>
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn-edit">
                                     <i class="bi bi-pencil-square"></i> Sửa
                                 </a>
@@ -305,7 +273,7 @@
 
 <div class="tbl-footer">
     <div class="footer-info" id="footerInfo">
-        Hiển thị <strong>@Model.Count()</strong> trong tổng <strong>@ViewBag.TotalItems</strong> bài viết
+        Hiển thị <strong>@(Model?.Count() ?? 0)</strong> trong tổng <strong>@ViewBag.TotalItems</strong> banner
     </div>
 </div>
 
@@ -316,7 +284,6 @@
             @if (ViewBag.CurrentPage > 1)
             {
                 <a asp-action="Index"
-                   asp-route-id="@ViewBag.CategoryFilterId"
                    asp-route-search="@ViewBag.Search"
                    asp-route-page="@(ViewBag.CurrentPage - 1)"
                    class="page-btn">
@@ -327,7 +294,6 @@
             @for (int i = 1; i <= ViewBag.TotalPages; i++)
             {
                 <a asp-action="Index"
-                   asp-route-id="@ViewBag.CategoryFilterId"
                    asp-route-search="@ViewBag.Search"
                    asp-route-page="@i"
                    class="page-btn @(i == ViewBag.CurrentPage ? "active" : "")">
@@ -338,7 +304,6 @@
             @if (ViewBag.CurrentPage < ViewBag.TotalPages)
             {
                 <a asp-action="Index"
-                   asp-route-id="@ViewBag.CategoryFilterId"
                    asp-route-search="@ViewBag.Search"
                    asp-route-page="@(ViewBag.CurrentPage + 1)"
                    class="page-btn">
@@ -347,8 +312,4 @@
             }
         </div>
     </div>
-}
-
-@section Scripts {
-    <!-- Đã chuyển sang tìm kiếm và lọc Server-side -->
 }

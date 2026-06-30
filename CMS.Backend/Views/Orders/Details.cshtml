@@ -1,4 +1,4 @@
-﻿@model CMS.Data.Entities.Order
+@model CMS.Data.Entities.Order
 
 @{
     Layout = "_LayoutAdmin";
@@ -213,10 +213,76 @@
 
         </div>
 
-        <div class="footer-actions">
+        <!-- Order Items Section -->
+        <h5 class="cf-card-title" style="margin-top: 30px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #E9ECEF;">
+            Danh sách sản phẩm đã mua
+        </h5>
+        <div class="table-responsive" style="border: 1px solid #E9ECEF; border-radius: 8px; overflow: hidden; margin-bottom: 20px;">
+            <table class="table table-hover align-middle" style="margin-bottom: 0; font-size: 13px;">
+                <thead class="table-light">
+                    <tr>
+                        <th style="padding: 10px 14px; font-weight: 600; color: #6C757D;">Hình ảnh</th>
+                        <th style="padding: 10px 14px; font-weight: 600; color: #6C757D;">Tên sản phẩm</th>
+                        <th style="padding: 10px 14px; font-weight: 600; color: #6C757D; width: 100px; text-align: center;">Số lượng</th>
+                        <th style="padding: 10px 14px; font-weight: 600; color: #6C757D; width: 150px; text-align: right;">Đơn giá</th>
+                        <th style="padding: 10px 14px; font-weight: 600; color: #6C757D; width: 180px; text-align: right; padding-right: 14px;">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.OrderDetails == null || !Model.OrderDetails.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                Không có sản phẩm nào trong đơn hàng này.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        decimal totalSum = 0;
+                        foreach (var detail in Model.OrderDetails)
+                        {
+                            var itemTotal = detail.Quantity * detail.UnitPrice;
+                            totalSum += itemTotal;
+                            <tr>
+                                <td style="padding: 10px 14px;">
+                                    @if (detail.Product != null && !string.IsNullOrEmpty(detail.Product.ImageUrl))
+                                    {
+                                        <img src="@detail.Product.ImageUrl" alt="@detail.Product.Name" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #E9ECEF;" />
+                                    }
+                                    else
+                                    {
+                                        <div style="width: 50px; height: 50px; background: #F1F3F5; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #ADB5BD; font-size: 18px;">
+                                            <i class="bi bi-image"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td style="padding: 10px 14px;">
+                                    <div style="font-weight: 600; color: #212529;">@(detail.Product?.Name ?? "Sản phẩm không tồn tại")</div>
+                                    <div class="text-muted" style="font-size: 11px;">Mã sản phẩm: #@detail.ProductId</div>
+                                </td>
+                                <td class="text-center" style="padding: 10px 14px;">@detail.Quantity</td>
+                                <td class="text-right" style="text-align: right; padding: 10px 14px;">@detail.UnitPrice.ToString("N0") ₫</td>
+                                <td class="text-right" style="text-align: right; padding: 10px 14px; padding-right: 14px; font-weight: 600; color: #16A34A;">@itemTotal.ToString("N0") ₫</td>
+                            </tr>
+                        }
+                        <tr class="table-light" style="font-weight: 600;">
+                            <td colspan="4" class="text-right" style="text-align: right; padding: 12px 14px;">Tổng giá trị đơn hàng:</td>
+                            <td class="text-right" style="text-align: right; padding: 12px 14px; padding-right: 14px; font-size: 14px; color: #DC3545; font-weight: 700;">@totalSum.ToString("N0") ₫</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer-actions" style="display: flex; gap: 8px;">
             <a asp-action="Index" class="btn-back">
                 <i class="bi bi-arrow-left"></i>
-                Quay lại danh sách
+                Quay lại danh sách đơn hàng
+            </a>
+            <a asp-controller="OrderDetails" asp-action="Index" class="btn-back">
+                <i class="bi bi-list-ul"></i>
+                Danh sách chi tiết sản phẩm
             </a>
         </div>
 

@@ -1,4 +1,4 @@
-﻿@model CMS.Data.Entities.Post
+@model CMS.Data.Entities.Post
 
 @{
     Layout = "_LayoutAdmin";
@@ -129,17 +129,107 @@
             margin-bottom: 16px;
         }
 
+        /* CKEditor Alignment Classes */
+        .post-content .text-align-left {
+            text-align: left !important;
+        }
+
+        .post-content .text-align-center {
+            text-align: center !important;
+        }
+
+        .post-content .text-align-right {
+            text-align: right !important;
+        }
+
+        .post-content .text-align-justify {
+            text-align: justify !important;
+        }
+
+        /* CKEditor Image and Figure Formatting */
+        .post-content figure {
+            margin: 24px auto;
+            display: table;
+            clear: both;
+            text-align: center;
+        }
+
+        .post-content figure figcaption {
+            font-size: 13px;
+            color: #6C757D;
+            margin-top: 8px;
+            text-align: center;
+            font-style: italic;
+        }
+
         .post-content img {
             max-width: 100%;
             height: auto;
             border-radius: 8px;
-            margin: 15px 0;
+            margin: 15px auto;
+            display: block;
+        }
+
+        .post-content figure.image-style-block-align-center,
+        .post-content figure.image-style-align-center,
+        .post-content figure.image {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .post-content figure.image-style-block-align-left,
+        .post-content figure.image-style-align-left {
+            margin-right: auto;
+            margin-left: 0;
+            float: left;
+            margin-right: 24px;
+            margin-bottom: 16px;
+        }
+
+        .post-content figure.image-style-block-align-right,
+        .post-content figure.image-style-align-right {
+            margin-left: auto;
+            margin-right: 0;
+            float: right;
+            margin-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        .post-content figure.image-style-side {
+            float: right;
+            margin-left: 24px;
+            margin-bottom: 16px;
+            max-width: 50%;
+        }
+
+        .post-content ul, .post-content ol {
+            padding-left: 24px;
+            margin: 0 0 16px;
+        }
+
+        .post-content li {
+            margin-bottom: 6px;
+        }
+
+        .post-content blockquote {
+            border-left: 3px solid #C17A3A;
+            margin: 20px 0;
+            padding: 12px 20px;
+            background: #FDF0DC;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #8C7355;
         }
 
         .post-content table {
-            display: block;
-            overflow-x: auto;
-            max-width: 100%;
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .post-content table td, .post-content table th {
+            border: 1px solid #dee2e6;
+            padding: 8px 12px;
         }
 
         .post-content pre,
@@ -226,7 +316,7 @@
 
     <hr class="content-divider" />
 
-    <div class="post-content">
+    <div class="post-content ck-content">
         @Html.Raw(Model.Content)
     </div>
 

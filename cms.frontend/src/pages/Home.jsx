@@ -1,5 +1,5 @@
 import "../assets/css/HomeView.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -7,6 +7,10 @@ import logoImg from "../assets/images/logo.png";
 import ProductList from "../components/ProductList";
 import PostList from "../components/PostList";
 import CategoryProductList from "../components/CategoryProductList";
+import bannerService from "../services/bannerService";
+import { IMAGE_BASE_URL } from '../api/config';
+
+const API_BASE = IMAGE_BASE_URL;
 
 /* ── useFadeUp hook ───────────────────────── */
 function useFadeUp() {
@@ -25,7 +29,7 @@ function useFadeUp() {
 
 /* ── Testimonials data ────────────────────── */
 const TESTIMONIALS = [
-    { text: "Croissant ở đây giòn và thơm hơn bất kỳ tiệm nào tôi từng thử. Trở thành khách quen từ lần đầu ghé thăm!", author: "Nguyễn Minh Châu" },
+    { text: "Tiramisu ở đây mềm và thơm hơn bất kỳ tiệm nào tôi từng thử. Trở thành khách quen từ lần đầu ghé thăm!", author: "Nguyễn Minh Châu" },
     { text: "Bánh sinh nhật tôi order thật sự đẹp và ngon vượt mong đợi. Cả gia đình đều khen. Sẽ quay lại!", author: "Trần Thảo Vy" },
     { text: "Giao hàng nhanh, bánh vẫn còn ấm và tươi. Đóng gói cẩn thận. Dịch vụ rất chuyên nghiệp.", author: "Lê Đức Minh" },
 ];
@@ -40,6 +44,30 @@ const PROMISES = [
 /* ── Home Component ───────────────────────── */
 function Home() {
     useFadeUp();
+
+    const [banners, setBanners] = useState([]);
+    const [activeSlide, setActiveSlide] = useState(0);
+
+    useEffect(() => {
+        const fetchBanners = async () => {
+            try {
+                const data = await bannerService.getActiveBanners();
+                setBanners(data);
+            } catch (e) {
+                console.error("Lỗi lấy danh sách banner:", e);
+            }
+        };
+        fetchBanners();
+    }, []);
+
+    // Tự động chuyển slide sau 5 giây
+    useEffect(() => {
+        if (banners.length <= 1) return;
+        const interval = setInterval(() => {
+            setActiveSlide((prev) => (prev + 1) % banners.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, [banners]);
 
     return (
         <>
@@ -117,6 +145,34 @@ function Home() {
                     ))}
                 </div>
             </section>
+
+            {/* ══ DYNAMIC BANNER SLIDER ═══════════════ */}
+            {banners.length > 0 && (
+                <section className="home-slider">
+                    <div className="slider-container">
+                        <div className="slider-wrapper" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
+                            {banners.map((b) => (
+                                b.linkUrl ? (
+                                    <Link key={b.id} to={b.linkUrl} className="slider-slide" style={{ backgroundImage: `url(${API_BASE}${b.imageUrl})` }} />
+                                ) : (
+                                    <div key={b.id} className="slider-slide" style={{ backgroundImage: `url(${API_BASE}${b.imageUrl})` }} />
+                                )
+                            ))}
+                        </div>
+                        {banners.length > 1 && (
+                            <>
+                                <button className="slider-arrow prev" onClick={() => setActiveSlide((prev) => (prev - 1 + banners.length) % banners.length)}>‹</button>
+                                <button className="slider-arrow next" onClick={() => setActiveSlide((prev) => (prev + 1) % banners.length)}>›</button>
+                                <div className="slider-dots">
+                                    {banners.map((_, idx) => (
+                                        <span key={idx} className={`slider-dot ${idx === activeSlide ? "active" : ""}`} onClick={() => setActiveSlide(idx)} />
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </section>
+            )}
 
             {/* ══ CATEGORY ══════════════════════════ */}
             <section className="bh-cat-section">

@@ -1,0 +1,269 @@
+@model CMS.Data.Entities.Banner
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chỉnh sửa Banner";
+}
+
+<style>
+    .cf-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .cf-header-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: #EFF6FF;
+        border: 1px solid #BFDBFE;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #2563EB;
+        flex-shrink: 0;
+    }
+
+    .cf-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 2px;
+    }
+
+    .cf-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+    .cf-layout {
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 16px;
+        align-items: start;
+    }
+
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .cf-card-title {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #6C757D;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #E9ECEF;
+    }
+
+    .cf-group {
+        margin-bottom: 16px;
+    }
+
+    .cf-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #212529;
+        margin-bottom: 6px;
+    }
+
+    .cf-input {
+        width: 100%;
+        background: #F8F9FA;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 8px 12px;
+        font-size: 13px;
+        outline: none;
+        transition: .15s;
+    }
+
+    .cf-input:focus {
+        border-color: #2563EB;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+
+    .cf-required {
+        color: #DC3545;
+        margin-left: 2px;
+    }
+
+    .img-preview-wrap {
+        width: 100%;
+        height: 180px;
+        border: 1px dashed #DEE2E6;
+        border-radius: 8px;
+        background: #F8F9FA;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin-top: 8px;
+    }
+
+    .img-preview-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .btn-save {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        background: #2563EB;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 9px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .btn-save:hover {
+        background: #1D4ED8;
+    }
+
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        background: #F8F9FA;
+        color: #495057;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 9px 16px;
+        text-decoration: none;
+        font-size: 13px;
+    }
+
+    .btn-cancel:hover {
+        background: #E9ECEF;
+        color: #212529;
+    }
+
+    .field-validation-error {
+        display: block;
+        margin-top: 4px;
+        color: #DC3545;
+        font-size: 11px;
+    }
+</style>
+
+<div class="cf-header">
+    <div class="cf-header-icon">
+        <i class="bi bi-images"></i>
+    </div>
+    <div>
+        <h2 class="cf-title">Chỉnh sửa Banner</h2>
+        <div class="cf-subtitle">Cập nhật thông tin slide quảng cáo</div>
+    </div>
+</div>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="cf-layout">
+        
+        <!-- LEFT PANEL -->
+        <div>
+            <div class="cf-card">
+                <div class="cf-card-title">Thông tin banner</div>
+
+                <div class="cf-group">
+                    <label asp-for="Title" class="cf-label">
+                        Tiêu đề Banner <span class="cf-required">*</span>
+                    </label>
+                    <input asp-for="Title" class="cf-input" placeholder="Nhập tiêu đề lớn hiển thị trên slide..." />
+                    <span asp-validation-for="Title" class="field-validation-error"></span>
+                </div>
+
+
+
+                <div class="cf-group">
+                    <label asp-for="LinkUrl" class="cf-label">
+                        Đường dẫn liên kết (Link)
+                    </label>
+                    <input asp-for="LinkUrl" class="cf-input" placeholder="Ví dụ: /products hoặc đường dẫn ngoài..." />
+                    <span asp-validation-for="LinkUrl" class="field-validation-error"></span>
+                </div>
+
+                <div class="cf-group">
+                    <label class="cf-label">
+                        Hình ảnh Banner
+                    </label>
+                    <input type="file" name="uploadImage" id="imageInput" class="cf-input" accept="image/*" />
+                    <span asp-validation-for="ImageUrl" class="field-validation-error"></span>
+                    <div class="img-preview-wrap" id="previewWrap">
+                        <img src="@Model.ImageUrl" alt="Current Image" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div>
+            <div class="cf-card">
+                <div class="cf-card-title">Thiết lập</div>
+
+                <div class="cf-group">
+                    <label asp-for="Order" class="cf-label">Thứ tự hiển thị</label>
+                    <input asp-for="Order" type="number" class="cf-input" />
+                    <span asp-validation-for="Order" class="field-validation-error"></span>
+                </div>
+
+                <div class="cf-group">
+                    <div class="form-check form-switch" style="padding-left: 2.5em; margin-top: 10px;">
+                        <input class="form-check-input" type="checkbox" asp-for="IsActive" style="cursor: pointer; transform: scale(1.1);" />
+                        <label class="form-check-label" asp-for="IsActive" style="font-size: 13px; font-weight: 500; cursor: pointer; margin-left: 5px;">Hiển thị</label>
+                    </div>
+                </div>
+
+                <div class="cf-actions" style="margin-top: 24px; display: flex; flex-direction: column; gap: 8px;">
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-check-circle"></i> Cập nhật Banner
+                    </button>
+                    <a asp-action="Index" class="btn-cancel">
+                        <i class="bi bi-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        document.getElementById('imageInput').addEventListener('change', function () {
+            const file = this.files[0];
+            const wrap = document.getElementById('previewWrap');
+            if (file) {
+                const url = URL.createObjectURL(file);
+                wrap.innerHTML = '<img src="' + url + '" alt="preview">';
+            } else {
+                wrap.innerHTML = '<img src="@Model.ImageUrl" alt="Current Image" />';
+            }
+        });
+    </script>
+}

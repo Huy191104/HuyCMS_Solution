@@ -1,0 +1,178 @@
+@model CMS.Data.Entities.Banner
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Xóa Banner";
+}
+
+<style>
+    .cf-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+    }
+
+    .cf-header-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: #FEF2F2;
+        border: 1px solid #FCA5A5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #DC3545;
+        flex-shrink: 0;
+    }
+
+    .cf-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 2px;
+    }
+
+    .cf-subtitle {
+        font-size: 12px;
+        color: #6C757D;
+    }
+
+    .cf-card {
+        background: #fff;
+        border: 1px solid #E9ECEF;
+        border-radius: 10px;
+        padding: 24px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .cf-card-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #DC3545;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #FCA5A5;
+    }
+
+    .banner-preview {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #E9ECEF;
+        margin-bottom: 16px;
+    }
+
+    .cf-info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px dashed #E9ECEF;
+        font-size: 13px;
+    }
+
+    .cf-info-label {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .cf-info-val {
+        color: #212529;
+    }
+
+    .cf-actions-row {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .btn-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex: 1;
+        background: #DC3545;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .btn-delete:hover {
+        background: #C82333;
+    }
+
+    .btn-cancel {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex: 1;
+        background: #F8F9FA;
+        color: #495057;
+        border: 1px solid #E9ECEF;
+        border-radius: 6px;
+        padding: 10px 16px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .btn-cancel:hover {
+        background: #E9ECEF;
+        color: #212529;
+    }
+</style>
+
+<div class="cf-header">
+    <div class="cf-header-icon">
+        <i class="bi bi-trash"></i>
+    </div>
+    <div>
+        <h2 class="cf-title">Xóa Banner</h2>
+        <div class="cf-subtitle">Xác nhận xóa bỏ banner khỏi hệ thống</div>
+    </div>
+</div>
+
+<div class="cf-card">
+    <div class="cf-card-title">Cảnh báo: Hành động này không thể hoàn tác!</div>
+
+    <img src="@Model.ImageUrl" alt="@Model.Title" class="banner-preview" />
+
+    <div class="cf-info-row">
+        <span class="cf-info-label">Tiêu đề:</span>
+        <span class="cf-info-val">@Model.Title</span>
+    </div>
+
+
+
+    <div class="cf-info-row">
+        <span class="cf-info-label">Đường dẫn liên kết:</span>
+        <span class="cf-info-val">@(string.IsNullOrEmpty(Model.LinkUrl) ? "Không có" : Model.LinkUrl)</span>
+    </div>
+
+    <div class="cf-info-row">
+        <span class="cf-info-label">Thứ tự hiển thị:</span>
+        <span class="cf-info-val">@Model.Order</span>
+    </div>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <div class="cf-actions-row">
+            <button type="submit" class="btn-delete">
+                <i class="bi bi-trash"></i> Xác nhận xóa
+            </button>
+            <a asp-action="Index" class="btn-cancel">
+                Hủy bỏ
+            </a>
+        </div>
+    </form>
+</div>

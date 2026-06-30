@@ -452,3 +452,42 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ── Pagination ───────────────────────────── */
+.prd-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+    grid-column: 1 / -1;
+}
+
+.prd-page-btn {
+    min-width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border, #EDE0CE);
+    border-radius: 8px;
+    background: var(--card, #FFFCF7);
+    color: var(--text-muted, #8C7355);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.prd-page-btn:hover {
+    background: var(--cream, #FAF7F2);
+    color: var(--text-main, #1E0E00);
+    border-color: var(--accent, #C17A3A);
+}
+
+.prd-page-btn.active {
+    background: var(--accent, #C17A3A);
+    color: #FFF8EE;
+    border-color: var(--accent, #C17A3A);
+}

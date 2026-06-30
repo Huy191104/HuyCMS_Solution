@@ -85,6 +85,10 @@
     line-height: 1.85;
 }
 
+    .pd-content strong, .pd-content b, .ck-content strong, .ck-content b {
+        font-weight: 700 !important;
+    }
+
     .pd-content h1, .pd-content h2, .pd-content h3 {
         font-family: 'Playfair Display', serif;
         color: var(--text-main, #1E0E00);
@@ -195,6 +199,24 @@
         border-radius: 0 8px 8px 0;
         font-style: italic;
         color: var(--text-muted, #8C7355);
+    }
+
+    .pd-content table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 24px 0;
+    }
+
+    .pd-content table td, .pd-content table th {
+        border: 1px solid var(--border, #EDE0CE);
+        padding: 10px 14px;
+        text-align: left;
+    }
+
+    .pd-content table th {
+        background-color: var(--cream, #FAF7F2);
+        font-weight: 600;
+        color: var(--text-main, #1E0E00);
     }
 
     .pd-content a {

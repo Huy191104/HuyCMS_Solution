@@ -1,4 +1,4 @@
-﻿@model CMS.Data.Entities.Post
+@model CMS.Data.Entities.Post
 
 @{
     Layout = "_LayoutAdmin";
@@ -360,13 +360,10 @@
         </div>
 
     </div>
-    ```
-
 </form>
 
 @section Scripts {
 
-    ```
     @await Html.PartialAsync("_ValidationScriptsPartial")
 
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
@@ -374,7 +371,11 @@
     <script>
 
         ClassicEditor
-            .create(document.querySelector('#Content'))
+            .create(document.querySelector('#Content'), {
+                ckfinder: {
+                    uploadUrl: '/Post/UploadCkImage'
+                }
+            })
             .catch(error => {
                 console.error(error);
             });
@@ -395,6 +396,5 @@
         });
 
     </script>
-```
 
 }

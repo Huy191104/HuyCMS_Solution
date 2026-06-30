@@ -8,6 +8,12 @@ import { IMAGE_BASE_URL } from "../api/config";
 
 const API_BASE = IMAGE_BASE_URL;
 const formatVND = (p) => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(p);
+const preprocessDescription = (desc) => {
+    if (!desc) return "";
+    return desc
+        .replace(/src="\/uploads\//g, `src="${API_BASE}/uploads/`)
+        .replace(/src='\/uploads\//g, `src='${API_BASE}/uploads/`);
+};
 
 export default function ProductDetail() {
     const { id } = useParams();
@@ -39,9 +45,16 @@ export default function ProductDetail() {
         // Lấy cart từ localStorage
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         const existing = cart.find((i) => i.id === product.id);
+        const currentInCart = existing ? existing.quantity : 0;
+        const totalRequested = currentInCart + quantity;
+
+        if (totalRequested > product.stockQuantity) {
+            alert("Số lượng sản phẩm trong kho không đủ!");
+            return;
+        }
 
         if (existing) {
-            existing.quantity += quantity;
+            existing.quantity = totalRequested;
         } else {
             cart.push({
                 id: product.id,
@@ -149,7 +162,7 @@ export default function ProductDetail() {
 
                         {/* Description */}
                         {product.description && (
-                            <p className="pd-desc">{product.description}</p>
+                            <div className="pd-desc ck-content" dangerouslySetInnerHTML={{ __html: preprocessDescription(product.description) }} />
                         )}
 
                         <div className="pd-divider" />

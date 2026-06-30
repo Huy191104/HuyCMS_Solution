@@ -29,6 +29,15 @@ export default function Product() {
     const [debouncedMinPrice, setDebouncedMinPrice] = useState("");
     const [debouncedMaxPrice, setDebouncedMaxPrice] = useState("");
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 9;
+
+    // Reset page to 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, activeCat, sort, debouncedMinPrice, debouncedMaxPrice]);
+
     // Debounce price input to prevent API call spamming
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -124,6 +133,12 @@ export default function Product() {
             if (sort === "newest") return b.id - a.id;
             return 0;
         });
+
+    const totalPages = Math.ceil(filtered.length / pageSize);
+    const paginatedProducts = filtered.slice(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
+    );
 
     return (
         <>
@@ -221,7 +236,7 @@ export default function Product() {
                 <main className="prd-main">
                     <div className="prd-toolbar">
                         <div className="prd-count">
-                            {loading ? "Đang tải..." : `${filtered.length} sản phẩm`}
+                            {loading ? "Đang tải..." : `Hiển thị ${paginatedProducts.length} trong ${filtered.length} sản phẩm`}
                         </div>
                     </div>
 
@@ -246,52 +261,97 @@ export default function Product() {
                             </button>
                         </div>
                     ) : (
-                        <div className="prd-grid">
-                            {filtered.map((item) => (
-                                <div
-                                    className="prd-card"
-                                    key={item.id}
-                                    onClick={() => navigate(`/products/${item.id}`)}
-                                >
-                                    <div className="prd-card-img-wrap">
-                                        {item.imageUrl ? (
-                                            <img src={`${API_BASE}${item.imageUrl}`} alt={item.name} />
-                                        ) : (
-                                            <div className="prd-card-img-placeholder">🍞</div>
-                                        )}
-                                        {item.stockQuantity === 0 && (
-                                            <div className="prd-badge prd-badge--out">Hết hàng</div>
-                                        )}
-                                        {item.stockQuantity > 0 && item.stockQuantity <= 5 && (
-                                            <div className="prd-badge prd-badge--low">Sắp hết</div>
-                                        )}
-                                    </div>
-                                    <div className="prd-card-body">
-                                        <div className="prd-card-name">{item.name}</div>
-                                        <div className="prd-card-price">{formatVND(item.price)}</div>
-                                        <div className="prd-card-stock">
-                                            <span className={item.stockQuantity > 0 ? "dot-in" : "dot-out"} />
-                                            {item.stockQuantity > 0 ? `Còn ${item.stockQuantity}` : "Tạm hết"}
+                        <>
+                            <div className="prd-grid">
+                                {paginatedProducts.map((item) => (
+                                    <div
+                                        className="prd-card"
+                                        key={item.id}
+                                        onClick={() => navigate(`/products/${item.id}`)}
+                                    >
+                                        <div className="prd-card-img-wrap">
+                                            {item.imageUrl ? (
+                                                <img src={`${API_BASE}${item.imageUrl}`} alt={item.name} />
+                                            ) : (
+                                                <div className="prd-card-img-placeholder">🍞</div>
+                                            )}
+                                            {item.stockQuantity === 0 && (
+                                                <div className="prd-badge prd-badge--out">Hết hàng</div>
+                                            )}
+                                            {item.stockQuantity > 0 && item.stockQuantity <= 5 && (
+                                                <div className="prd-badge prd-badge--low">Sắp hết</div>
+                                            )}
+                                        </div>
+                                        <div className="prd-card-body">
+                                            <div className="prd-card-name">{item.name}</div>
+                                            <div className="prd-card-price">{formatVND(item.price)}</div>
+                                            <div className="prd-card-stock">
+                                                <span className={item.stockQuantity > 0 ? "dot-in" : "dot-out"} />
+                                                {item.stockQuantity > 0 ? `Còn ${item.stockQuantity}` : "Tạm hết"}
+                                            </div>
+                                        </div>
+                                        <div className="prd-card-footer">
+                                            <button
+                                                className="prd-card-btn prd-card-btn-detail"
+                                                onClick={(e) => { e.stopPropagation(); navigate(`/products/${item.id}`); }}
+                                            >
+                                                Chi tiết
+                                            </button>
+                                            <button
+                                                className="prd-card-btn prd-card-btn-buy"
+                                                disabled={item.stockQuantity === 0}
+                                                onClick={(e) => handleBuyNow(item, e)}
+                                            >
+                                                Mua ngay
+                                            </button>
                                         </div>
                                     </div>
-                                    <div className="prd-card-footer">
+                                ))}
+                            </div>
+
+                            {/* Pagination UI */}
+                            {totalPages > 1 && (
+                                <div className="prd-pagination">
+                                    {currentPage > 1 && (
                                         <button
-                                            className="prd-card-btn prd-card-btn-detail"
-                                            onClick={(e) => { e.stopPropagation(); navigate(`/products/${item.id}`); }}
+                                            className="prd-page-btn"
+                                            onClick={() => {
+                                                setCurrentPage((p) => p - 1);
+                                                window.scrollTo(0, 0);
+                                            }}
                                         >
-                                            Chi tiết
+                                            ‹
                                         </button>
+                                    )}
+                                    {[...Array(totalPages)].map((_, index) => {
+                                        const pageNum = index + 1;
+                                        return (
+                                            <button
+                                                key={pageNum}
+                                                className={`prd-page-btn ${currentPage === pageNum ? "active" : ""}`}
+                                                onClick={() => {
+                                                    setCurrentPage(pageNum);
+                                                    window.scrollTo(0, 0);
+                                                }}
+                                            >
+                                                {pageNum}
+                                            </button>
+                                        );
+                                    })}
+                                    {currentPage < totalPages && (
                                         <button
-                                            className="prd-card-btn prd-card-btn-buy"
-                                            disabled={item.stockQuantity === 0}
-                                            onClick={(e) => handleBuyNow(item, e)}
+                                            className="prd-page-btn"
+                                            onClick={() => {
+                                                setCurrentPage((p) => p + 1);
+                                                window.scrollTo(0, 0);
+                                            }}
                                         >
-                                            Mua ngay
+                                            ›
                                         </button>
-                                    </div>
+                                    )}
                                 </div>
-                            ))}
-                        </div>
+                            )}
+                        </>
                     )}
                 </main>
             </div>

@@ -330,10 +330,12 @@
             <tr>
                 <th style="width:80px">ID</th>
                 <th style="width:120px">Mã đơn</th>
+                <th style="width:80px; text-align: center;">Hình ảnh</th>
                 <th>Sản phẩm</th>
-                <th style="width:120px">Số lượng</th>
-                <th style="width:150px">Đơn giá</th>
-                <th style="width:180px">Thành tiền</th>
+                <th style="width:100px; text-align: center;">Số lượng</th>
+                <th style="width:150px; text-align: right;">Đơn giá</th>
+                <th style="width:180px; text-align: right;">Thành tiền</th>
+                <th style="width:120px; text-align: center;">Hành động</th>
             </tr>
         </thead>
 
@@ -355,22 +357,43 @@
                         </span>
                     </td>
 
+                    <td style="text-align: center;">
+                        @if (item.Product != null && !string.IsNullOrEmpty(item.Product.ImageUrl))
+                        {
+                            <img src="@item.Product.ImageUrl" alt="@item.Product.Name" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #E9ECEF;" />
+                        }
+                        else
+                        {
+                            <div style="width: 40px; height: 40px; background: #F1F3F5; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #ADB5BD; font-size: 16px; margin: 0 auto;">
+                                <i class="bi bi-image"></i>
+                            </div>
+                        }
+                    </td>
+
                     <td class="product-name">
                         @(item.Product?.Name ?? "Không xác định")
                     </td>
 
-                    <td>
+                    <td class="text-center">
                         <span class="count-badge">
                             @item.Quantity
                         </span>
                     </td>
 
-                    <td class="text-success fw-semibold">
-                        @item.UnitPrice.ToString("N0") VNĐ
+                    <td class="text-success fw-semibold" style="text-align: right;">
+                        @item.UnitPrice.ToString("N0") đ
                     </td>
 
-                    <td class="text-success fw-bold">
-                        @((item.Quantity * item.UnitPrice).ToString("N0")) VNĐ
+                    <td class="text-success fw-bold" style="text-align: right;">
+                        @((item.Quantity * item.UnitPrice).ToString("N0")) đ
+                    </td>
+
+                    <td class="text-center">
+                        <div class="actions">
+                            <a asp-controller="Orders" asp-action="Details" asp-route-id="@item.OrderId" class="btn-detail" title="Xem chi tiết đơn hàng">
+                                <i class="bi bi-eye"></i> Xem đơn
+                            </a>
+                        </div>
                     </td>
 
                 </tr>

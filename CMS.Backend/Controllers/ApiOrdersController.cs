@@ -1,4 +1,4 @@
-﻿/*
+/*
 * Sinh viên : Phạm Thanh Huy
 * Mã sinh viên: 2122110384
 * Lớp: CCQ2211J
@@ -18,11 +18,13 @@ namespace CMS.Backend.Controllers
     public class ApiOrdersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly Services.EmailService _emailService;
 
-        // Constructor để "tiêm" DbContext vào Controller
-        public ApiOrdersController(ApplicationDbContext context)
+        // Constructor để "tiêm" DbContext và EmailService vào Controller
+        public ApiOrdersController(ApplicationDbContext context, Services.EmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         // =====================================================
@@ -113,6 +115,7 @@ namespace CMS.Backend.Controllers
                 {
                     x.ProductId,
                     ProductName = x.Product != null ? x.Product.Name : "",
+                    ImageUrl = x.Product != null ? x.Product.ImageUrl : "",
                     x.Quantity,
                     x.UnitPrice,
                     Total = x.Quantity * x.UnitPrice
@@ -217,6 +220,7 @@ namespace CMS.Backend.Controllers
                     _context.SaveChanges();
 
                     decimal totalAmount = 0;
+                    var emailItems = new List<(string ProductName, int Quantity, decimal UnitPrice)>();
 
                     // ====================================
                     // Duyệt danh sách giỏ hàng
@@ -278,11 +282,28 @@ namespace CMS.Backend.Controllers
                         product.StockQuantity -= item.Quantity;
 
                         totalAmount += item.Quantity * product.Price;
+
+                        // Thêm vào danh sách gửi email xác nhận
+                        emailItems.Add((product.Name, item.Quantity, product.Price));
                     }
 
                     _context.SaveChanges();
 
                     transaction.Commit();
+
+                    // Gọi dịch vụ gửi email xác nhận bất đồng bộ ngầm ở nền (Fire-and-Forget)
+                    _ = Task.Run(async () =>
+                    {
+                        await _emailService.SendOrderConfirmationEmailAsync(
+                            customer.Email,
+                            customer.FullName,
+                            order.Id,
+                            order.OrderDate,
+                            order.Notes,
+                            emailItems,
+                            totalAmount
+                        );
+                    });
 
                     return Ok(new
                     {

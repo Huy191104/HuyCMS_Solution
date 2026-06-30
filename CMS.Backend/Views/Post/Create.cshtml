@@ -1,4 +1,4 @@
-﻿@model CMS.Data.Entities.Post
+@model CMS.Data.Entities.Post
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Thêm bài viết mới";
@@ -328,8 +328,12 @@
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
         // CKEditor
-        ClassicEditor.create(document.querySelector('#Content'))
-            .catch(error => console.error(error));
+        ClassicEditor.create(document.querySelector('#Content'), {
+            ckfinder: {
+                uploadUrl: '/Post/UploadCkImage'
+            }
+        })
+        .catch(error => console.error(error));
 
         // Image preview
         document.getElementById('imageInput').addEventListener('change', function () {

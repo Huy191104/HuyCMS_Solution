@@ -72,7 +72,8 @@ namespace CMS.Backend.Controllers
         {
             var order = _context.Orders
                 .Include(o => o.Customer)
-                .Include(o => o.OrderDetails)
+                .Include(o => o.OrderDetails!)
+                    .ThenInclude(od => od.Product)
                 .FirstOrDefault(o => o.Id == id);
 
             if (order == null)
@@ -84,7 +85,11 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var order = _context.Orders.Find(id);
+            var order = _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.OrderDetails!)
+                    .ThenInclude(od => od.Product)
+                .FirstOrDefault(o => o.Id == id);
 
             if (order == null)
                 return NotFound();
@@ -254,6 +259,85 @@ namespace CMS.Backend.Controllers
                     );
                 }
             }
+        }
+
+        // POST: Orders/UpdateItemQuantity
+        [HttpPost]
+        public IActionResult UpdateItemQuantity(int orderId, int detailId, int quantity)
+        {
+            var order = _context.Orders.Find(orderId);
+            if (order == null)
+                return NotFound();
+
+            if (order.Status == 2)
+            {
+                TempData["Error"] = "Đơn hàng đã hoàn thành, không thể thay đổi thông tin.";
+                return RedirectToAction(nameof(Edit), new { id = orderId });
+            }
+
+            var detail = _context.OrderDetails
+                .Include(od => od.Product)
+                .FirstOrDefault(od => od.Id == detailId && od.OrderId == orderId);
+
+            if (detail == null)
+                return NotFound();
+
+            if (quantity <= 0)
+            {
+                TempData["Error"] = "Số lượng phải lớn hơn 0. Nếu muốn xóa sản phẩm, vui lòng chọn nút Xóa.";
+                return RedirectToAction(nameof(Edit), new { id = orderId });
+            }
+
+            if (detail.Product != null)
+            {
+                int diff = quantity - detail.Quantity;
+                if (diff > detail.Product.StockQuantity)
+                {
+                    TempData["Error"] = $"Không đủ tồn kho! Sản phẩm {detail.Product.Name} chỉ còn {detail.Product.StockQuantity} chiếc trong kho.";
+                    return RedirectToAction(nameof(Edit), new { id = orderId });
+                }
+
+                detail.Product.StockQuantity -= diff;
+            }
+
+            detail.Quantity = quantity;
+            _context.SaveChanges();
+
+            TempData["Success"] = "Cập nhật số lượng sản phẩm thành công.";
+            return RedirectToAction(nameof(Edit), new { id = orderId });
+        }
+
+        // POST: Orders/DeleteItem
+        [HttpPost]
+        public IActionResult DeleteItem(int orderId, int detailId)
+        {
+            var order = _context.Orders.Find(orderId);
+            if (order == null)
+                return NotFound();
+
+            if (order.Status == 2)
+            {
+                TempData["Error"] = "Đơn hàng đã hoàn thành, không thể thay đổi thông tin.";
+                return RedirectToAction(nameof(Edit), new { id = orderId });
+            }
+
+            var detail = _context.OrderDetails
+                .Include(od => od.Product)
+                .FirstOrDefault(od => od.Id == detailId && od.OrderId == orderId);
+
+            if (detail == null)
+                return NotFound();
+
+            if (detail.Product != null)
+            {
+                detail.Product.StockQuantity += detail.Quantity; // Cộng lại số lượng tồn kho
+            }
+
+            _context.OrderDetails.Remove(detail);
+            _context.SaveChanges();
+
+            TempData["Success"] = "Đã xóa sản phẩm khỏi đơn hàng thành công.";
+            return RedirectToAction(nameof(Edit), new { id = orderId });
         }
     }
 }

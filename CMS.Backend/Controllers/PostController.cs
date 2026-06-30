@@ -227,6 +227,34 @@ namespace CMS.Backend.Controllers
         }
 
         // ==========================
+        // TẢI ẢNH TỪ CKEDITOR
+        // ==========================
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public IActionResult UploadCkImage(IFormFile upload)
+        {
+            if (upload != null && upload.Length > 0)
+            {
+                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "ckeditor");
+                if (!Directory.Exists(folder))
+                    Directory.CreateDirectory(folder);
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(upload.FileName);
+                string filePath = Path.Combine(folder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    upload.CopyTo(stream);
+                }
+
+                string url = "/uploads/ckeditor/" + fileName;
+                return Json(new { uploaded = true, url });
+            }
+
+            return Json(new { uploaded = false, error = new { message = "Không thể tải lên hình ảnh." } });
+        }
+
+        // ==========================
         // XÓA
         // ==========================
         [HttpGet]

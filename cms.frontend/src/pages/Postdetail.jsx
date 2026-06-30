@@ -16,6 +16,13 @@ export default function Postdetail() {
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const preprocessContent = (content) => {
+        if (!content) return "";
+        return content
+            .replace(/src="\/uploads\//g, `src="${API_BASE}/uploads/`)
+            .replace(/src='\/uploads\//g, `src='${API_BASE}/uploads/`);
+    };
+
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -90,8 +97,8 @@ export default function Postdetail() {
                     {/* ── Article ── */}
                     <article className="pd-article">
                         <div
-                            className="pd-content"
-                            dangerouslySetInnerHTML={{ __html: post.content || "" }}
+                            className="pd-content ck-content"
+                            dangerouslySetInnerHTML={{ __html: preprocessContent(post.content) }}
                         />
 
                         {/* Back button */}
