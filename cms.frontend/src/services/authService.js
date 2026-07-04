@@ -44,12 +44,12 @@ const authService = {
         return res.data;
     },
 
-    // ── RESET PASSWORD ─────────────────────
-    resetPassword: async (token, newPassword, confirmPassword) => {
-        const res = await axios.post(`${API_URL}/reset-password`, {
-            token,
-            newPassword,
-            confirmPassword,
+    // ── CHANGE PASSWORD ────────────────────
+    changePassword: async (customerId, oldPassword, newPassword) => {
+        const res = await axios.post(`${API_URL}/change-password`, {
+            customerId: parseInt(customerId),
+            oldPassword,
+            newPassword
         });
         return res.data;
     },

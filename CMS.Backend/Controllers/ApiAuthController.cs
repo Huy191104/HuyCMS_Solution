@@ -14,11 +14,13 @@ namespace CMS.Backend.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
+        private readonly Services.EmailService _emailService;
 
-        public ApiAuthController(ApplicationDbContext context, IConfiguration config)
+        public ApiAuthController(ApplicationDbContext context, IConfiguration config, Services.EmailService emailService)
         {
             _context = context;
             _config = config;
+            _emailService = emailService;
         }
 
         // ── REGISTER ──────────────────────────────
@@ -90,55 +92,66 @@ namespace CMS.Backend.Controllers
             if (customer == null)
             {
                 // Bảo mật: trả về thông báo chung để tránh lộ email hợp lệ
-                return Ok(new { message = "Nếu email tồn tại, bạn sẽ nhận được hướng dẫn đặt lại mật khẩu." });
+                return Ok(new { message = "Nếu email tồn tại, mật khẩu mới đã được gửi về email của bạn." });
             }
 
-            // Tạo token ngẫu nhiên an toàn
-            var token = Convert.ToHexString(System.Security.Cryptography.RandomNumberGenerator.GetBytes(32));
+            // Sinh mật khẩu mới ngẫu nhiên (8 ký tự gồm chữ cái và chữ số)
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            var random = new Random();
+            var newPassword = new string(Enumerable.Repeat(chars, 8)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
 
-            customer.ResetPasswordToken = token;
-            customer.ResetPasswordTokenExpiry = DateTime.UtcNow.AddHours(1); // Token hết hạn sau 1 giờ
-
-            _context.SaveChanges();
-
-            // ⚠️ Môi trường DEV: log token ra console
-            // TODO: Thay bằng SMTP email service trong môi trường thật
-            var resetLink = $"http://localhost:3000/reset-password?token={token}";
-            Console.WriteLine($"[ForgotPassword] Reset link for {req.Email}: {resetLink}");
-
-            return Ok(new
-            {
-                message = "Nếu email tồn tại, bạn sẽ nhận được hướng dẫn đặt lại mật khẩu.",
-                // Chỉ trả token trong môi trường DEV — xóa dòng này khi lên production
-                devToken = token
-            });
-        }
-
-        // ── RESET PASSWORD ──────────────────────────
-        [HttpPost("reset-password")]
-        public IActionResult ResetPassword([FromBody] ResetPasswordRequest req)
-        {
-            var customer = _context.Customers
-                .FirstOrDefault(c => c.ResetPasswordToken == req.Token);
-
-            if (customer == null)
-                return BadRequest(new { message = "Token không hợp lệ." });
-
-            if (customer.ResetPasswordTokenExpiry == null ||
-                customer.ResetPasswordTokenExpiry < DateTime.UtcNow)
-                return BadRequest(new { message = "Token đã hết hạn. Vui lòng yêu cầu đặt lại mật khẩu mới." });
-
-            if (req.NewPassword.Length < 6)
-                return BadRequest(new { message = "Mật khẩu phải có ít nhất 6 ký tự." });
-
-            // Cập nhật mật khẩu mới (hash bằng BCrypt giống Register)
-            customer.Password = BCrypt.Net.BCrypt.HashPassword(req.NewPassword);
-            customer.ResetPasswordToken = null;    // Xóa token sau khi dùng
+            // Mã hóa mật khẩu mới bằng BCrypt và lưu vào DB
+            customer.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            customer.ResetPasswordToken = null;
             customer.ResetPasswordTokenExpiry = null;
 
             _context.SaveChanges();
 
-            return Ok(new { message = "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay." });
+            // Gửi email bất đồng bộ dưới nền (Fire-and-Forget)
+            _ = Task.Run(async () =>
+            {
+                await _emailService.SendNewPasswordEmailAsync(
+                    customer.Email,
+                    customer.FullName,
+                    newPassword
+                );
+            });
+
+            return Ok(new
+            {
+                message = "Mật khẩu mới đã được gửi về email của bạn.",
+                // Chỉ trả mật khẩu mới trong môi trường DEV để tiện debug/test
+                devNewPassword = newPassword
+            });
+        }
+
+        // ── CHANGE PASSWORD ──────────────────────────
+        [HttpPost("change-password")]
+        public IActionResult ChangePassword([FromBody] ChangePasswordRequest req)
+        {
+            var customer = _context.Customers.Find(req.CustomerId);
+            if (customer == null)
+            {
+                return NotFound(new { message = "Không tìm thấy tài khoản khách hàng." });
+            }
+
+            // Kiểm tra mật khẩu cũ
+            if (!BCrypt.Net.BCrypt.Verify(req.OldPassword, customer.Password))
+            {
+                return BadRequest(new { message = "Mật khẩu cũ không chính xác." });
+            }
+
+            if (req.NewPassword.Length < 6)
+            {
+                return BadRequest(new { message = "Mật khẩu mới phải có ít nhất 6 ký tự." });
+            }
+
+            // Mã hóa mật khẩu mới và lưu
+            customer.Password = BCrypt.Net.BCrypt.HashPassword(req.NewPassword);
+            _context.SaveChanges();
+
+            return Ok(new { message = "Đổi mật khẩu thành công!" });
         }
 
         // ── GENERATE JWT ──────────────────────────
@@ -187,10 +200,10 @@ namespace CMS.Backend.Controllers
         public string Email { get; set; }
     }
 
-    public class ResetPasswordRequest
+    public class ChangePasswordRequest
     {
-        public string Token { get; set; }
+        public int CustomerId { get; set; }
+        public string OldPassword { get; set; }
         public string NewPassword { get; set; }
-        public string ConfirmPassword { get; set; }
     }
 }

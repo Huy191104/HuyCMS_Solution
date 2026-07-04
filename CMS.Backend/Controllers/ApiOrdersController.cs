@@ -219,8 +219,9 @@ namespace CMS.Backend.Controllers
                     // Save trước để sinh OrderId
                     _context.SaveChanges();
 
+                    string baseUrl = $"{Request.Scheme}://{Request.Host}";
                     decimal totalAmount = 0;
-                    var emailItems = new List<(string ProductName, int Quantity, decimal UnitPrice)>();
+                    var emailItems = new List<(string ProductName, string ImageUrl, int Quantity, decimal UnitPrice)>();
 
                     // ====================================
                     // Duyệt danh sách giỏ hàng
@@ -284,7 +285,10 @@ namespace CMS.Backend.Controllers
                         totalAmount += item.Quantity * product.Price;
 
                         // Thêm vào danh sách gửi email xác nhận
-                        emailItems.Add((product.Name, item.Quantity, product.Price));
+                        string fullImageUrl = !string.IsNullOrEmpty(product.ImageUrl)
+                            ? $"{baseUrl}{product.ImageUrl}"
+                            : "";
+                        emailItems.Add((product.Name, fullImageUrl, item.Quantity, product.Price));
                     }
 
                     _context.SaveChanges();

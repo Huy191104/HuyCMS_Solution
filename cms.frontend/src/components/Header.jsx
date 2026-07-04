@@ -181,6 +181,9 @@ function Header() {
                                     <Link to="/profile" className="bh-dropdown-item" onClick={() => setDropdownOpen(false)}>
                                         👤 Thông tin tài khoản
                                     </Link>
+                                    <Link to="/change-password" className="bh-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                                        🔑 Đổi mật khẩu
+                                    </Link>
                                     <Link to="/orders" className="bh-dropdown-item" onClick={() => setDropdownOpen(false)}>
                                         📦 Đơn hàng của tôi
                                     </Link>
@@ -239,6 +242,7 @@ function Header() {
                             <div style={{ color: "rgba(245,230,200,0.45)", fontSize: "11px" }}>{user.email}</div>
                         </div>
                         <Link to="/profile" className="bh-mobile-link" onClick={() => setMenuOpen(false)}>👤 Tài khoản</Link>
+                        <Link to="/change-password" className="bh-mobile-link" onClick={() => setMenuOpen(false)}>🔑 Đổi mật khẩu</Link>
                         <Link to="/orders" className="bh-mobile-link" onClick={() => setMenuOpen(false)}>📦 Đơn hàng</Link>
                         <button className="bh-mobile-login" style={{ background: "rgba(255,255,255,0.08)", marginTop: 8 }} onClick={handleLogout}>
                             🚪 Đăng xuất

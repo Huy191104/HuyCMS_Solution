@@ -14,7 +14,7 @@ import Contact from "./pages/Contact";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
+import ChangePassword from "./pages/ChangePassword";
 import Profile from "./pages/Profile";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
@@ -37,7 +37,7 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/change-password" element={<ChangePassword />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />

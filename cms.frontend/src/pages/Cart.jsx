@@ -27,6 +27,14 @@ export default function Cart() {
     };
 
     const updateQty = (id, delta) => {
+        const item = cart.find((i) => i.id === id);
+        if (!item) return;
+
+        if (delta > 0 && item.stockQuantity !== undefined && item.quantity + delta > item.stockQuantity) {
+            alert(`Không thể tăng thêm số lượng! Chỉ còn ${item.stockQuantity} sản phẩm trong kho.`);
+            return;
+        }
+
         const newCart = cart.map((item) =>
             item.id === id
                 ? { ...item, quantity: Math.max(1, item.quantity + delta) }

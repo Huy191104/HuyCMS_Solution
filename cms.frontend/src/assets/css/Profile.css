@@ -329,3 +329,31 @@
         align-self: center;
     }
 }
+
+/* ── Password input wrap and eye icon ────── */
+.pf-input-wrap {
+    position: relative;
+}
+
+.pf-input-wrap .pf-input {
+    padding-right: 40px;
+}
+
+.pf-eye {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #C4A882;
+    font-size: 16px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.pf-eye:hover {
+    color: var(--accent, #C17A3A);
+}

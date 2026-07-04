@@ -33,7 +33,7 @@ const TESTIMONIALS = [
     { text: "Bánh sinh nhật tôi order thật sự đẹp và ngon vượt mong đợi. Cả gia đình đều khen. Sẽ quay lại!", author: "Trần Thảo Vy" },
     { text: "Giao hàng nhanh, bánh vẫn còn ấm và tươi. Đóng gói cẩn thận. Dịch vụ rất chuyên nghiệp.", author: "Lê Đức Minh" },
 ];
-
+        
 const PROMISES = [
     { icon: "🌾", title: "Nguyên liệu tươi", desc: "Chọn lọc kỹ từ nguồn cung cấp uy tín, không chất bảo quản" },
     { icon: "👨‍🍳", title: "Thủ công mỗi ngày", desc: "Nghệ nhân bánh với hơn 10 năm kinh nghiệm" },

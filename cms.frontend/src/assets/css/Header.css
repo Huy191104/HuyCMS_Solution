@@ -402,15 +402,20 @@
 
 .bh-dropdown-item:hover {
     background: var(--cream, #FAF7F2);
+    color: var(--text-main, #1E0E00) !important;
+    text-decoration: none !important;
 }
 
 .bh-dropdown-logout {
-    color: #DC3545;
+    color: #DC3545 !important;
     width: 100%;
+    text-decoration: none !important;
 }
 
 .bh-dropdown-logout:hover {
     background: #FEF2F2;
+    color: #DC3545 !important;
+    text-decoration: none !important;
 }
 
 /* Mobile user info */

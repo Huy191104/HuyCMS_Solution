@@ -10,8 +10,8 @@ function ForgotPassword() {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // DEV: lưu token để dễ test
-    const [devToken, setDevToken] = useState("");
+    // DEV: lưu mật khẩu mới để dễ test
+    const [devNewPassword, setDevNewPassword] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,11 +23,9 @@ function ForgotPassword() {
         try {
             setLoading(true);
             setStatus(null);
-            const data = await authService.forgotPassword(email);
+            await authService.forgotPassword(email);
             setStatus("success");
-            setMessage(data.message);
-            // DEV: hiển thị token để test (xóa trong production)
-            if (data.devToken) setDevToken(data.devToken);
+            setMessage("Mật khẩu mới đã được gửi về email của bạn. Vui lòng kiểm tra email và đăng nhập lại.");
         } catch (err) {
             setStatus("error");
             setMessage(err.response?.data?.message || "Đã xảy ra lỗi. Vui lòng thử lại.");
@@ -49,21 +47,21 @@ function ForgotPassword() {
                     </h2>
                     <p className="auth-visual-desc">
                         Đừng lo! Chỉ cần nhập email đã đăng ký và chúng tôi sẽ
-                        gửi hướng dẫn đặt lại mật khẩu ngay lập tức.
+                        gửi mật khẩu mới trực tiếp về email của bạn.
                     </p>
                     <div className="auth-visual-badges">
                         <div className="auth-visual-badge">
                             <span className="auth-badge-icon">🛡️</span>
                             <div className="auth-badge-text">
                                 <strong>Bảo mật tuyệt đối</strong>
-                                Token hết hạn sau 1 giờ
+                                Mật khẩu được sinh ngẫu nhiên
                             </div>
                         </div>
                         <div className="auth-visual-badge">
                             <span className="auth-badge-icon">⚡</span>
                             <div className="auth-badge-text">
                                 <strong>Nhanh chóng</strong>
-                                Đặt lại mật khẩu chỉ trong vài bước
+                                Nhận mật khẩu mới trong tích tắc
                             </div>
                         </div>
                         <div className="auth-visual-badge">
@@ -88,7 +86,7 @@ function ForgotPassword() {
 
                     <h1 className="auth-heading">Quên <em>mật khẩu</em></h1>
                     <p className="auth-subheading">
-                        Nhập email đăng ký để nhận liên kết đặt lại mật khẩu
+                        Nhập email đăng ký để nhận mật khẩu mới
                     </p>
 
                     {/* Alert messages */}
@@ -101,16 +99,7 @@ function ForgotPassword() {
                         </div>
                     )}
 
-                    {/* DEV helper: hiển thị link reset để test */}
-                    {devToken && (
-                        <div className="auth-dev-box">
-                            <strong>🛠 DEV MODE</strong> — Link đặt lại mật khẩu:
-                            <br />
-                            <Link to={`/reset-password?token=${devToken}`} className="auth-dev-link">
-                                /reset-password?token={devToken.slice(0, 16)}...
-                            </Link>
-                        </div>
-                    )}
+                    {/* Hộp DEV Helper đã ẩn hiển thị mật khẩu mới */}
 
                     {!status || status === "error" ? (
                         <form onSubmit={handleSubmit}>
@@ -137,7 +126,7 @@ function ForgotPassword() {
                                 className="auth-btn"
                                 disabled={loading}
                             >
-                                {loading ? "Đang xử lý..." : "Gửi liên kết đặt lại →"}
+                                {loading ? "Đang xử lý..." : "Gửi mật khẩu mới →"}
                             </button>
                         </form>
                     ) : (
@@ -148,7 +137,7 @@ function ForgotPassword() {
                                 setStatus(null);
                                 setMessage("");
                                 setEmail("");
-                                setDevToken("");
+                                setDevNewPassword("");
                             }}
                         >
                             Thử email khác
